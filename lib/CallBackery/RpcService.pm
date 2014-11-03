@@ -24,7 +24,7 @@ This module provides the following methods
 =cut
 
 # the name of the service we provide
-has service => 'afb';
+has service => 'default';
 
 =head2 allow_rpc_access(method)
 
@@ -36,6 +36,7 @@ my %allow = (
     getBaseConfig => 1,
     login => 1,
     logout => 1,
+    ping => 1,
     getUserConfig => 2,
     getPluginConfig => 2,
     validatePluginData => 2,
@@ -85,7 +86,7 @@ check if the server is happy with our authentication state
 =cut
 
 sub ping {
-    return 1;
+    return 'pong';
 }
 
 =head2 getSessionCookie()

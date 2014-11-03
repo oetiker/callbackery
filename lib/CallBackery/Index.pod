@@ -1,11 +1,11 @@
 =head1 NAME
 
-AFB::Index - Appliance Frontend Builder Documentation Index
+CallBackery::Index - Appliance Frontend Builder Documentation Index
 
 =head1 ADMIN DOCUMENTAION
 
 AFB is a plugin based system. Configuration Plugins
-are implemented by sub-classing L<AFB::Plugin>, L<AFB::PluginForm>, L<AFB::PluginTable>.
+are implemented by sub-classing L<CallBackery::Plugin>, L<CallBackery::PluginForm>, L<CallBackery::PluginTable>.
 
 =head1 TECH DOCUMENTATION
 
@@ -20,27 +20,27 @@ L<AFB> - the mojo application starting point
 
 =item * 
 
-L<AFB::Config> - the configuration object
+L<CallBackery::Config> - the configuration object
 
 =item * 
 
-L<AFB::Cfg> - the configuration Syntax
+L<CallBackery::Cfg> - the configuration Syntax
 
 =item * 
 
-L<AFB::RpcService> - the json rpc api
+L<CallBackery::RpcService> - the json rpc api
 
 =item *
 
-L<AFB::Plugin> - the plugin base class
+L<CallBackery::Plugin> - the plugin base class
 
 =item *
 
-L<AFB::PluginFrom> - the plugin base class
+L<CallBackery::PluginFrom> - the plugin base class
 
 =item *
 
-L<AFB::PluginTable> - the plugin base class
+L<CallBackery::PluginTable> - the plugin base class
 
 =back
 

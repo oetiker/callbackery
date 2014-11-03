@@ -22,6 +22,7 @@ lib/CallBackery/Translate.pm
 lib/CallBackery/PluginTable.pm
 lib/CallBackery/Config.pm
 lib/CallBackery/Exception.pm
+lib/CallBackery/templates/doc.html.ep
 lib/CallBackery/qooxdoo/source/resource/callbackery/spinner.gif
 lib/CallBackery/qooxdoo/source/translation/de.po
 lib/CallBackery/qooxdoo/source/translation/fr.po

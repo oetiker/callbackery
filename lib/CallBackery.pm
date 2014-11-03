@@ -25,12 +25,13 @@ use Mojolicious::Plugin::Qooxdoo;
 use Mojo::URL;
 use Mojo::JSON;
 use Mojo::Util qw(hmac_sha1_sum slurp);
+use File::Basename; 
 use CallBackery::RpcService;
 use CallBackery::Config;
 use CallBackery::Plugin;
 use CallBackery::DocPlugin;
 
-our $VERSION = '0.1.2';
+our $VERSION = '0.1.3';
 
 use Mojo::Base 'Mojolicious';
 
@@ -48,10 +49,41 @@ has 'config' => sub {
     my $self = shift;
     my $conf = CallBackery::Config->new(
         app => $self,
-        file => $ENV{CallBackery_CONF}
-            || $self->home->rel_file('etc/afb.cfg')
+        file => $ENV{CALLBACKERY_CONF}
+            || $self->home->rel_file('etc/callbackery.cfg')
     );
 };
+
+
+=head2 securityHeaders
+
+A hash of headers to set on every response to ask the webbrowser to
+help us fight the bad guys.
+
+=cut
+
+has securityHeaders => sub { {
+    'X-Frame-Options' => 'SAMEORIGIN',
+    'X-XSS-Protection' => '1; mode=block',
+    'X-Content-Type-Options' => 'nosniff',
+    'Cache-Control' => 'private, max-age=0' 
+}};
+
+=head2 rpcServiceNamespace
+
+our rpc service namespace
+
+=cut
+
+has rpcServiceNamespace => 'CallBackery';
+
+=head2 rpcServiceController
+
+our rpc service controller
+
+=cut
+
+has rpcServiceController => 'RpcService';
 
 =head1 METHODS
 
@@ -67,7 +99,6 @@ Mojolicious calls the startup method at initialization time.
 
 sub startup {
     my $self = shift;
-
     # we have some more commands here
     unshift @{$self->commands->namespaces},__PACKAGE__.'::Command';
 
@@ -87,20 +118,11 @@ sub startup {
         $c->req->url->base(Mojo::URL->new($uri)) if $uri;
     });
 
-    # a bunch of headers for making us more secure
-    # inspired by google+ headers (2014-10-31)
-
-    my $SecurityHeaders = {
-        'X-Frame-Options' => 'SAMEORIGIN',
-        'X-XSS-Protection' => '1; mode=block',
-        'X-Content-Type-Options' => 'nosniff',
-        'Cache-Control' => 'private, max-age=0' 
-    };
-
+    my $securityHeaders = $self->securityHeaders;
     $self->hook( after_dispatch => sub {
         my $c = shift;
-        for my $header ( keys %$SecurityHeaders){
-            $c->res->headers->header($header,$SecurityHeaders->{$header});
+        for my $header ( keys %$securityHeaders){
+            $c->res->headers->header($header,$securityHeaders->{$header});
         }
     });
 
@@ -119,17 +141,17 @@ sub startup {
         index => 'CallBackery::Index',
         localguide => $gcfg->{localguide},
         template => Mojo::Asset::File->new(
-            path=>$self->home->rel_file('templates/doc.html.ep')
+            path=>dirname($INC{'CallBackery/DocPlugin.pm'}).'/templates/doc.html.ep',
         )->slurp,
     });
     
-    $routes->route('/upload')->to(controller => 'RpcService', action => 'handleUpload');
-    $routes->route('/download')->to(controller => 'RpcService', action => 'handleDownload');
+    $routes->route('/upload')->to(namespace => $self->rpcServiceNamespace, controller=>$self->rpcServiceController, action => 'handleUpload');
+    $routes->route('/download')->to(namespace => $self->rpcServiceNamespace, controller=>$self->rpcServiceController, action => 'handleDownload');
 
     $self->plugin('qooxdoo',{
-        path => 'QX-JSON-RPC',
-        namespace => 'CallBackery',
-        controller => 'RpcService'
+        path => '/QX-JSON-RPC',
+        namespace => $self->rpcServiceNamespace,
+        controller => $self->rpcServiceController,
     });
 
     return 0;

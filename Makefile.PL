@@ -15,7 +15,9 @@ WriteMakefile(
     'Locale::PO' => '0.24',
     'Config::Grammar' => '1.10',
     'DBD::SQLite' => '1.40',
-    'PPI' => '0'
+    'Archive::Zip' => 0,
+    'Crypt::Rijndael' => 0,
+    'PPI' => '0',
   },
   META_MERGE   => {
     requires  => {perl => '5.010001'},

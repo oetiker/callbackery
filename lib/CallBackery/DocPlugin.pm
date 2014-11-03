@@ -107,7 +107,7 @@ sub register {
           $anchor =~ s/\%//g;
           push @$sections, [] if $tag->type eq 'h1' || !@$sections;
           push @{$sections->[-1]}, $text, $url->fragment($anchor)->to_abs;
-          $tag->replace_content(
+          $tag->replace(
             $self->link_to(
               $text => $url->fragment('toc')->to_abs,
               class => 'mojoscroll',
