@@ -1,0 +1,16 @@
+{
+	"folders":
+	[
+        {
+            "follow_symlinks": false,
+            "name": "AFB",
+            "path": ".",
+            "folder_exclude_patterns": ["conftools","cache","autom4te.cache","backend/public","backend/log","backend/thirdparty"],
+            "file_exclude_patterns": ["*.tar.gz","Makefile.in","config.log","configure","aclocal.m4",".nfs*","callbackery.sublime-project"]
+        }   
+	],
+    "settings": 
+    {
+        "tab_size": 4
+    }
+}
