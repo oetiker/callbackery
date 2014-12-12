@@ -163,7 +163,7 @@ has cookieConf => sub {
 
     if ($paramCookie and gettimeofday() - $conf->{t} > 2.0){
         $self->log->debug(qq{Cookie is expired});
-        die mkError(38445,"cookie has expired");
+        die mkerror(38445,"cookie has expired");
     }
     return $conf;
 };
