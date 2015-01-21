@@ -13,7 +13,8 @@ use IPC::Open3;
 use POSIX qw<F_SETFD F_GETFD FD_CLOEXEC>;
 use Time::HiRes qw(usleep);
 use Mojo::JSON qw(encode_json decode_json);
-eval { require "sys/ioctl.ph" };
+# disable warnings below, otherwise testing will give warnings
+eval { local $^W=0; require "sys/ioctl.ph" };
 
 =head1 NAME
 
