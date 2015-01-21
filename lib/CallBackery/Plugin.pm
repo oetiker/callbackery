@@ -463,7 +463,7 @@ sub getConfigValue {
     # warn "GET $key -> ".Dumper($ret);
     if ($@){
         die mkerror (3984,$@);
-    };
+    }
     return $ret->[0];
 }
 
