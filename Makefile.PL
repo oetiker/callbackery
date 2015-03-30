@@ -11,7 +11,7 @@ WriteMakefile(
   AUTHOR       => 'Tobias Oetiker <tobi@oetiker.ch>',
   LICENSE      => 'gpl_3',
   PREREQ_PM    => {
-    'Mojolicious::Plugin::Qooxdoo' => '0.901',
+    'Mojolicious::Plugin::Qooxdoo' => '0.902',
     'Locale::PO' => '0.24',
     'Config::Grammar' => '1.10',
     'DBD::SQLite' => '1.40',
