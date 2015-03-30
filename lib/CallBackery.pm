@@ -63,10 +63,15 @@ help us fight the bad guys.
 =cut
 
 has securityHeaders => sub { {
+    # prevent click jacking
     'X-Frame-Options' => 'SAMEORIGIN',
+    # some magic browser based anti xss action
     'X-XSS-Protection' => '1; mode=block',
+    # the browser should obej the servers settings regarding content-type
     'X-Content-Type-Options' => 'nosniff',
-    'Cache-Control' => 'private, max-age=0' 
+    # do not store our data ever
+    'Cache-Control' => 'no-store',
+    'Pragma' => 'private',
 }};
 
 =head2 rpcServiceNamespace
@@ -121,6 +126,8 @@ sub startup {
     my $securityHeaders = $self->securityHeaders;
     $self->hook( after_dispatch => sub {
         my $c = shift;
+        # not telling anyone that we are mojo
+        $c->res->headers->remove('Server');
         for my $header ( keys %$securityHeaders){
             $c->res->headers->header($header,$securityHeaders->{$header});
         }
