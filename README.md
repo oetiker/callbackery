@@ -38,13 +38,11 @@ curl -L cpanmin.us \
 mkdir -p ~/src
 cd ~/src
 mojo generate callbackery_app CbDemo
-cd cbdemo
-
-# ..continue reading README in demo/ (see below)
+cd cb_demo
 ```
 
 Et voilà, you are looking at your first CallBackery app. Have a look
-at the README in the demo directory for further instructions.
+at the README in the cb_demo directory for further instructions.
 
 
 Enjoy
