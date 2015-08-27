@@ -1,0 +1,17 @@
+sudo: false
+
+language: perl
+
+perl:
+  - "5.18"
+
+before_install:
+  - cpanm --notest \
+        Devel::Cover::Report::Coveralls \
+        IO::Socket::SSL Mojolicious@6.17 \
+        Mojolicious::Plugin::Qooxdoo@0.904 \
+        Mojo::SQLite@0.011 Config::Grammar@1.10
+
+script:
+  - cover -test -report coveralls
+
