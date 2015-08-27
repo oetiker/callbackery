@@ -150,7 +150,7 @@ has actionCfg => sub {
         $args->{cbuser_password} = hmac_sha1_sum($args->{cbuser_password});
         my $db = $self->user->db;
 
-        $args->{cbuser_id} //= $db->updateOrInsertData('cbuser',{
+        $args->{cbuser_id} = $db->updateOrInsertData('cbuser',{
             map { $_ => $args->{'cbuser_'.$_} } @fields
         },$args->{cbuser_id} ? { id => int($args->{cbuser_id}) } : ());
 

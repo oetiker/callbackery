@@ -123,6 +123,7 @@ has actionCfg => sub {
                 my $id = $args->{selection}{song_id};
                 die mkerror(4992,"You have to select a song first")
                     if not $id;
+                $self->user->db->deleteData('song',$id);
                 return {
                     action => 'reload'
                 };
