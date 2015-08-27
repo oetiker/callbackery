@@ -56,6 +56,9 @@ To install the application, just run
 
 You can now run <%= $p->{name} %>.pl in reverse proxy mode.
 
+   cd $HOME/opt/<%= $p->{name} %>/bin
+   ./<%= $p->{name} %>.pl prefork
+
 Packaging
 ---------
 
