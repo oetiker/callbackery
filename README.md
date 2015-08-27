@@ -2,7 +2,7 @@ CallBackery 0.2.0
 =================
 
 [![Build Status](https://travis-ci.org/oetiker/callbackery.svg?branch=master)](https://travis-ci.org/oetiker/callbackery)
-[![Coverage Status](https://img.shields.io/coveralls/oetiker/callbackery.svg)](https://coveralls.io/r/oetiker/callbackery?branch=master)
+[![Coverage Status](https://coveralls.io/repos/oetiker/callbackery/badge.svg?branch=master&service=github)](https://coveralls.io/github/oetiker/callbackery?branch=master)
 
 CallBackery is a perl library for writing CRUD style single page web
 applications with a desktopish look and feel.  For many applications, all
