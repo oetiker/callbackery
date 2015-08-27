@@ -46,24 +46,27 @@ The following alphabetic identifiers do exist:
 
 =cut
 
-    
+
 
 
 =head2 userId
 
 return the user id if the session user is valid.
 
-=cut 
+=cut
 
 has userId => sub {
     my $self = shift;
     my $cookieUserId = $self->cookieConf->{u};
     my $dbh = $self->db->dbh;
-    if (my $userId = [$dbh->selectrow_array('SELECT user_id FROM user WHERE user_id = ?',{},$cookieUserId)]->[0]){
+    my $userInfo = $self->db->fetchRow('cbuser',{id=>$cookieUserId});
+    if (my $userId = $userInfo->{cbuser_id}){
+        $self->userInfo($userInfo);
+        $self->db->userName($userInfo->{cbuser_login});
         return $userId;
-    } 
-    my $userCount = [$dbh->selectrow_array('SELECT count(user_id) FROM user')]->[0];
-    return ($userCount == 0 ? '__ROOT' : '' );
+    }
+    my $userCount = [$dbh->selectrow_array('SELECT count(cbuser_id) FROM '.$dbh->quote_identifier("cbuser"))]->[0];
+    return ($userCount == 0 ? '__ROOT' : undef );
 };
 
 =head2 $self->db
@@ -82,7 +85,8 @@ has log => sub {
 };
 
 has db => sub {
-    CallBackery::Database->new(app=>shift->app);    
+    my $self = shift;
+    $self->app->database->new(app => $self->app);
 };
 
 =head2 $self->userInfo
@@ -93,13 +97,14 @@ returns a hash of information about the current user.
 
 has userInfo => sub {
     my $self = shift;
-    if ($self->userId eq '__ROOT'){
-        return {user_id => '__ROOT'};
+    my $userId = $self->userId // return {};
+    if ($userId eq '__ROOT'){
+        return {cbuser_id => '__ROOT'};
     }
-    if ($self->userId eq '__SHELL'){
-        return {user_id => '__SHELL'};
+    if ($userId eq '__SHELL'){
+        return {cbuser_id => '__SHELL'};
     }
-    $self->db->fetchRow('user',{id=>$self->userId}) // {};
+    $self->db->fetchRow('cbuser',{id=>$self->userId}) // {};
 };
 
 
@@ -132,10 +137,11 @@ has cookieConf => sub {
     my $paramCookie = $self->paramSessionCookie;
 
     my ($data,$check) = split /:/,($headerCookie || $paramCookie || ''),2;
-    
+
     return {} if not ($data and $check);
 
     my $secret = $self->firstSecret;
+
     my $checkTest = Mojo::Util::hmac_sha1_sum($data, $secret);
     if (not secure_compare($check,$checkTest)){
         $self->log->debug(qq{Bad signed cookie possible hacking attempt.});
@@ -165,6 +171,7 @@ has cookieConf => sub {
         $self->log->debug(qq{Cookie is expired});
         die mkerror(38445,"cookie has expired");
     }
+
     return $conf;
 };
 
@@ -182,9 +189,9 @@ sub may {
         return 1;
     }
     my $db = $self->db;
-    my $rightId = $db->lookUp('right','key',$right);
-    my $userId = $self->id;
-    return ($db->matchData('userright',{user=>$self->userId,right=>$rightId}) ? 1 : 0);
+    my $rightId = $db->lookUp('cbright','key',$right);
+    my $userId = $self->userId;
+    return ($db->matchData('cbuserright',{cbuser=>$userId,cbright=>$rightId}) ? 1 : 0);
 }
 
 =head2 makeSessionCookie()
@@ -195,7 +202,7 @@ Returns a timestamped, signed session cookie containing the current userId.
 
 sub makeSessionCookie {
     my $self = shift;
-    my $timeout = shift; 
+    my $timeout = shift;
     my $now = gettimeofday;
     my $conf = b64_encode(encode_json({
         u => $self->userId,

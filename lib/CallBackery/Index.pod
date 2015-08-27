@@ -18,29 +18,29 @@ L<Mojolicious::Guides> for details.
 
 L<AFB> - the mojo application starting point
 
-=item * 
+=item *
 
 L<CallBackery::Config> - the configuration object
 
-=item * 
+=item *
 
 L<CallBackery::Cfg> - the configuration Syntax
 
-=item * 
+=item *
 
 L<CallBackery::RpcService> - the json rpc api
 
 =item *
 
-L<CallBackery::Plugin> - the plugin base class
+L<CallBackery::Gui::Abstract> - the gui base class
 
 =item *
 
-L<CallBackery::PluginFrom> - the plugin base class
+L<CallBackery::Gui::AbstractFrom> - the gui form base class
 
 =item *
 
-L<CallBackery::PluginTable> - the plugin base class
+L<CallBackery::Gui::AbstractTable> - the gui table base class
 
 =back
 
@@ -50,12 +50,12 @@ L<CallBackery::PluginTable> - the plugin base class
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 3 of the License, or   
+the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
@@ -75,6 +75,3 @@ S<Tobias Oetiker E<lt>tobi@oetiker.chE<gt>>
  2013-0312-16 to 1.0 first version
 
 =cut
-
-
-

@@ -9,8 +9,8 @@ use Term::ReadKey;
 
 has description => "commandline config interface\n";
 has usage       => <<"EOF";
-usage: $0 config *function* 
-   
+usage: $0 config *function*
+
    backup [backup.afb]     write a backup file
    restore [backup.afb]    read a backup file
    re-configure            rewrite all configuration files
@@ -36,7 +36,7 @@ sub run {
     $app->log->level($opt{verbose} ? 'debug' : 'warn');
 
     if ($opt{help})     { die $self->usage }
- 
+
     my $cmd = shift @args or die $self->usage;
 
     my $cfg = $self->app->config;
@@ -141,7 +141,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 S<Tobias Oetiker E<lt>tobi@oetiker.chE<gt>>
 
-=head1 HISTORY 
+=head1 HISTORY
 
  2014-02-24 to Initial
 

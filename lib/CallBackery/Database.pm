@@ -4,11 +4,11 @@ package CallBackery::Database;
 
 use Mojo::Base -base;
 
-use DBI;
 use Data::Dumper;
 use Carp qw(croak);
 use CallBackery::Exception qw(mkerror);
 use Scalar::Util qw(weaken);
+use Mojo::SQLite;
 
 =head1 NAME
 
@@ -41,6 +41,10 @@ has app => sub {
     croak "app property is required";
 };
 
+has userName => sub {
+    return "* no user *";
+};
+
 has config => sub {
     shift->app->config;
 };
@@ -54,73 +58,27 @@ a dbi database handle
 
 my $lastFlush = time;
 
-
-sub dbh {
+has sql => sub {
     my $self = shift;
-    my $db = $self->config->cfgHash->{BACKEND}{cfg_db};
-    my $dbExists = -s $db;
-    my $dbh = DBI->connect_cached('dbi:SQLite:dbname='.$db,'','',{
+    my $sql = Mojo::SQLite->new($self->config->cfgHash->{BACKEND}{cfg_db});
+    $sql->options({
         RaiseError => 1,
         PrintError => 0,
         AutoCommit => 1,
         ShowErrorStatement => 1,
-        sqlite_unicode => 1, # yes we are commited to utf8!
+        sqlite_unicode => 1,
         FetchHashKeyName=>'NAME_lc',
-        afb_db_generation => ( (stat $db.'.flush')[9] || 'none' ), # do NOT cache if we flushed
-    }) or die mkerror(2,DBI->errstr());
-    $dbh->do('PRAGMA foreign_keys = ON');
-    if (not $dbExists){
-        $self->makeTables($dbh);
-    }
-    return $dbh;
-}
+    });
+    $sql->migrations
+        ->name('cbBaseDB')
+        ->from_data(__PACKAGE__,'dbsetup.sql')
+        ->migrate;
+    $sql->db->dbh->do('PRAGMA foreign_keys = ON');
+    return $sql;
+};
 
-sub makeTables {
-    my $self = shift;
-    my $dbh = shift;
-    $dbh->do(<<'SQL');
-CREATE TABLE user (
-    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_login TEXT UNIQUE,
-    user_family TEXT,
-    user_given TEXT,
-    user_password TEXT,
-    user_note TEXT
-)
-SQL
-    $dbh->do(<<'SQL');
-CREATE TABLE right (
-    right_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    right_key TEXT UNIQUE
-)
-SQL
-    $dbh->do(<<'SQL');
-CREATE TABLE userright (
-    userright_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    userright_user INTEGER REFERENCES user(user_id),
-    userright_right INTEGER REFERENCES right(right_id)
-)
-SQL
-    $dbh->do(<<'SQL');
-CREATE UNIQUE INDEX userright_idx 
-    ON userright(userright_user,userright_right)
-SQL
-
-    $dbh->do(<<'SQL');
-CREATE TABLE config (
-    config_id TEXT PRIMARY KEY,
-    config_value TEXT
-)
-SQL
-    $dbh->do(<<'SQL');
-CREATE TABLE history (
-    history_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    history_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    history_user TEXT,
-    history_module TEXT,
-    history_action TEXT
-)
-SQL
+sub dbh {
+    return shift->sql->db->dbh;
 }
 
 =item my($fields,$values) = $self->C<map2sql(table,data)>;
@@ -166,7 +124,7 @@ sub map2where {
         }
         else {
             $expr = $field.' is null';
-        }            
+        }
         push @expression, $expr;
     }
     return (join ' AND ',@expression);
@@ -174,9 +132,9 @@ sub map2where {
 
 =item $hashRef = $self->C<getMap(table,column)>;
 
-Get an array of hashes with id and label tags:
+Get an array of hashes with model and label tags:
 
- [{id: x, label: y},{id ...},...]
+ [{model: x, label: y},{id ...},...]
 
 =cut
 
@@ -216,7 +174,7 @@ sub getRowHash {
     my $sqlTable = $dbh->quote_identifier($table);
     my $sqlWhere = $self->map2where($table,$data);
     my $SQL = <<"SQL";
-        SELECT $selectCols 
+        SELECT $selectCols
           FROM $sqlTable
          WHERE $sqlWhere
 SQL
@@ -281,7 +239,7 @@ sub matchData {
     my $data = shift;
     my $found = $self->fetchValue($table,$data,"id");
     return $found;
-        
+
 }
 
 =item $id = $self->C<lookUp(table,column,value)>
@@ -297,7 +255,7 @@ sub lookUp {
     my $column = shift;
     my $value = shift;
     my $id = $self->matchData($table,{$column => $value})
-        or die mkerror(1349,"Lookup for $column = $value in $table faild"); 
+        or die mkerror(1349,"Lookup for $column = $value in $table faild");
     return $id;
 }
 
@@ -316,7 +274,7 @@ sub updateOrInsertData {
     my $dbh = $self->dbh;
     my ($colNames,$colValues) = $self->map2sql($table,$data);
     my $sqlTable = $dbh->quote_identifier($table);
-    my $sqlIdCol = $dbh->quote_identifier($table."_id"); 
+    my $sqlIdCol = $dbh->quote_identifier($table."_id");
     my $sqlColumns = join ', ', @$colNames;
     my $sqlSet = join ', ', map { "$_ = ?" } @$colNames;
     my $sqlData = join ', ', map { '?' } @$colValues;
@@ -342,8 +300,8 @@ SQL
         return $data->{'id'};
     }
     # serial primary key
-    else{ 
-        return $dbh->last_insert_id(undef,undef,$table,$table."_id");    
+    else{
+        return $dbh->last_insert_id(undef,undef,$table,$table."_id");
     }
 }
 
@@ -354,7 +312,7 @@ Lookup the given data. If it is new, insert a record. Returns the matching Id.
 =cut
 
 sub insertIfNew {
-    my $self = shift; 
+    my $self = shift;
     my $table = shift;
     my $data = shift;
     return ( $self->matchData($table,$data)
@@ -369,7 +327,7 @@ Returns true if the record was deleted.
 =cut
 
 sub deleteData {
-    my $self = shift; 
+    my $self = shift;
     my $table = shift;
     my $id = shift;
     return $self->deleteDataWhere($table,{id=>$id});
@@ -383,7 +341,7 @@ Returns true if the record was deleted.
 =cut
 
 sub deleteDataWhere {
-    my $self = shift; 
+    my $self = shift;
     my $table = shift;
     my $match = shift;
     my $val = shift;
@@ -395,14 +353,47 @@ sub deleteDataWhere {
     return $dbh->do($SQL);
 }
 
+=item getConfigValue($key)
+
+return a raw data value from the config table
+
+=cut
+
+sub getConfigValue {
+    my $self = shift;
+    my $key = shift;
+    my $value = eval {
+        local $SIG{__DIE__};
+        $self->fetchValue('cbconfig',{id => $key},'value');
+    };
+    return ($@ ? undef : $value);
+}
+
+=head2 setConfigValue($key,$value)
+
+write a config value
+
+=cut
+
+sub setConfigValue {
+    my $self = shift;
+    my $key = shift;
+    my $value = shift;
+    # warn "SET $key -> ".Dumper([$value]);
+    $self->updateOrInsertData('cbconfig',{
+        id=> $key,
+        value => $value
+    }, { id => $key });
+    return $value;
+}
+
 1;
-__END__
 
 =back
 
 =head1 COPYRIGHT
 
-Copyright (c) 2013 by OETIKER+PARTNER AG. All rights reserved.
+Copyright (c) 2015 by OETIKER+PARTNER AG. All rights reserved.
 
 =head1 AUTHOR
 
@@ -415,13 +406,48 @@ S<Tobi Oetiker E<lt>tobi@oetiker.chE<gt>>
 
 =cut
 
-# Emacs Configuration
-#
-# Local Variables:
-# mode: cperl
-# eval: (cperl-set-style "PerlStyle")
-# mode: flyspell
-# mode: flyspell-prog
-# End:
-#
-# vi: sw=4 et
+__DATA__
+@@ dbsetup.sql
+
+-- 1 up
+
+-- the base callbackery tables. normally you do NOT want to mess with them
+
+CREATE TABLE cbconfig (
+    cbconfig_id TEXT PRIMARY KEY,
+    cbconfig_value TEXT
+);
+
+CREATE TABLE cbuser (
+    cbuser_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    cbuser_login TEXT UNIQUE,
+    cbuser_family TEXT,
+    cbuser_given TEXT,
+    cbuser_password TEXT,
+    cbuser_note TEXT
+);
+
+CREATE TABLE cbright (
+    cbright_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    cbright_key TEXT UNIQUE,
+    cbright_label TEXT
+);
+
+INSERT INTO cbright (cbright_key,cbright_label)
+    VALUES ('admin','Administrator');
+
+CREATE TABLE cbuserright (
+    cbuserright_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    cbuserright_cbuser INTEGER REFERENCES cbuser(cbuser_id) ON DELETE CASCADE,
+    cbuserright_cbright INTEGER REFERENCES cbright
+);
+
+CREATE UNIQUE INDEX cbuserright_idx
+    ON cbuserright(cbuserright_cbuser,cbuserright_cbright)
+
+-- 1 down
+
+DROP TABLE cbconfig;
+DROP TABLE cbuser;
+DROP TABLE cbright;
+DROP TABLE cbuserright;

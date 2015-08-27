@@ -169,7 +169,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 S<Tobias Oetiker E<lt>tobi@oetiker.chE<gt>>
 
-=head1 HISTORY 
+=head1 HISTORY
 
  2014-02-24 to Initial
 

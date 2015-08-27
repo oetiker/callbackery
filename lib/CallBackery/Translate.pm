@@ -20,7 +20,7 @@ CallBackery::Translate - gettext po file translation functionality
  my $loc = CallBackery::Translate::new(localeRoot=>$dir);
  $loc->setLocale('de');
  $loc->tra("Hello %1","Tobi");
- 
+
  trm("Mark but for translation but return original");
 
 =head1 DESCRIPTION
@@ -44,12 +44,12 @@ my %lx;
 sub setLocale {
     my $self = shift;
     my $locale = shift;
-    if ($lx{$locale}){        
+    if ($lx{$locale}){
         $self->{_lx} = $lx{$locale};
         return;
     }
     my $lang = $locale;
-    $lang =~ s/_.+//; 
+    $lang =~ s/_.+//;
     for my $file ($lang,$locale){
         my $mode = 'id';
         if (open my $fh, '< :encoding(utf8)', $self->localeRoot.'/'.$file.'.po'){
@@ -76,7 +76,7 @@ sub setLocale {
     $self->{_lx} = $lx{$locale};
 }
 
-=item C<trans>(str[,arg,arg,...])
+=item C<tra>(str[,arg,arg,...])
 
 Translate string into the curent language.
 
@@ -95,19 +95,16 @@ sub tra {
     return $str;
 }
 
-=item C<trm>(str)
+=item C<trm>(str[,arg,arg,...])
 
-mark for translation but return original string
+mark for translation but return an array pointer so that the string can be translated
+dynamically in the forntend. I<This functionality is not yet fully implemented>.
 
 =cut
 
-# run it trhought ppi
+# trm("Hello %1",$name);
 
-# trm(["Hello %1",$name]);
-
-sub trm ($) {
-    # we are interested in the last argument only
-    # if called as a method the $self will be ignored
+sub trm {
     return pop @_;
 }
 
@@ -143,4 +140,3 @@ S<Tobias Oetiker E<lt>tobi@oetiker.chE<gt>>
 # End:
 #
 # vi: sw=4 et
-

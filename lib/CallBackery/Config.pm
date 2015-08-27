@@ -22,11 +22,10 @@ CallBackery gets much of its configuration from this config file.
 use Mojo::Base -base;
 use CallBackery::Exception qw(mkerror);
 use CallBackery::Translate qw(trm);
+use CallBackery::User;
 use Config::Grammar::Dynamic;
 use Carp;
-use Archive::Zip  qw( :ERROR_CODES :CONSTANTS );
 use autodie;
-use Crypt::Rijndael;
 use File::Spec;
 use Locale::PO;
 
@@ -99,7 +98,6 @@ ${E}head1 SYNOPSIS
 
  *** BACKEND ***
  log_file = /tmp/nw-tobi.log
- log_level = debug
 
  *** FRONTEND ***
  logo = logo.png
@@ -108,7 +106,7 @@ ${E}head1 SYNOPSIS
 
 ${E}head1 DESCRIPTION
 
-The afb.cfg provides all the info for afb and its plugins to interact with your appliance.
+The afb.cfg provides all the info for afb and its gui modules to interact with your appliance.
 
 ${E}head1 CONFIGURATION
 
@@ -118,11 +116,11 @@ HEADER
 
 =head2 pluginPath
 
-array of name spaces to look for plugins
+array of name spaces to look for gui plugins
 
 =cut
 
-has pluginPath => sub { ['CallBackery::Plugin']; };
+has pluginPath => sub { ['CallBackery::GuiPlugin']; };
 
 =head2 B<loadAndNewPlugin>('PluginModule')
 
@@ -174,10 +172,9 @@ has grammar => sub {
         _mandatory => [qw(BACKEND FRONTEND)],
         BACKEND => {
             _doc => 'BACKEND Settings',
-            _vars => [ qw(log_file log_level cfg_db sesame_user sesame_pass) ],
+            _vars => [ qw(log_file cfg_db sesame_user sesame_pass) ],
             _mandatory => [ qw(cfg_db sesame_user sesame_user) ],
             log_file => { _doc => 'write a log file to this location (unless in development mode)'},
-            log_level => { _doc => 'what to write to the logfile'},
             cfg_db => { _doc => 'file to store the config database'},
             sesame_user => { _doc => <<'DOC'},
 In Open Sesame mode, one has to use this username to get access to the system.
@@ -190,15 +187,16 @@ DOC
         },
         FRONTEND => {
             _doc => 'Settings for the Web FRONTEND',
-            _vars => [ qw(logo logo_small title initial_plugin hide_op) ],
+            _vars => [ qw(logo logo_small title initial_plugin company_name company_url) ],
             _sections => [ qw(COLORS) ],
             logo => {
                 _doc => 'url for the logo brand the login sceen',
             },
-            hide_op => {
-                _doc => 'hide the fact that this framework has been creatd by O+P',
-                _re => '(yes|no)',
-                _re_error => 'pick yes or no',
+            company_name => {
+                _doc => 'who created the app',
+            },
+            company_url => {
+                _doc => 'link to the company homepage'
             },
             logo_small => {
                 _doc => 'url for the small logo brand the UI',
@@ -207,7 +205,7 @@ DOC
                 _doc => 'title string for the application'
             },
             initial_plugin => {
-                _doc => 'which plugin tab should be active upon login ?'
+                _doc => 'which tab should be active upon login ?'
             },
         },
         'FRONTEND-COLORS' => {
@@ -404,6 +402,7 @@ has configPlugins => sub {
 };
 
 sub getCrypt {
+    require Crypt::Rijndael;
     my $self = shift;
     my $password = substr((shift || '').('x' x 32),0,32);
     return Crypt::Rijndael->new( $password,Crypt::Rijndael::MODE_CBC() );
@@ -430,6 +429,8 @@ sub unpack16 {
 sub getConfigBlob {
     my $self = shift;
     my $password = shift;
+    require Archive::Zip;
+
     my $zip = Archive::Zip->new();
     my $cfg = $self->cfgHash;
     $zip->addFile({
@@ -465,12 +466,12 @@ sub restoreConfigBlob {
     my $self = shift;
     my $config = shift;
     my $password = shift;
+    require Archive::Zip;
     my $crypt = $self->getCrypt($password);
     $config = $self->unpack16($crypt->decrypt($config));
 
     my $cfg = $self->cfgHash;
     my $user = CallBackery::User->new(app=>$self->app,userId=>'__CONFIG');
-
     open my $fh ,'<', \$config;
     my $zip = Archive::Zip->new();
     $zip->readFromFileHandle($fh);
@@ -557,7 +558,7 @@ sub unConfigure {
             unlink $file;
         }
     }
-    unlink $cfg->{BACKEND}{log_file} if -f $cfg->{BACKEND}{log_file};
+    unlink $cfg->{BACKEND}{log_file} if defined $cfg->{BACKEND}{log_file} and -f $cfg->{BACKEND}{log_file} ;
     unlink $self->secretFile if -f $self->secretFile;
     system "sync";
 }

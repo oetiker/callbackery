@@ -25,13 +25,12 @@ use Mojolicious::Plugin::Qooxdoo;
 use Mojo::URL;
 use Mojo::JSON;
 use Mojo::Util qw(hmac_sha1_sum slurp);
-use File::Basename; 
-use CallBackery::RpcService;
+use File::Basename;
 use CallBackery::Config;
-use CallBackery::Plugin;
-use CallBackery::DocPlugin;
+use CallBackery::Plugin::Doc;
+use CallBackery::Database;
 
-our $VERSION = '0.1.6';
+our $VERSION = '0.1.5';
 
 use Mojo::Base 'Mojolicious';
 
@@ -46,12 +45,22 @@ The config property is set automatically on startup.
 =cut
 
 has 'config' => sub {
-    my $self = shift;
+    my $app = shift;
     my $conf = CallBackery::Config->new(
-        app => $self,
+        app => $app,
         file => $ENV{CALLBACKERY_CONF}
-            || $self->home->rel_file('etc/callbackery.cfg')
+            || $app->home->rel_file('etc/callbackery.cfg')
     );
+};
+
+=head2 database
+
+An instance of L<CallBackery::Database> or a module with the same API.
+
+=cut
+
+has 'database' => sub {
+    CallBackery::Database->new(app=>shift);
 };
 
 
@@ -88,7 +97,15 @@ our rpc service controller
 
 =cut
 
-has rpcServiceController => 'RpcService';
+has rpcServiceController => 'Controller::RpcService';
+
+=head2 docIndex
+
+initial document to be presented on the doc link
+
+=cut
+
+has docIndex => __PACKAGE__ . '::Index';
 
 =head1 METHODS
 
@@ -103,18 +120,16 @@ Mojolicious calls the startup method at initialization time.
 =cut
 
 sub startup {
-    my $self = shift;
-    # we have some more commands here
-    unshift @{$self->commands->namespaces},__PACKAGE__.'::Command';
+    my $app = shift;
 
-    my $gcfg = $self->config->cfgHash->{BACKEND};
-    $self->log->path($gcfg->{log_file});
-    if ($gcfg->{log_level}){
-        $self->log->level($gcfg->{log_level});
+    my $gcfg = $app->config->cfgHash->{BACKEND};
+    if ($gcfg->{log_file}){
+        open my $file, '>>', $gcfg->{log_file} or die "opening logfile $gcfg->{log_file}: $!\n";
+        $app->log->handle($file);
     }
 
     # properly figure your own path when running under fastcgi
-    $self->hook( before_dispatch => sub {
+    $app->hook( before_dispatch => sub {
         my $c = shift;
         my $reqEnv = $c->req->env;
         my $uri = $reqEnv->{SCRIPT_URI} || $reqEnv->{REQUEST_URI};
@@ -123,8 +138,8 @@ sub startup {
         $c->req->url->base(Mojo::URL->new($uri)) if $uri;
     });
 
-    my $securityHeaders = $self->securityHeaders;
-    $self->hook( after_dispatch => sub {
+    my $securityHeaders = $app->securityHeaders;
+    $app->hook( after_dispatch => sub {
         my $c = shift;
         # not telling anyone that we are mojo
         $c->res->headers->remove('Server');
@@ -135,25 +150,24 @@ sub startup {
 
     # on initial startup lets get all the 'stuff' into place
     # reconfigure will also create the secretFile.
-    if (not -f $self->config->secretFile){
-        $self->config->reConfigure;
+    if (not -f $app->config->secretFile){
+        $app->config->reConfigure;
     }
 
-    $self->secrets([slurp $self->config->secretFile]);
+    $app->secrets([slurp $app->config->secretFile]);
 
-    my $routes = $self->routes;
+    my $routes = $app->routes;
 
-    $self->plugin('CallBackery::DocPlugin', {
+    $app->plugin('CallBackery::Plugin::Doc', {
         root => '/doc',
-        index => 'CallBackery::Index',
-        localguide => $gcfg->{localguide},
+        index => $app->docIndex,
         template => Mojo::Asset::File->new(
-            path=>dirname($INC{'CallBackery/DocPlugin.pm'}).'/templates/doc.html.ep',
+            path=>dirname($INC{'CallBackery/Config.pm'}).'/templates/doc.html.ep',
         )->slurp,
     });
-    
-    $routes->route('/upload')->to(namespace => $self->rpcServiceNamespace, controller=>$self->rpcServiceController, action => 'handleUpload');
-    $routes->route('/download')->to(namespace => $self->rpcServiceNamespace, controller=>$self->rpcServiceController, action => 'handleDownload');
+
+    $routes->route('/upload')->to(namespace => $app->rpcServiceNamespace, controller=>$app->rpcServiceController, action => 'handleUpload');
+    $routes->route('/download')->to(namespace => $app->rpcServiceNamespace, controller=>$app->rpcServiceController, action => 'handleDownload');
 
     # this is a dummy login screen, we use inside an iframe to trick the browser
     # into storing our password for auto-fill. Since there is no standard for triggering the
@@ -173,11 +187,13 @@ HTML
         shift->render(text=>'gugus :)');
     });
 
-    $self->plugin('qooxdoo',{
+
+    $app->plugin('qooxdoo',{
         path => '/QX-JSON-RPC',
-        namespace => $self->rpcServiceNamespace,
-        controller => $self->rpcServiceController,
+        namespace => $app->rpcServiceNamespace,
+        controller => $app->rpcServiceController,
     });
+
 
     return 0;
 }

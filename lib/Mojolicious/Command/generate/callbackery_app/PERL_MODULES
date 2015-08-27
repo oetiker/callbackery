@@ -1,0 +1,4 @@
+Mojolicious@6.17
+Mojolicious::Plugin::Qooxdoo@0.904
+Mojo::SQLite@0.011
+Config::Grammar@1.10
