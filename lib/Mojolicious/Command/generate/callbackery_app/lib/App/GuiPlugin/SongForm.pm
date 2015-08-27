@@ -3,7 +3,6 @@ package <%= $p->{class} %>::GuiPlugin::SongForm;
 use Mojo::Base 'CallBackery::GuiPlugin::AbstractForm';
 use CallBackery::Translate qw(trm);
 use CallBackery::Exception qw(mkerror);
-use Text::Markdown::Hoedown;
 use POSIX qw(strftime);
 
 =head1 NAME

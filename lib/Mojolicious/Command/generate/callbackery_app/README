@@ -22,7 +22,7 @@ Get a copy of the Qooxdoo SDK from www.qooxdoo.org.
 Setup
 -----
 
- ./configure --prefix=$HOME/opt/<%= $p->{name} %> --with-qooxdoo-sdk-dir=$HOME/src/qooxdoo-4.0.1-sdk
+ ./configure --prefix=$HOME/opt/<%= $p->{name} %> --with-qooxdoo-sdk-dir=$HOME/src/qooxdoo-5.0-sdk
  make
  
 Configure will check if the necessary items are in place and give
