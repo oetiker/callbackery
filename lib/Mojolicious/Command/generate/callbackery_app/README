@@ -7,13 +7,13 @@ Date: #DATE#
 <%= $p->{class} %> is a cool web application.
 
 You are looking at a sample CallBackery application. It comes complete
-with a classic "configure - make - install" setup. 
+with a classic "configure - make - install" setup.
 
 Prerequisite
 ------------
 
 Get a copy of the Qooxdoo SDK from www.qooxdoo.org.
- 
+
  mkdir ~/src
  cd ~/src
  wget http://downloads.sourceforge.net/qooxdoo/qooxdoo-5.0-sdk.zip
@@ -21,12 +21,15 @@ Get a copy of the Qooxdoo SDK from www.qooxdoo.org.
 
 Setup
 -----
+Now got back to your app source directory start building
 
  ./configure --prefix=$HOME/opt/<%= $p->{name} %> --with-qooxdoo-sdk-dir=$HOME/src/qooxdoo-5.0-sdk
  make
- 
-Configure will check if the necessary items are in place and give
+
+Configure will check if all requirements are met and give
 hints on how to fix the situation if something is missing.
+
+Any mising perl modules will be downloaded and built.
 
 Development
 -----------
@@ -61,9 +64,10 @@ Before release, make sure to update CHANGES, VERSION and run ./bootstrap
 You can also package the application as a nice tar.gz file, it will contain
 a mini copy of cpan, so that all perl modules can be rebuilt at the
 destination.  If you want to make sure that your project builds with perl
-5.10.1, make sure to set PERL to a perl 5.10.1 interpreter, remove your
-thirdparty directory and configure again.  Now all modules to make your
-project fly with an old perl will be included in the distribution.
+5.10.1, make sure to set the PERL environment variable to a perl 5.10.1 interpreter,
+make sure to delete any PERL5LIB environment variable, remove the thirdparty
+directory from your source tree and configure again.  Now all modules to build your
+project with any perl from 5.10.1 on upward will be included in the distribution.
 
    make dist
 
