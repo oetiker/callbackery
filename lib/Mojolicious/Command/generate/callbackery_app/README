@@ -38,8 +38,9 @@ While developing the application it is conveniant to NOT have to install it
 before runnning. You can actually serve the Qooxdoo source directly
 using the built-in Mojo webserver.
 
-  cd frontend && make source
-  cd bin
+  cd frontend
+  make source
+  cd ../bin
   ./<%= $p->{name} %>-source-mode.sh
 
 You can now connect to the CallBackery app with your web browser.
