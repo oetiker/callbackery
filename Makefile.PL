@@ -25,7 +25,7 @@ WriteMakefile(
       repository  => 'https://github.com/oetiker/callbackery',
       bugtracker  => 'https://github.com/oetiker/callbackery/issues'
     },
-    no_index => {directory => ['t','example','setup']}
+    no_index => {directory => ['t','example','setup','lib/Mojolicious/Command/generate/callbackery_app']}
   },
   test => {TESTS => 't/*.t'}
 );

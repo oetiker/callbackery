@@ -1,0 +1,6 @@
+0.2.0 2015-08-28 tobi@oetiker.ch
+
+ * big update
+ * prefixed all 'system' tables with cb
+ * moved Plugins to GuiPlugin
+ * renamed base classes into Abstract*

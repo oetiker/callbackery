@@ -85,8 +85,6 @@ lib/CallBackery/qooxdoo/uploadwidget/source/translation/readme.txt
 lib/CallBackery/qooxdoo/uploadwidget/source/resource/readme.txt
 lib/CallBackery/qooxdoo/uploadwidget/Manifest.json
 lib/CallBackery/User.pm
-lib/CallBackery/Command/config.pm
-lib/CallBackery/Command/shell.pm
 lib/CallBackery/Translate.pm
 lib/CallBackery/Plugin/Doc.pm
 lib/CallBackery/GuiPlugin/UserForm.pm
