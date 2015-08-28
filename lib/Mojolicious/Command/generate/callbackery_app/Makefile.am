@@ -15,7 +15,7 @@ PUB := $(shell find public -type d -name ".??*" -prune -o -not -name ".*" -a -no
 
 TEMPL := $(shell find templates -type f -name "*.ep")
 
-PERLTESTS := $(shell find t -name "*.t") t/testdata.sql
+PERLTESTS := $(shell find t -name "*.t")
 
 THIRDPARTY_DIR := $(shell pwd)/thirdparty
 
