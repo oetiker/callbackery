@@ -5,7 +5,7 @@ use CallBackery::Exception qw(mkerror);
 
 =head1 NAME
 
-CallBackery::Plugin::Users - User Plugin
+CallBackery::GuiPlugin::Users - User Plugin
 
 =head1 SYNOPSIS
 

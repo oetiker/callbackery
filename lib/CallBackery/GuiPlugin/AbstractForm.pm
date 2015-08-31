@@ -6,11 +6,11 @@ use Data::Dumper;
 
 =head1 NAME
 
-CallBackery::PluginForm - Reporter base class
+CallBackery::GuiPlugin::AbstractForm - Reporter base class
 
 =head1 SYNOPSIS
 
- use CallBackery::GuiPlugin::AbstractForm;
+ use Mojo::Base 'CallBackery::GuiPlugin::AbstractForm';
 
 =head1 DESCRIPTION
 

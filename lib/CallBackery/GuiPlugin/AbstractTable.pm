@@ -4,11 +4,11 @@ use CallBackery::Translate qw(trm);
 
 =head1 NAME
 
-CallBackery::PluginTable - Base Class for a table plugin
+CallBackery::GuiPlugin::AbstractTable - Base Class for a table plugin
 
 =head1 SYNOPSIS
 
- use CallBackery::PluginTable;
+ use Mojo::Base 'CallBackery::GuiPlugin::AbstractTable';
 
 =head1 DESCRIPTION
 

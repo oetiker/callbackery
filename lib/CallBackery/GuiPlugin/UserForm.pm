@@ -6,11 +6,11 @@ use Mojo::Util qw(hmac_sha1_sum);
 
 =head1 NAME
 
-CallBackery::Plugin::UserForm - UserForm Plugin
+CallBackery::GuiPlugin::UserForm - UserForm Plugin
 
 =head1 SYNOPSIS
 
- use CallBackery::Plugin::UserForm;
+ use CallBackery::GuiPlugin::UserForm;
 
 =head1 DESCRIPTION
 
@@ -21,7 +21,7 @@ The UserForm Plugin.
 
 =head1 PROPERTIES
 
-All the methods of L<CallBackery::PluginForm> plus:
+All the methods of L<CallBackery::GuiPlugin::AbstractForm> plus:
 
 =cut
 

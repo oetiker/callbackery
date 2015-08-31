@@ -1,22 +1,29 @@
 =head1 NAME
 
-CallBackery::Index - Appliance Frontend Builder Documentation Index
+CallBackery::Index - Application Builder Toolkit
 
 =head1 ADMIN DOCUMENTAION
 
-AFB is a plugin based system. Configuration Plugins
-are implemented by sub-classing L<CallBackery::Plugin>, L<CallBackery::PluginForm>, L<CallBackery::PluginTable>.
+CallBackery is a toolkit for quickly bilding user friendly single page web applications made up from tables, forms.
+CallBackery comes with a versatile javascript application that is fully configurable from the backend. Many applications
+can be implemented without touching any javascript code.
 
+CallBackery is built on top of L<Mojolicious>. Write your own app by inheriting from L<CallBackery> instead of
+L<Mojolicious>.
+Create your own CallBackery modules by sub-classing L<CallBackery::GuiPlugin::Abstract>, L<CallBackery::GuiPlugin::AbstractForm>, L<CallBackery::GuiPlugin::AbstractTable>
+and L<CallBackery::GuiPlugin::AbstractHtml>.
+
+Get started by looking at our little sample appliction. It gets created for you by running
+
+  mojo generate callbackery_app
+  
 =head1 TECH DOCUMENTATION
-
-The AFB backend is written in perl, using the the L<Mojolicious>. See
-L<Mojolicious::Guides> for details.
 
 =over
 
 =item *
 
-L<AFB> - the mojo application starting point
+L<CallBackery> - the mojo app base class.
 
 =item *
 
@@ -32,15 +39,19 @@ L<CallBackery::RpcService> - the json rpc api
 
 =item *
 
-L<CallBackery::Gui::Abstract> - the gui base class
+L<CallBackery::GuiPlugin::Abstract> - the gui base class
 
 =item *
 
-L<CallBackery::Gui::AbstractFrom> - the gui form base class
+L<CallBackery::GuiPlugin::AbstractFrom> - the gui form base class
 
 =item *
 
-L<CallBackery::Gui::AbstractTable> - the gui table base class
+L<CallBackery::GuiPlugin::AbstractTable> - the gui table base class
+
+=item *
+
+L<CallBackery::GuiPlugin::AbstractHtml> - the gui html base class
 
 =back
 

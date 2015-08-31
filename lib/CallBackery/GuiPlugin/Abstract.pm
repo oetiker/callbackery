@@ -18,11 +18,11 @@ eval { local $^W=0; require "sys/ioctl.ph" };
 
 =head1 NAME
 
-CallBackery::Plugin - Reporter base class
+CallBackery::GuiPlugin::Abstract - Reporter base class
 
 =head1 SYNOPSIS
 
- use CallBackery::GuiPlugin::Abstract;
+ use Mojo::Base 'CallBackery::GuiPlugin::Abstract';
 
 =head1 DESCRIPTION
 

@@ -6,11 +6,11 @@ use CallBackery::Exception qw(mkerror);
 
 =head1 NAME
 
-CallBackery::PluginHtml - Render Server Generated HTML
+CallBackery::GuiPlugin::AbstractHtml - Render Server Generated HTML
 
 =head1 SYNOPSIS
 
- use CallBackery::PluginHtml;
+ use Mojo::Base 'CallBackery::GuiPlugin::AbstractHtml';
 
 =head1 DESCRIPTION
 
