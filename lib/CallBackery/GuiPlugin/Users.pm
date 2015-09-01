@@ -123,7 +123,7 @@ has actionCfg => sub {
                 my $db = $self->user->db;
                 $db->deleteData('cbuser',$id);
                 return {
-                    action => 'reload'
+                    # no action required, table reload on popup close is default
                 };
             }
         }) : (),
