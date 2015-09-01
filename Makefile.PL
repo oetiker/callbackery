@@ -27,5 +27,8 @@ WriteMakefile(
     },
     no_index => {directory => ['t','example','setup','lib/Mojolicious/Command/generate/callbackery_app']}
   },
+  dist => {
+        PREOP => q{perl -i -p -e 's/CallBackery\@\d+(\.\d+){2}/CallBackery\@$(VERSION)/g' lib/Mojolicious/Command/generate/callbackery_app/PERL_MODULES}
+  },
   test => {TESTS => 't/*.t'}
 );
