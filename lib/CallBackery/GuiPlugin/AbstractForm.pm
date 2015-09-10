@@ -2,11 +2,10 @@ package CallBackery::GuiPlugin::AbstractForm;
 use Carp qw(carp croak);
 use CallBackery::Translate qw(trm);
 use CallBackery::Exception qw(mkerror);
-use Data::Dumper;
 
 =head1 NAME
 
-CallBackery::GuiPlugin::AbstractForm - Reporter base class
+CallBackery::GuiPlugin::AbstractForm - form base class
 
 =head1 SYNOPSIS
 
@@ -22,12 +21,13 @@ use Mojo::Base 'CallBackery::GuiPlugin::Abstract';
 
 =head1 ATTRIBUTES
 
-The attributes of the L<CallBackery::GuiPlugin::Abstract> class and these:
+The attributes of the L<CallBackery::GuiPlugin::Abstract> class plus:
 
 =head2 screenCfg
 
-Returns a Configuration Structure for the Report Form. The output from this method is fed
-to the bwtr.ui.AutoForm object to build a form for configuring the report.
+Returns a configuration structure for the form. The output from this
+method is fed to the callbackery.ui.form.Auto object to build the
+Qooxdoo form.
 
 =cut
 
@@ -42,13 +42,19 @@ has screenCfg => sub {
 
 =head2 actionCfg
 
-returns a list of action buttons to place at the bottom of the plug in screen
+Returns a list of action buttons to place at the top of the form.
 
 =cut
 
 has actionCfg => sub {
    [];
 };
+
+=head2 actionCfgMap
+
+TODOC
+
+=cut
 
 has actionCfgMap => sub {
     my $self = shift;
@@ -63,13 +69,19 @@ has actionCfgMap => sub {
 
 =head2 formCfg
 
-returns the content of  the form
+Returns the content of  the form.
 
 =cut
 
 has formCfg => sub {
    [];
 };
+
+=head2 formCfg
+
+TODOC
+
+=cut
 
 has formCfgMap => sub {
     my $self = shift;
@@ -140,8 +152,9 @@ sub processData {
 
 =head2 saveFormDataToConfig(data)
 
-Save all the form fields where data is available to the config database. Keys will be
-prefixed by the Plugin instance name (C<PluginInstance::keyName>).
+Save all the form fields for which is available to the config
+database. Keys will be prefixed by the plugin instance name
+(C<PluginInstance::keyName>).
 
 =cut
 
@@ -157,8 +170,9 @@ sub saveFormDataToConfig {
 
 =head2 getFieldValue(field)
 
-fetch the current value of the field. This will either use the a getter method supplied in the
-form config or try to fetch the value from the config database.
+Fetch the current value of the field. This will either use the getter
+method supplied in the form config or try to fetch the value from the
+config database.
 
 =cut
 
@@ -180,7 +194,7 @@ sub getFieldValue {
 
 =head2 getAllFieldValues
 
-return all field values of the form
+Return all field values of the form.
 
 =cut
 
@@ -195,8 +209,8 @@ sub getAllFieldValues {
 
 =head2 getData (type,field)
 
-Return the Return the value of the given field. If no field name is specified return a hash with all the
-current data known to the plugin.
+Return the value of the given field. If no field name is specified
+return a hash with all the current data known to the plugin.
 
 =cut
 
@@ -210,14 +224,14 @@ sub getData {
         return $self->getAllFieldValues(@_);
     }
     else {
-        die mkerror(38334,'Requested unknown data type');
+        die mkerror(38334, 'Requested unknown data type' . ($type // 'unknown'));
     }
 }
 
 =head2 massageConfig
 
-function to integrate the plugin configuration into the
-main config hash
+Function to integrate the plugin configuration into the main config
+hash.
 
 =cut
 
