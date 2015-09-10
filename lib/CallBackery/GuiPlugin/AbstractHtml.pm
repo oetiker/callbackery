@@ -6,7 +6,7 @@ use CallBackery::Exception qw(mkerror);
 
 =head1 NAME
 
-CallBackery::GuiPlugin::AbstractHtml - Render Server Generated HTML
+CallBackery::GuiPlugin::AbstractHtml - render server generated HTML
 
 =head1 SYNOPSIS
 
@@ -14,7 +14,7 @@ CallBackery::GuiPlugin::AbstractHtml - Render Server Generated HTML
 
 =head1 DESCRIPTION
 
-The base class for html generator Plugins.
+The base class for html generator plugins.
 
 =cut
 
@@ -22,11 +22,11 @@ use Mojo::Base 'CallBackery::GuiPlugin::Abstract';
 
 =head1 ATTRIBUTES
 
-The attributes of the L<CallBackery::GuiPlugin::Abstract> class and these:
+The attributes of the L<CallBackery::GuiPlugin::Abstract> class plus:
 
 =head2 screenCfg
 
-Tells the Frontend that we are going to render some html.
+Tells the frontend that we are going to render some HTML.
 
 =cut
 
@@ -47,14 +47,14 @@ All the methods of L<CallBackery::GuiPlugin::Abstact> plus:
 
 =head2 getData (parentFormData)
 
-return the data to be shown in the html field
+Return the data to be shown in the HTML field
 
 =cut
 
 sub getData {
     my $self = shift;
-    my $parenFormData = shift;
-    return "";
+    my $parentFormData = shift;
+    return '';
 }
 
 
