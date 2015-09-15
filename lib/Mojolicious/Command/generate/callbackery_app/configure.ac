@@ -129,7 +129,7 @@ cat <<NOTES
 
 ** WARNING ***********************************************
 
-You did NOT specify --with-qooxdoo-sdk.  It is therefore NOT
+You did NOT specify --with-qooxdoo-sdk-dir.  It is therefore NOT
 possible to re-compile the JavaScript parts (web interface)
 of the application.
 
