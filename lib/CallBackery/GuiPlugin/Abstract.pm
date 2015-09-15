@@ -138,23 +138,26 @@ has log => sub {
 
 =head2 screenCfg
 
-returns the information for building a plugin configuration screen.
+Returns the information for building a plugin configuration screen.
 
 =cut
 
 has screenCfg => sub {
     return {
-        type => 'form' ,
-        # followed by type dependen keys
+        type => 'form',
+        # followed by type dependent keys
     }
 };
 
 =head2 checkAccess()
 
-Check if the current user may access the Plugin. Override in the Child class
-to limit accessibility. By default plugins are not accessible unless you have numeric UID or the word C<__CONFIG>.
-The L<CallBackery::Command::shell> sets the userId to C<__SHELL>. If a plugin should be configurable interactively
-it must allow access to the C<__SHELL> user.
+Check if the current user may access the Plugin. Override in the Child
+class to limit accessibility. By default plugins are not accessible
+unless you have numeric UID or the word C<__CONFIG>.
+
+The L<CallBackery::Command::shell> sets the userId to C<__SHELL>. If a
+plugin should be configurable interactively it must allow access to
+the C<__SHELL> user.
 
 =cut
 
@@ -166,8 +169,9 @@ has checkAccess => sub {
 
 =head2 stateFiles
 
-a list of files that contain the state of the settings configured by this plugin
-this is used both for backup purposes and to replicate the settings to a second installation.
+A list of files that contain the state of the settings configured by
+this plugin this is used both for backup purposes and to replicate the
+settings to a second installation.
 
 =cut
 
@@ -187,8 +191,8 @@ has unConfigureFiles => sub {
 
 =head2 eventActions
 
-A map of callbacks, which will be called according events in the system.
-The following events are available:
+A map of callbacks that will be called according to events in the
+system.  The following events are available:
 
     configChanged
 
@@ -207,8 +211,9 @@ All the methods of L<Mojo::Base> plus:
 
 =head2 makeRxValidator(rx,error)
 
-Create a regular expression base validator function.
-The supplied regular expression gets anchored front and back automatically.
+Create a regular expression base validator function.  The supplied
+regular expression gets anchored front and back automatically.
+
 =cut
 
 sub createRxValidator {
@@ -224,8 +229,11 @@ sub createRxValidator {
 
 =head2 filterHashKey(data,key)
 
-Walks a hash/array structure and removes all occurrences of the given key.
-CODE references get turned into 'true' values and JSON true/false get passed on.
+Walks a hash/array structure and removes all occurrences of the given
+key.
+
+CODE references get turned into 'true' values and JSON true/false get
+passed on.
 
 =cut
 
@@ -257,7 +265,7 @@ sub filterHashKey {
 
 =head2 processData(arguments)
 
-take the data from the plug-in screen and process them
+Take the data from the plug-in screen and process them.
 
 =cut
 
@@ -268,7 +276,7 @@ sub processData {
 
 =head2 getData(arguments)
 
-receive current data for plug-in screen content
+Receive current data for plug-in screen content.
 
 =cut
 
@@ -278,8 +286,9 @@ sub getData {
 
 =head2 reConfigure
 
-re-generate all configuration that does not require direct user input. This function may be called
-from within action handlers to apply newly acquired data to to the running system.
+Re-generate all configuration that does not require direct user
+input. This function may be called from within action handlers to
+apply newly acquired data to to the running system.
 
 =cut
 
@@ -290,7 +299,7 @@ sub reConfigure {
 
 =head2 validateData(arguments)
 
-validate user supplied data prior to acting on it
+Validate user supplied data prior to acting on it.
 
 =cut
 
@@ -300,7 +309,8 @@ sub validateData {
 
 =head2 mergeGrammar
 
-a very simpleminded grammar merger with no recursion. For identical keys, the later instance winns.
+A very simpleminded grammar merger with no recursion. For identical
+keys, the later instance wins.
 
 =cut
 
@@ -328,9 +338,9 @@ sub mergeGrammar {
 
 =head2 varCompiler
 
-returns a compiler sub reference for use in configuration variables or _text
-sections with perl syntax. The resulting sub will  provide access to the
-a hash called $variableName.
+Returns a compiler sub reference for use in configuration variables or
+_text sections with perl syntax. The resulting sub will provide access
+to a hash called $variableName.
 
 =cut
 
@@ -356,8 +366,8 @@ sub varCompiler {
 
 =head2 massageConfig($cfg)
 
-allow the plugin to 'massage' the config hash ... doing this requires deep knowledge of the
-cfg structure ...
+Allow the plugin to 'massage' the config hash ... doing this requires
+deep knowledge of the cfg structure ...
 
 =cut
 
@@ -368,16 +378,20 @@ sub massageConfig {
 
 =head2 renderTemplate(template,destination)
 
-render the given template and write the result into the given file. These templates support
-the L<Mojo::Template> language enhanced by the command C<L('Plugin::key')> which looks up values
-from the config database. The convention is that each plugin writes data in it's own namespace.
+Render the given template and write the result into the given
+file. These templates support the L<Mojo::Template> language enhanced
+by the command C<L('Plugin::key')> which looks up values from the
+config database. The convention is that each plugin writes data in
+it's own namespace.
 
-If the destination already exists, the method compares the current content with the new one. It will only
-update the file if the content differs.
+If the destination already exists, the method compares the current
+content with the new one. It will only update the file if the content
+differs.
 
-The method returns 0 when there was no change and 1 when a new version of the file was written.
+The method returns 0 when there was no change and 1 when a new version
+of the file was written.
 
-These additional command are available to the templates
+These additional commands are available to the templates.
 
 =over
 
@@ -450,7 +464,7 @@ sub renderTemplate{
 
 =head2 getConfigValue(key)
 
-read a config value
+Read a config value from the database.
 
 =cut
 
@@ -469,7 +483,7 @@ sub getConfigValue {
 
 =head2 setConfigValue(key)
 
-read a config value
+Save a config value to the database.
 
 =cut
 
@@ -487,14 +501,17 @@ sub setConfigValue {
 
 =head2 system(args)
 
-a version of the system function that makes sure to NOT to inherit any extra filehandles
-to the kids and sends the output of the call system log file. I would suggest to use
-this in preference to the normal system function. Especially when launching daemons
-since Mojo seems to fiddle with $^F and will thus inherit open sockets to child processes.
+A version of the system function that makes sure to NOT to inherit any
+extra filehandles to the kids and sends the output of the call system
+log file. I would suggest to use this in preference to the normal
+system function. Especially when launching daemons since Mojo seems to
+fiddle with $^F and will thus inherit open sockets to child processes.
 
-If the binary name starts with -, the output will be ignored ... this can be necessar for
-programs starting daemons that do not close their output. Otherwhise you will read the
-output of the daemon and NOT terminate. We are also using kill 0 to check if the process is still active.
+If the binary name starts with -, the output will be ignored ... this
+can be necessary for programs starting daemons that do not close their
+output. Otherwhise you will read the output of the daemon and NOT
+terminate. We are also using kill 0 to check if the process is still
+active.
 
 =cut
 
