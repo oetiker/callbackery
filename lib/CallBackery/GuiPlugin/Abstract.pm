@@ -90,14 +90,14 @@ has false => sub {
 
 =head2 grammar
 
-Returns the L<Config::Grammar> parser for the configuration of this reporter.
+Returns the L<Config::Grammar> parser for the configuration of this plugin.
 
 =cut
 
 has grammar => sub {
     my $self = shift;
     return {
-        _doc => 'Base Class Documentation String. Should be overwritten by the child class',
+        _doc => 'Base class documentation string. Should be overwritten by the child class',
         _vars => [qw(tab-name)],
         _mandatory => [qw(tab-name)],
         title => {
