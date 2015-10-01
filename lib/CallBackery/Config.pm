@@ -376,7 +376,7 @@ sub instanciatePlugin {
         config => $prototype->config,
         app => $self->app,
     );
-    die mkerror(39944,"No premission to access $name")
+    die mkerror(39944,"No permission to access $name")
         if not $obj->checkAccess;
     return $obj;
 }
