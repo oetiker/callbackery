@@ -467,10 +467,6 @@ sub unpackConfigBlob {
     my $password = shift;
     my $crypt = $self->getCrypt($password);
     $config = $self->unpack16($crypt->decrypt($config));
-
-    my $cfg = $self->cfgHash;
-    my $user = CallBackery::User->new(app=>$self->app,userId=>'__CONFIG');
-
     open my $fh ,'<', \$config;
     my $zip = Archive::Zip->new();
     $zip->readFromFileHandle($fh);
@@ -487,6 +483,8 @@ sub restoreConfigZip {
     my $self = shift;
     my $zip = shift;
     my %stateFileCache;
+    my $cfg = $self->cfgHash;
+    my $user = CallBackery::User->new(app=>$self->app,userId=>'__CONFIG');
     for my $member ($zip->members){
         for ($member->fileName){
             /^\{DATABASE\}$/ && do {
@@ -532,7 +530,7 @@ sub restoreConfigBlob {
     my $self = shift;    
     my $config = shift;
     my $password = shift;
-    $self->restoreConfigZip($self->unpackConfigBlob($config,$password);
+    $self->restoreConfigZip($self->unpackConfigBlob($config,$password));
 }
 
 =head2 $cfg->reConfigure()
