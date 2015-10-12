@@ -455,13 +455,13 @@ sub getConfigBlob {
     return $crypt->encrypt($self->pack16($zipData));
 }
 
-=head2 $cfg->restoreConfigBlob(configBlob)
+=head2 $cfg->unpackConfigBlob(blob,key)
 
-retore the confguration state
+unpack the given config blob
 
 =cut
 
-sub restoreConfigBlob {
+sub unpackConfigBlob {
     my $self = shift;
     my $config = shift;
     my $password = shift;
@@ -474,6 +474,18 @@ sub restoreConfigBlob {
     open my $fh ,'<', \$config;
     my $zip = Archive::Zip->new();
     $zip->readFromFileHandle($fh);
+    return $zip;
+}
+
+=head2 $cfg->restoreConfigZip(zipHandle)
+
+restore a config zip
+
+=cut
+
+sub restoreConfigZip {
+    my $self = shift;
+    my $zip = shift;
     my %stateFileCache;
     for my $member ($zip->members){
         for ($member->fileName){
@@ -507,6 +519,20 @@ sub restoreConfigBlob {
         }
     }
     $self->reConfigure;
+}
+
+
+=head2 $cfg->restoreConfigBlob(configBlob,key)
+
+retore the confguration state
+
+=cut
+
+sub restoreConfigBlob {
+    my $self = shift;    
+    my $config = shift;
+    my $password = shift;
+    $self->restoreConfigZip($self->unpackConfigBlob($config,$password);
 }
 
 =head2 $cfg->reConfigure()
