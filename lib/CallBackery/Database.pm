@@ -60,7 +60,9 @@ my $lastFlush = time;
 
 has sql => sub {
     my $self = shift;
+
     my $sql = Mojo::SQLite->new($self->config->cfgHash->{BACKEND}{cfg_db});
+
     $sql->options({
         RaiseError => 1,
         PrintError => 0,
@@ -69,17 +71,21 @@ has sql => sub {
         sqlite_unicode => 1,
         FetchHashKeyName=>'NAME_lc',
     });
+
     $sql->migrations
         ->name('cbBaseDB')
         ->from_data(__PACKAGE__,'dbsetup.sql')
         ->migrate;
+
     $sql->db->dbh->do('PRAGMA foreign_keys = ON');
+
     return $sql;
 };
 
-sub dbh {
-    return shift->sql->db->dbh;
-}
+has mojoSqlDb => sub {
+    my $self = shift;
+    return $self->sql->db;
+};
 
 =item my($fields,$values) = $self->C<map2sql(table,data)>;
 
@@ -94,9 +100,8 @@ sub map2sql {
     my $data = shift;
     my @values;
     my @fields;
-    my $dbh = $self->dbh;
     while (my($field, $value) = each %$data) {
-        push @fields,$dbh->quote_identifier($table."_".$field);
+        push @fields,$self->mojoSqlDb->dbh->quote_identifier($table."_".$field);
         push @values,$value;
     }
     return (\@fields,\@values);
@@ -114,13 +119,13 @@ sub map2where {
     my $self = shift;
     my $table = shift;
     my $data = shift;
-    my $dbh = $self->dbh;
+    my $db = $self->mojoSqlDb;
     my @expression;
     while (my($field, $value) = each %$data) {
-        my $field = $dbh->quote_identifier($table."_".$field);
+        my $field = $db->dbh->quote_identifier($table."_".$field);
         my $expr;
         if (defined $value){
-            $expr = $field.' = '.$dbh->quote($value);
+            $expr = $field.' = '.$db->dbh->quote($value);
         }
         else {
             $expr = $field.' is null';
@@ -142,16 +147,16 @@ sub getMap {
     my $self = shift;
     my $table = shift;
     my $column = shift;
-    my $dbh = $self->dbh;
-    my $sqlId = $dbh->quote_identifier($table."_id");
-    my $sqlColumn = $dbh->quote_identifier($table."_".$column);
-    my $sqlTable = $dbh->quote_identifier($table);
+    my $db = $self->mojoSqlDb;
+    my $sqlId = $db->dbh->quote_identifier($table."_id");
+    my $sqlColumn = $db->dbh->quote_identifier($table."_".$column);
+    my $sqlTable = $db->dbh->quote_identifier($table);
     my $SQL = <<"SQL";
         SELECT $sqlId as model, $sqlColumn as label
           FROM $sqlTable
           ORDER by $sqlColumn
 SQL
-    return $dbh->selectall_arrayref($SQL,{Slice=>{}});
+    return $db->dbh->selectall_arrayref($SQL,{Slice=>{}});
 }
 
 =item $hashRef = $self->C<getRowHash(table,{key=>value,....},$selectExpr?)>;
@@ -170,15 +175,15 @@ sub getRowHash {
     my $table = shift;
     my $data = shift;
     my $selectCols = shift // '*';
-    my $dbh = $self->dbh;
-    my $sqlTable = $dbh->quote_identifier($table);
+    my $db = $self->mojoSqlDb;
+    my $sqlTable = $db->dbh->quote_identifier($table);
     my $sqlWhere = $self->map2where($table,$data);
     my $SQL = <<"SQL";
         SELECT $selectCols
           FROM $sqlTable
          WHERE $sqlWhere
 SQL
-    return $dbh->selectall_hashref($SQL,$table."_id",{Slice=>{}});
+    return $db->dbh->selectall_hashref($SQL,$table."_id",{Slice=>{}});
 }
 
 
@@ -193,15 +198,15 @@ sub fetchRow {
     my $table = shift;
     my $data = shift;
     my $selectCols = shift // '*';
-    my $dbh = $self->dbh;
+    my $db = $self->mojoSqlDb;
     my $sqlWhere = $self->map2where($table,$data);
-    my $sqlTable = $dbh->quote_identifier($table);
+    my $sqlTable = $db->dbh->quote_identifier($table);
     my $SQL = <<"SQL";
         SELECT $selectCols
           FROM $sqlTable
          WHERE $sqlWhere
 SQL
-    return $dbh->selectrow_hashref($SQL);
+    return $db->dbh->selectrow_hashref($SQL);
 }
 
 =item $id = $self->C<fetchValue(table,{key=>value,key=>value},column)>;
@@ -215,8 +220,8 @@ sub fetchValue {
     my $table = shift;
     my $where = shift;
     my $column = shift;
-    my $dbh = $self->dbh;
-    my $row = $self->fetchRow($table,$where,$dbh->quote_identifier($table.'_'.$column));
+    my $db = $self->mojoSqlDb;
+    my $row = $self->fetchRow($table,$where,$db->dbh->quote_identifier($table.'_'.$column));
     if ($row){
         return $row->{$table.'_'.$column};
     }
@@ -271,10 +276,10 @@ sub updateOrInsertData {
     my $table = shift;
     my $data = shift;
     my $match = shift;
-    my $dbh = $self->dbh;
+    my $db = $self->mojoSqlDb;
     my ($colNames,$colValues) = $self->map2sql($table,$data);
-    my $sqlTable = $dbh->quote_identifier($table);
-    my $sqlIdCol = $dbh->quote_identifier($table."_id");
+    my $sqlTable = $db->dbh->quote_identifier($table);
+    my $sqlIdCol = $db->dbh->quote_identifier($table."_id");
     my $sqlColumns = join ', ', @$colNames;
     my $sqlSet = join ', ', map { "$_ = ?" } @$colNames;
     my $sqlData = join ', ', map { '?' } @$colValues;
@@ -284,7 +289,7 @@ sub updateOrInsertData {
         UPDATE $sqlTable SET $sqlSet
         WHERE $matchWhere
 SQL
-        my $count =  $dbh->do($SQL,{},@$colValues);
+        my $count =  $db->dbh->do($SQL,{},@$colValues);
         if ($count > 0){
             return ( $data->{id} // $match->{id} );
         }
@@ -293,7 +298,7 @@ SQL
         INSERT INTO $sqlTable ( $sqlColumns )
         VALUES ( $sqlData )
 SQL
-    $dbh->do($SQL,{},@$colValues);
+    $db->dbh->do($SQL,{},@$colValues);
 
     # non serial primary key, id defined by user
     if (exists $data->{'id'}){
@@ -301,7 +306,7 @@ SQL
     }
     # serial primary key
     else{
-        return $dbh->last_insert_id(undef,undef,$table,$table."_id");
+        return $db->dbh->last_insert_id(undef,undef,$table,$table."_id");
     }
 }
 
@@ -345,12 +350,12 @@ sub deleteDataWhere {
     my $table = shift;
     my $match = shift;
     my $val = shift;
-    my $dbh = $self->dbh;
-    my $sqlTable = $dbh->quote_identifier($table);
+    my $db = $self->mojoSqlDb;
+    my $sqlTable = $db->dbh->quote_identifier($table);
     my $matchWhere = $self->map2where($table,$match);
     my $SQL = 'DELETE FROM '.$sqlTable.' WHERE '.$matchWhere;
 #    say $SQL;
-    return $dbh->do($SQL);
+    return $db->dbh->do($SQL);
 }
 
 =item getConfigValue($key)

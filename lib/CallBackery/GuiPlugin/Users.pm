@@ -140,7 +140,7 @@ All the methods of L<CallBackery::GuiPlugin::AbstractForm> plus:
 sub currentUserFilter {
     my $self = shift;
     if (not $self->user->may('admin')){
-        return 'WHERE cbuser_id = ' . $self->user->db->dbh->quote($self->user->userId);
+        return 'WHERE cbuser_id = ' . $self->user->mojoSqlDb->dbh->quote($self->user->userId);
     }
     return '';
 }
@@ -148,9 +148,10 @@ sub currentUserFilter {
 sub getTableRowCount {
     my $self = shift;
     my $args = shift;
-    my $dbh = $self->user->db->dbh;
+    my $db = $self->user->mojoSqlDb;
     if ($self->user->may('admin')){
-        return [$dbh->selectrow_array('SELECT count(cbuser_id) FROM '.$dbh->quote_identifier('cbuser'))]->[0];
+        return [$db->dbh->selectrow_array('SELECT count(cbuser_id) FROM '
+            . $db->dbh->quote_identifier('cbuser'))]->[0];
     }
     return 1;
 }
@@ -158,19 +159,19 @@ sub getTableRowCount {
 sub getTableData {
     my $self = shift;
     my $args = shift;
-    my $dbh = $self->user->db->dbh;
+    my $db = $self->user->mojoSqlDb;
     my $SORT ='';
     if ($args->{sortColumn}){
-        $SORT = 'ORDER BY '.$dbh->quote_identifier($args->{sortColumn});
+        $SORT = 'ORDER BY '.$db->dbh->quote_identifier($args->{sortColumn});
         $SORT .= $args->{sortDesc} ? ' DESC' : ' ASC';
     }
     my $WHERE = '';
     if (not $self->user->may('admin')){
-        $WHERE = 'WHERE cbuser_id = ' . $self->user->db->dbh->quote($self->user->userId);
+        $WHERE = 'WHERE cbuser_id = ' . $db->dbh->quote($self->user->userId);
     }
-    my $userTbl = $dbh->quote_identifier('cbuser');
-    my $rightTbl = $dbh->quote_identifier('cbright');
-    my $data = $dbh->selectall_arrayref(<<"SQL",{Slice => {}}, $args->{lastRow}-$args->{firstRow},$args->{firstRow});
+    my $userTbl = $db->dbh->quote_identifier('cbuser');
+    my $rightTbl = $db->dbh->quote_identifier('cbright');
+    my $data = $db->dbh->selectall_arrayref(<<"SQL",{Slice => {}}, $args->{lastRow}-$args->{firstRow},$args->{firstRow});
 SELECT cbuser_id,cbuser_login, cbuser_given, cbuser_family, cbuser_note
 FROM $userTbl
 $WHERE
@@ -179,7 +180,7 @@ LIMIT ? OFFSET ?
 SQL
     my @keys = map { $_->{cbuser_id} } @$data;
     my $keyPh = join ',', map { '?' } @keys;
-    my $rightList = $dbh->selectall_arrayref(<<"SQL",{Slice => {}}, @keys );
+    my $rightList = $db->dbh->selectall_arrayref(<<"SQL",{Slice => {}}, @keys );
 SELECT cbuserright_cbuser,cbright_label FROM cbuserright JOIN $rightTbl ON cbuserright_cbright = cbright_id WHERE cbuserright_cbuser IN ($keyPh)
 SQL
     my %rights;
