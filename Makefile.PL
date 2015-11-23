@@ -11,11 +11,11 @@ WriteMakefile(
   AUTHOR       => 'Tobias Oetiker <tobi@oetiker.ch>',
   LICENSE      => 'gpl_3',
   PREREQ_PM    => {
-    'Mojolicious' => '6.17',
+    'Mojolicious' => '6.33',
     'Mojolicious::Plugin::Qooxdoo' => '0.904',
     'Locale::PO' => '0.24',
     'Config::Grammar' => '1.10',
-    'Mojo::SQLite' => '0.011',
+    'Mojo::SQLite' => '0.018',
     'PPI' => '0',
   },
   META_MERGE   => {

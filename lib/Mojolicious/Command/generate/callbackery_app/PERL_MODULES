@@ -1,5 +1,5 @@
-Mojolicious@6.17
+Mojolicious@6.33
 Mojolicious::Plugin::Qooxdoo@0.904
-Mojo::SQLite@0.011
+Mojo::SQLite@0.018
 Config::Grammar@1.10
-CallBackery@0.3.0
+CallBackery@0.3.1
