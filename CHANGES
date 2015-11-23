@@ -1,3 +1,7 @@
+0.3.2 2015-11-23 tobi@oetiker.ch
+ * fix sample app
+ * include missing plugin file
+
 0.3.1 2015-11-23 tobi@oetiker.ch
 
  * never save dbh ... always request a copy via db
