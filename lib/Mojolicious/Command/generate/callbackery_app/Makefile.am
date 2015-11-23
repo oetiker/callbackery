@@ -57,7 +57,7 @@ thirdparty/touch: thirdparty/CPAN/touch
 	$(AM_V_GEN)touch thirdparty/touch
 
 thirdparty/CPAN/touch: PERL_MODULES
-	echo "POPULATING OUR LOCAL micro CPAN"
+#   "POPULATING OUR LOCAL micro CPAN"
 	$(AM_V_GEN)$(URL_CAT) http://cpanmin.us | PERL_CPANM_HOME=$(THIRDPARTY_DIR) $(PERL) - -q --notest --local-lib $(THIRDPARTY_DIR) --save-dists $(THIRDPARTY_DIR)/CPAN --force App::cpanminus
 	$(AM_V_GEN)PERL_CPANM_HOME=$(THIRDPARTY_DIR)/Ore $(THIRDPARTY_DIR)/bin/cpanm -q --notest  --local-lib $(THIRDPARTY_DIR)/Ore OrePAN
 	$(AM_V_GEN)cat PERL_MODULES | PERL_CPANM_HOME=$(THIRDPARTY_DIR) xargs $(PERL) $(THIRDPARTY_DIR)/bin/cpanm -q --self-contained --notest --local-lib-contained $(THIRDPARTY_DIR) --save-dists $(THIRDPARTY_DIR)/CPAN

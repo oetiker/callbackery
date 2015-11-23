@@ -72,7 +72,7 @@ EOF
             email => $email,
             fullName => $fullName,
             userName => $userName,
-            date => strftime('%Y-%M-%D',localtime(time)),
+            date => strftime('%Y-%m-%d',localtime(time)),
         });
     }
 
