@@ -1,6 +1,5 @@
 # $Id: Config.pm 539 2013-12-09 22:28:11Z oetiker $
 package CallBackery::Config;
-use 5.12.0;
 
 =head1 NAME
 
