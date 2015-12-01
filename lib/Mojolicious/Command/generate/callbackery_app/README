@@ -21,7 +21,9 @@ Get a copy of the Qooxdoo SDK from www.qooxdoo.org.
 
 Setup
 -----
-Now got back to your app source directory start building
+Now get back to your app source directory and start building.
+If you come from installing callbackery make sure to do the following
+in a new terminal or unset $PERL5LIB
 
  ./configure --prefix=$HOME/opt/<%= $p->{name} %> --with-qooxdoo-sdk-dir=$HOME/src/qooxdoo-5.0-sdk
  make
@@ -34,7 +36,7 @@ Any mising perl modules will be downloaded and built.
 Development
 -----------
 
-While developing the application it is conveniant to NOT have to install it
+While developing the application it is convenient to NOT have to install it
 before runnning. You can actually serve the Qooxdoo source directly
 using the built-in Mojo webserver.
 
@@ -63,7 +65,7 @@ You can now run <%= $p->{name} %>.pl in reverse proxy mode.
 Packaging
 ---------
 
-Before release, make sure to update CHANGES, VERSION and run ./bootstrap
+Before releasing, make sure to update CHANGES, VERSION and run ./bootstrap
 
 You can also package the application as a nice tar.gz file, it will contain
 a mini copy of cpan, so that all perl modules can be rebuilt at the
