@@ -32,6 +32,7 @@ EOF
         'COPYRIGHT' => 'COPYRIGHT',
         'CHANGES' => 'CHANGES',
         'Makefile.am' => 'Makefile.am',
+        'thirdparty/Makefile.am' => 'thirdparty/Makefile.am',
         'etc/Makefile.am' => 'etc/Makefile.am',
         'etc/app.cfg' => 'etc/'.$name.'.cfg',
         'bin/script.pl' => 'bin/'.$name.'.pl',
