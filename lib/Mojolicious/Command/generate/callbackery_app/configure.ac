@@ -117,6 +117,7 @@ AC_CONFIG_FILES([
     etc/Makefile
     lib/Makefile
     frontend/Makefile
+    thirdparty/Makefile
 ])
 
 AC_SUBST(VERSION)

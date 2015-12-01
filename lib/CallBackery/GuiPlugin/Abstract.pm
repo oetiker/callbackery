@@ -242,7 +242,7 @@ sub filterHashKey {
     my $data = shift;
     my $filterKey = shift;
     my $ref = ref $data;
-    if (not $ref or $ref eq 'Mojo::JSON::_Bool'){
+    if (not $ref or $ref eq ref Mojo::JSON::true){
         return $data;
     }
     elsif ($ref eq 'CODE'){

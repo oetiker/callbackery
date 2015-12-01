@@ -58,14 +58,15 @@ return the user id if the session user is valid.
 has userId => sub {
     my $self = shift;
     my $cookieUserId = $self->cookieConf->{u};
-    my $dbh = $self->db->dbh;
+    my $db = $self->mojoSqlDb;
     my $userInfo = $self->db->fetchRow('cbuser',{id=>$cookieUserId});
     if (my $userId = $userInfo->{cbuser_id}){
         $self->userInfo($userInfo);
         $self->db->userName($userInfo->{cbuser_login});
         return $userId;
     }
-    my $userCount = [$dbh->selectrow_array('SELECT count(cbuser_id) FROM '.$dbh->quote_identifier("cbuser"))]->[0];
+    my $userCount = [$db->dbh->selectrow_array('SELECT count(cbuser_id) FROM '
+        . $db->dbh->quote_identifier("cbuser"))]->[0];
     return ($userCount == 0 ? '__ROOT' : undef );
 };
 
@@ -87,6 +88,15 @@ has log => sub {
 has db => sub {
     my $self = shift;
     $self->app->database->new(app => $self->app);
+};
+
+=head2 $self->mojoSqlDb
+
+returns a pointer to one of the Database object of a Mojo::Pg instance.
+=cut
+
+has mojoSqlDb => sub {
+    shift->db->mojoSqlDb;
 };
 
 =head2 $self->userInfo

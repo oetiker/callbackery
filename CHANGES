@@ -1,3 +1,14 @@
+ * thirdparty got its own Makefile now
+
+0.3.2 2015-11-23 tobi@oetiker.ch
+ * fix sample app
+ * include missing plugin file
+
+0.3.1 2015-11-23 tobi@oetiker.ch
+
+ * never save dbh ... always request a copy via db
+ * fix reload handling in table widget
+
 0.2.0 2015-08-28 tobi@oetiker.ch
 
  * big update

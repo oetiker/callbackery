@@ -139,7 +139,7 @@ has actionCfg => sub {
                 die mkerror(4992,"You have to select a song first")
                     if not $id;
                 return {
-#                    action => 'reload'
+                    # no action required ... table reload on popup close is default
                 };
             }
         }
@@ -189,7 +189,7 @@ __END__
 
 =head1 COPYRIGHT
 
-Copyright (c) 2015 by Tobias Oetiker. All rights reserved.
+Copyright (c) <%= $p->{year} %> by <%= $p->{fullName} %>. All rights reserved.
 
 =head1 AUTHOR
 
@@ -197,6 +197,6 @@ S<Tobias Oetiker E<lt>tobi@oetiker.chE<gt>>
 
 =head1 HISTORY
 
- 2015-34-08/27/15 to 0.0 first version
+ <%= "$p->{date} $p->{username}" %> 0.0 first version
 
 =cut
