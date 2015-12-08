@@ -2,4 +2,4 @@ Mojolicious@6.33
 Mojolicious::Plugin::Qooxdoo@0.904
 Mojo::SQLite@0.018
 Config::Grammar@1.10
-CallBackery@0.3.2
+CallBackery@0.3.4

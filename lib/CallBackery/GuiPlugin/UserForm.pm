@@ -105,9 +105,9 @@ has formCfg => sub {
 has rightsCheckBoxes => sub {
     my $self = shift;
     return [] if not $self->user->may('admin');
-    my $dbh = $self->user->db->dbh;
-    my $rightTbl= $dbh->quote_identifier('cbright');
-    my $rights = $dbh->selectall_arrayref(<<"SQL",{Slice => {}});
+    my $db = $self->user->mojoSqlDb;
+    my $rightTbl= $db->dbh->quote_identifier('cbright');
+    my $rights = $db->dbh->selectall_arrayref(<<"SQL",{Slice => {}});
 SELECT cbright_id,cbright_label FROM $rightTbl
 SQL
     my @checkboxes = {
@@ -248,13 +248,12 @@ sub getAllFieldValues {
     die mkerror(2847,"You can only edit your own stuff unless you have admin permissions.")
         if not ( $self->user->may('admin') or $id == $self->user->userId );
 
-    my $db = $self->user->db;
-    my $data = $db->fetchRow('cbuser',{id => $id});
+    my $data = $self->user->db->fetchRow('cbuser',{id => $id});
     $data->{cbuser_password} = $DUMMY_PASSWORD;
     $data->{cbuser_password_check} = $DUMMY_PASSWORD;
-    my $dbh = $db->dbh;
-    my $rightTbl= $dbh->quote_identifier('cbright');
-    my $rights = $dbh->selectall_arrayref(<<"SQL",{Slice => {}}, $id);
+    my $db = $self->user->mojoSqlDb;
+    my $rightTbl= $db->dbh->quote_identifier('cbright');
+    my $rights = $db->dbh->selectall_arrayref(<<"SQL",{Slice => {}}, $id);
 SELECT cbright_id, cbuserright_id IS NOT NULL as value
     FROM $rightTbl LEFT JOIN cbuserright ON (cbright_id = cbuserright_cbright AND cbuserright_cbuser = ?)
 SQL
