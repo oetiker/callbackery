@@ -10,6 +10,7 @@ use Mojo::Util qw(b64_decode b64_encode secure_compare);
 use Mojo::JSON qw(encode_json decode_json);
 use CallBackery::Exception qw(mkerror);
 use Time::HiRes qw(gettimeofday);
+use Mojo::Util qw(hmac_sha1_sum);
 
 =head1 NAME
 
@@ -141,6 +142,11 @@ has firstSecret => sub {
     shift->controller->app->secrets()->[0];
 };
 
+sub isUserAuthenticated {
+    my $self = shift;
+    $self->userInfo->{cbuser_id} ? 1 : 0;
+};
+
 has cookieConf => sub {
     my $self = shift;
     my $headerCookie = $self->headerSessionCookie;
@@ -184,6 +190,37 @@ has cookieConf => sub {
 
     return $conf;
 };
+
+=head2 $user->login($login,$password)
+
+login the user object. If login return 1 you can then makeSessionCookie.
+
+=cut
+
+sub login {
+    my $self = shift;
+    my $login = shift;
+    my $password = shift;
+    my $cfg = $self->app->config->cfgHash;
+    if ($cfg->{sesame_pass} and $cfg->{sesame_user}
+        and $login and $password
+        and $login eq $cfg->{sesame_user}
+        and hmac_sha1_sum($password) eq $cfg->{sesame_pass}){
+        $self->session(userId=>'__ROOT');
+        return 1;
+    }
+
+    my $db = $self->app->database;
+    my $userData = $db->fetchRow('cbuser',{login=>$login});
+    return undef if not $userData;
+
+    if ($userData->{cbuser_password} and $password
+        and hmac_sha1_sum($password) eq $userData->{cbuser_password} ){
+        $self->userId($userData->{cbuser_id});
+        return 1;
+    }
+    return undef;
+}
 
 =head2 $bool = $self->C<may>(right);
 

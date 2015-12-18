@@ -35,6 +35,7 @@ lib/Mojolicious/Command/generate/callbackery_app/lib/App/Controller/RpcService.p
 lib/Mojolicious/Command/generate/callbackery_app/lib/App/GuiPlugin/Song.pm
 lib/Mojolicious/Command/generate/callbackery_app/lib/App/GuiPlugin/SongForm.pm
 lib/Mojolicious/Command/generate/callbackery_app/lib/App.pm
+lib/Mojolicious/Command/generate/callbackery_app/thirdparty/Makefile.am
 lib/Mojolicious/Command/generate/callbackery_app.pm
 lib/CallBackery.pm
 lib/CallBackery/Index.pod

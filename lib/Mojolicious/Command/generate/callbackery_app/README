@@ -16,8 +16,8 @@ Get a copy of the Qooxdoo SDK from www.qooxdoo.org.
 
  mkdir ~/src
  cd ~/src
- wget http://downloads.sourceforge.net/qooxdoo/qooxdoo-5.0-sdk.zip
- unzip qooxdoo-5.0-sdk.zip
+ wget http://downloads.sourceforge.net/qooxdoo/qooxdoo-5.0.1-sdk.zip
+ unzip qooxdoo-5.0.1-sdk.zip
 
 Setup
 -----
@@ -25,7 +25,7 @@ Now get back to your app source directory and start building.
 If you come from installing callbackery make sure to do the following
 in a new terminal or unset $PERL5LIB
 
- ./configure --prefix=$HOME/opt/<%= $p->{name} %> --with-qooxdoo-sdk-dir=$HOME/src/qooxdoo-5.0-sdk
+ ./configure --prefix=$HOME/opt/<%= $p->{name} %> --with-qooxdoo-sdk-dir=$HOME/src/qooxdoo-5.0.1-sdk
  make
 
 Configure will check if all requirements are met and give

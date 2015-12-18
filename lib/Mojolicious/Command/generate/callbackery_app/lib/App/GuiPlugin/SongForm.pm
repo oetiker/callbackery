@@ -188,6 +188,6 @@ S<<%== $p->{fullName} %> E<lt><%= $p->{email} %>E<gt>>
 
 =head1 HISTORY
 
- <%= "$p->{date} $p->{username}" %> 0.0 first version
+ <%= "$p->{date} $p->{userName}" %> 0.0 first version
 
 =cut

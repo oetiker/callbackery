@@ -5,7 +5,6 @@ use CallBackery::Exception qw(mkerror);
 use CallBackery::User;
 # use Data::Dumper;
 use Scalar::Util qw(blessed weaken);
-use Mojo::Util qw(hmac_sha1_sum);
 use Mojo::JSON qw(encode_json decode_json);
 
 =head1 NAME
@@ -50,14 +49,10 @@ has config => sub {
 
 has user => sub {
     my $self = shift;
-    my $obj = CallBackery::User->new(controller=>$self);
+    my $obj = $self->app->userObject->new(controller=>$self);
     #
     weaken $obj->{controller};
     return $obj;
-};
-
-has userId => sub {
-    shift->user->userInfo->{cbuser_id};
 };
 
 has log => sub {
@@ -74,7 +69,7 @@ has pluginMap => sub {
 sub allow_rpc_access {
     my $self = shift;
     my $method = shift;
-    return (exists $allow{$method} and ($allow{$method} == 1 or $self->userId));
+    return (exists $allow{$method} and ($allow{$method} == 1 or $self->user->isUserAuthenticated));
 }
 
 =head2 ping()
@@ -121,26 +116,10 @@ sub login { ## no critic (RequireArgUnpacking)
     my $login = shift;
     my $password = shift;
     my $cfg = $self->config->cfgHash->{BACKEND};
-
-    if ($cfg->{sesame_pass} and $cfg->{sesame_user}
-        and $login and $password
-        and $login eq $cfg->{sesame_user}
-        and hmac_sha1_sum($password) eq $cfg->{sesame_pass}){
-        $self->session(userId=>'__ROOT');
+    if ($self->user->login($login,$password)){
         return {
-            sessionCookie => $self->user->makeSessionCookie()
+            sessionCookie => $self->user->makeSessionCookie();
         };
-    }
-
-    my $db = $self->app->database;
-    my $userData = $db->fetchRow('cbuser',{login=>$login});
-    return undef if not $userData;
-    if ($userData->{cbuser_password} and $password
-        and hmac_sha1_sum($password) eq $userData->{cbuser_password} ){
-        $self->user->userId($userData->{cbuser_id});
-        return {
-            sessionCookie => $self->user->makeSessionCookie()
-        }
     }
     return undef;
 };
@@ -332,7 +311,7 @@ in the usual way, hence we  have to render our own response!
 
 sub handleUpload {
     my $self = shift;
-    if (not $self->userId){
+    if (not $self->user->isUserAuthenticated){
         return $self->render(text=>encode_json({exception=>{message=>'Access Denied',code=>4922}}));
     }
     my $name = $self->param('name');
@@ -404,7 +383,7 @@ a L<Mojo::Asset>. eg C<Mojo::Asset::File->new(path => '/etc/passwd')>.
 sub handleDownload {
     my $self = shift;
 
-    if (not $self->userId){
+    if (not $self->user->isUserAuthenticated){
         return $self->render(text=>encode_json({exception=>{message=>'Access Denied',code=>3928}}));
     }
 

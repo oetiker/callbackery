@@ -146,13 +146,16 @@ has actionCfg => sub {
     ];
 };
 
+sub dbh {
+    shift->user->mojoSqlDb->dbh;
+};
+
 sub _getFilter {
     my $self = shift;
     my $search = shift;
     my $filter = '';
-    my $dbh = $self->user->db->dbh;
     if ( $search ){
-        $filter = "WHERE song_title LIKE ".$dbh->quote('%'.$search);
+        $filter = "WHERE song_title LIKE ".$self->dbh->quote('%'.$search);
     }
     return $filter;
 }
@@ -161,21 +164,19 @@ sub getTableRowCount {
     my $self = shift;
     my $args = shift;
     my $filter = $self->_getFilter($args->{formData}{song_title});
-    my $dbh = $self->user->db->dbh;
-    return ($dbh->selectrow_array("SELECT count(song_id) FROM song $filter"))[0];
+    return ($self->dbh->selectrow_array("SELECT count(song_id) FROM song $filter"))[0];
 }
 
 sub getTableData {
     my $self = shift;
     my $args = shift;
-    my $dbh = $self->user->db->dbh;
     my $filter = $self->_getFilter($args->{formData}{song_title});
     my $SORT ='';
     if ($args->{sortColumn}){
-        $SORT = 'ORDER BY '.$dbh->quote_identifier($args->{sortColumn});
+        $SORT = 'ORDER BY '.$self->dbh->quote_identifier($args->{sortColumn});
         $SORT .= $args->{sortDesc} ? ' DESC' : ' ASC';
     }
-    return $dbh->selectall_arrayref(<<"SQL",{Slice => {}}, $args->{lastRow}-$args->{firstRow}+1,$args->{firstRow});
+    return $self->dbh->selectall_arrayref(<<"SQL",{Slice => {}}, $args->{lastRow}-$args->{firstRow}+1,$args->{firstRow});
 SELECT *
 FROM song
 $filter

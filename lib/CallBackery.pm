@@ -30,7 +30,7 @@ use CallBackery::Config;
 use CallBackery::Plugin::Doc;
 use CallBackery::Database;
 
-our $VERSION = '0.3.4';
+our $VERSION = '0.4.0';
 
 use Mojo::Base 'Mojolicious';
 
@@ -63,6 +63,9 @@ has 'database' => sub {
     CallBackery::Database->new(app=>shift);
 };
 
+has 'userObject' => sub {
+    CallBackery::User->new();
+};
 
 =head2 securityHeaders
 
