@@ -118,11 +118,11 @@ sub login { ## no critic (RequireArgUnpacking)
     my $cfg = $self->config->cfgHash->{BACKEND};
     if ($self->user->login($login,$password)){
         return {
-            sessionCookie => $self->user->makeSessionCookie();
+            sessionCookie => $self->user->makeSessionCookie()
         };
     }
     return undef;
-};
+}
 
 =head2 logout
 
