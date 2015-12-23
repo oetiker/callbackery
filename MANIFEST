@@ -83,6 +83,7 @@ lib/CallBackery/qooxdoo/callbackery/source/translation/it.po
 lib/CallBackery/qooxdoo/uploadwidget/source/class/uploadwidget/UploadField.js
 lib/CallBackery/qooxdoo/uploadwidget/source/class/uploadwidget/UploadForm.js
 lib/CallBackery/qooxdoo/uploadwidget/source/class/uploadwidget/UploadButton.js
+lib/CallBackery/qooxdoo/uploadwidget/source/class/uploadwidget/UploadToolbarButton.js
 lib/CallBackery/qooxdoo/uploadwidget/source/translation/readme.txt
 lib/CallBackery/qooxdoo/uploadwidget/source/resource/readme.txt
 lib/CallBackery/qooxdoo/uploadwidget/Manifest.json
