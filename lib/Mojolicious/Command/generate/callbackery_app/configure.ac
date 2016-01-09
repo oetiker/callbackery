@@ -23,7 +23,7 @@ URL_CAT="neither curl nor wget found"
 
 if test -x "$CURL"; then
     URL_CAT="$CURL --location --insecure"
-else 
+else
     if test -x "$WGET"; then
         URL_CAT="$WGET -O -"
     fi
@@ -68,6 +68,14 @@ actual_prefix=$prefix
 if test x$actual_prefix = xNONE; then
     actual_prefix=$ac_default_prefix
 fi
+
+AC_MSG_CHECKING([Checking Install Prefix])
+if test x`stat -c %i $0` = x`stat -c %i $actual_prefix/configure 2>/dev/null`; then
+    AC_MSG_ERROR([The install prefix must NOT point to the directory where you unpacked the source.])
+else
+    AC_MSG_RESULT([install Prefix is fine])
+fi
+
 
 AC_ARG_VAR(PERL5LIB,   [Colon separated list of perl library directories])
 AC_SUBST(PERL5LIB)
