@@ -8,6 +8,7 @@ README.md
 bin/callbackery-pobuilder
 t/basic.t
 t/callbackery.cfg
+lib/Mojolicious/Command/generate/callbackery_app/.gitignore
 lib/Mojolicious/Command/generate/callbackery_app/configure.ac
 lib/Mojolicious/Command/generate/callbackery_app/AUTHORS
 lib/Mojolicious/Command/generate/callbackery_app/README

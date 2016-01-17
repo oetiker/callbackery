@@ -28,6 +28,7 @@ EOF
         'VERSION' => 'VERSION',
         'README' => 'README',
         'AUTHORS' => 'AUTHORS',
+        '.gitignore' => '.gitignore',
         'LICENSE' => 'LICENSE',
         'COPYRIGHT' => 'COPYRIGHT',
         'CHANGES' => 'CHANGES',
