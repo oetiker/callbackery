@@ -33,7 +33,7 @@ dist_bin_SCRIPTS = $(BIN)
 all-local:
 	$(GMAKE) public/script/$(QX_CLASS).js
 
-dist-hook: thirdparty/CPAN/touch
+dist-hook:
 	$(PERL) -i -p -e 's/#VERSION#/$(PACKAGE_VERSION)/g;s/#YEAR#/$(YEAR)/g;s/#DATE#/$(DATE)/g;'  $(distdir)/README $(distdir)/COPYRIGHT $(distdir)/public/index.html $(distdir)/public/script/$(QX_CLASS).js
 	$(PERL) -i -p -e 's/\$$VERSION\s*=\s*".+?";/\$$VERSION = "$(PACKAGE_VERSION)";/;'  $(distdir)/lib/$(MJ_CLASS).pm
 
