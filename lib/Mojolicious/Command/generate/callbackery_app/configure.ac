@@ -5,6 +5,13 @@ AC_INIT([<%= $p->{name} %>],m4_esyscmd([tr -d '\n' < VERSION]),[<%= $p->{email} 
 AC_PREREQ([2.59])
 AC_CONFIG_AUX_DIR(conftools)
 
+MJ_CLASS=<%= $p->{class} %>
+MJ_SCRIPT=<%= $p->{name} %>
+QX_CLASS=<%= $p->{name} %>
+
+AC_SUBST(MJ_CLASS)
+AC_SUBST(MJ_SCRIPT)
+AC_SUBST(QX_CLASS)
 
 # need this to allow long path names
 AM_INIT_AUTOMAKE([1.9 tar-ustar foreign])
