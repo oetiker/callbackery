@@ -62,8 +62,10 @@ else
   AC_MSG_ERROR([a complete perl ('perl-core' in the redhat world) installation is required])
 fi
 
-AC_MSG_CHECKING([will we require a c compiler to get perl modules compiled?])
-if $PERL -MIO::Socket::IP -e 'exit($IO::Socket::IP::VERSION < 0.37)' 2>/dev/null; then
+AC_MSG_CHECKING([if we require a c compiler to get perl modules compiled])
+if $PERL -MIO::Socket::IP -e 'exit($IO::Socket::IP::VERSION >= 0.37)' 2>/dev/null; then
+    AC_MSG_RESULT(no)
+else
     AC_MSG_RESULT(yes)
     perl_cc=`$PERL -MConfig -e 'print $Config{cc}'`
     AC_PATH_PROG(PERL_CC_PATH, $perl_cc, no)
@@ -74,8 +76,6 @@ if $PERL -MIO::Socket::IP -e 'exit($IO::Socket::IP::VERSION < 0.37)' 2>/dev/null
     else
       AC_MSG_RESULT(yes)
     fi
-else
-    AC_MSG_RESULT(no)
 fi
 
 
