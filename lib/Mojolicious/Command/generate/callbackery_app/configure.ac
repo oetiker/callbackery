@@ -5,6 +5,13 @@ AC_INIT([<%= $p->{name} %>],m4_esyscmd([tr -d '\n' < VERSION]),[<%= $p->{email} 
 AC_PREREQ([2.59])
 AC_CONFIG_AUX_DIR(conftools)
 
+MJ_CLASS=<%= $p->{class} %>
+MJ_SCRIPT=<%= $p->{name} %>
+QX_CLASS=<%= $p->{name} %>
+
+AC_SUBST(MJ_CLASS)
+AC_SUBST(MJ_SCRIPT)
+AC_SUBST(QX_CLASS)
 
 # need this to allow long path names
 AM_INIT_AUTOMAKE([1.9 tar-ustar foreign])
@@ -20,11 +27,12 @@ AC_PATH_PROG(CURL, curl, no)
 AC_PATH_PROG(WGET, wget, no)
 
 URL_CAT="neither curl nor wget found"
-if test -x "$WGET"; then
-    URL_CAT="$WGET -O -"
+
+if test -x "$CURL"; then
+    URL_CAT="$CURL --location --insecure"
 else
-    if test -x "$CURL"; then
-        URL_CAT="$CURL --location --insecure"
+    if test -x "$WGET"; then
+        URL_CAT="$WGET -O -"
     fi
 fi
 
@@ -45,6 +53,31 @@ if test "x$PERL" != "x"; then
 else
   AC_MSG_ERROR(could not find perl)
 fi
+
+AC_MSG_CHECKING(is perl reasonably complete)
+if $PERL -MExtUtils::MakeMaker -e '' 2>/dev/null; then
+  AC_MSG_RESULT(yes. ExtUtils::MakeMaker is available);
+else
+  AC_MSG_RESULT(no)
+  AC_MSG_ERROR([a complete perl ('perl-core' in the redhat world) installation is required])
+fi
+
+AC_MSG_CHECKING([if we require a c compiler to get perl modules compiled])
+if $PERL -MIO::Socket::IP -e 'exit($IO::Socket::IP::VERSION >= 0.37)' 2>/dev/null; then
+    AC_MSG_RESULT(no)
+else
+    AC_MSG_RESULT(yes)
+    perl_cc=`$PERL -MConfig -e 'print $Config{cc}'`
+    AC_PATH_PROG(PERL_CC_PATH, $perl_cc, no)
+    AC_MSG_CHECKING(is perls favorite c compiler ($perl_cc) available)
+    if test x$PERL_CC_PATH = xno; then
+      AC_MSG_RESULT(no)
+      AC_MSG_ERROR([perl needs the '$perl_cc' compiler package to build dependencies])
+    else
+      AC_MSG_RESULT(yes)
+    fi
+fi
+
 
 AC_PROG_GREP
 
@@ -68,27 +101,16 @@ if test x$actual_prefix = xNONE; then
     actual_prefix=$ac_default_prefix
 fi
 
-AC_ARG_VAR(PERL5LIB,   [Colon separated list of perl library directories])
-AC_SUBST(PERL5LIB)
-
-# Check the necessary Perl modules
-
-mod_ok=1
-MISSING_PERL_MODULES=""
-if test "$enable_pkgonly" != yes; then
-   for module in m4_esyscmd([tr '\n' ' ' < PERL_MODULES]); do
-     AC_MSG_CHECKING([for perl module '$module'])
-     if ${PERL} -I`dirname $0`/thirdparty/lib/perl5 -e 'my($m,$v) = split /\@/, q{'$module'};eval "use $m"; exit 1 if $@; exit 1 if not $v or eval(q{$}.$m.q{::VERSION}) ne $v' ; then
-         AC_MSG_RESULT([Ok])
-     else
-         MISSING_PERL_MODULES="${MISSING_PERL_MODULES} $module"
-         AC_MSG_RESULT([Auto Install])
-         mod_ok=0
-     fi
-   done
+AC_MSG_CHECKING([Checking Install Prefix])
+if test x`stat -c %i $0` = x`stat -c %i $actual_prefix/configure 2>/dev/null`; then
+    AC_MSG_ERROR([The install prefix must NOT point to the directory where you unpacked the source.])
+else
+    AC_MSG_RESULT([install Prefix is fine])
 fi
 
-AC_SUBST(MISSING_PERL_MODULES)
+
+AC_ARG_VAR(PERL5LIB,   [Colon separated list of perl library directories])
+AC_SUBST(PERL5LIB)
 
 QOOXDOO_PATH=
 AC_ARG_WITH(qooxdoo-sdk-dir,AC_HELP_STRING([--with-qooxdoo-sdk-dir=DIR],[Where can we find the qooxdoo sdk (required to rebuild the web ui)]), [
@@ -159,7 +181,6 @@ Settings:
 
   PERL5LIB = ${PERL5LIB:-"not set"}
   PERL = $PERL
-  MODULES = ${MISSING_PERL_MODULES:-"All modules present"}
 
 The Makefiles use GNU make functionality.
 Continue installation with
