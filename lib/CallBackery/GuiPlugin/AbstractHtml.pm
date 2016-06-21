@@ -34,6 +34,7 @@ has screenCfg => sub {
     my $self = shift;
     return {
         type => 'html',
+        options => {},
     }
 };
 

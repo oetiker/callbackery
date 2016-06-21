@@ -35,9 +35,20 @@ has screenCfg => sub {
     my $self = shift;
     return {
         type => 'form',
+        options => $self->screenOpts,
         form => $self->formCfg,
         action => $self->actionCfg,
     }
+};
+
+=head2 screenOpt
+
+Returns a hash of options for the screen Options
+
+=cut
+
+has screenOpts => sub {
+    warnAboutUnsavedData => 1
 };
 
 =head2 actionCfg

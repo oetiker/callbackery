@@ -144,7 +144,8 @@ Returns the information for building a plugin configuration screen.
 
 has screenCfg => sub {
     return {
-        type => 'form',
+        type => '*unknown*',
+        options => {},
         # followed by type dependent keys
     }
 };
