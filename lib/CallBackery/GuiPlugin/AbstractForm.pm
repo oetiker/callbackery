@@ -41,14 +41,16 @@ has screenCfg => sub {
     }
 };
 
-=head2 screenOpt
+=head2 screenOpts
 
 Returns a hash of options for the screen Options
 
 =cut
 
 has screenOpts => sub {
-    warnAboutUnsavedData => 1
+    {
+        warnAboutUnsavedData => 1
+    }
 };
 
 =head2 actionCfg
