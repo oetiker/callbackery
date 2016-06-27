@@ -1,3 +1,6 @@
+0.6.2 2016-06-27 tobi@oetiker.ch
+ * it should be options not option
+
 0.6.1 2016-06-27 tobi@oetiker.ch
  * introduced default screenCfg->{options}{warnAboutUnsavedData} => 1 
  * handle date as a column type for tables
