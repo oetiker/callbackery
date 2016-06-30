@@ -186,7 +186,7 @@ DOC
         },
         FRONTEND => {
             _doc => 'Settings for the Web FRONTEND',
-            _vars => [ qw(logo logo_small title initial_plugin company_name company_url company_support) ],
+            _vars => [ qw(logo logo_small title initial_plugin company_name company_url) ],
             _sections => [ qw(COLORS) ],
             logo => {
                 _doc => 'url for the logo brand the login sceen',
@@ -196,9 +196,6 @@ DOC
             },
             company_url => {
                 _doc => 'link to the company homepage'
-            },
-            company_support => {
-                _doc => 'company support eMail'
             },
             logo_small => {
                 _doc => 'url for the small logo brand the UI',
