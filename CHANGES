@@ -1,3 +1,6 @@
+0.6.3 2016-07-04 tobi@oetiker.ch
+ * fix table reloading
+
 0.6.2 2016-06-27 tobi@oetiker.ch
  * it should be options not option
 
