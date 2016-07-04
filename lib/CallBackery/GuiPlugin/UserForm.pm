@@ -78,7 +78,7 @@ has formCfg => sub {
             set => {
                 required => $self->true,
                 readOnly => $self->user->may('admin') ? $self->false : $self->true
-            }
+            },
         },
         {
             key => 'cbuser_family',

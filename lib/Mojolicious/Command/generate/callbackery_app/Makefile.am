@@ -50,7 +50,7 @@ test:
 
 if BUILD_QOOXDOO_APP
 
-CALLBACKERY_PATH := $(shell PERL5LIB=$(PERL5LIB) $(PERL) -Ilib -Ithirdparty/lib/perl5 -e 'use File::Basename;use Cwd qw(realpath); eval { require CallBackery }; print !$$@ ? realpath(dirname($$INC{q{CallBackery/Config.pm}}).q{/qooxdoo}) : "CALLBACKERY_NOT_FOUND" ' )
+CALLBACKERY_PATH := $(shell PERL5LIB=lib:$(PERL5LIB):thirdparty/lib/perl5 $(PERL) -e 'use File::Basename;use Cwd qw(realpath); eval { require CallBackery }; print !$$@ ? realpath(dirname($$INC{q{CallBackery/Config.pm}}).q{/qooxdoo}) : "CALLBACKERY_NOT_FOUND" ' )
 
 public/script/$(QX_CLASS).js: $(shell find frontend/source $(CALLBACKERY_PATH) -type f ) frontend/config.json config.status
 	cd frontend && $(QOOXDOO_PATH)/tool/bin/generator.py -m QOOXDOO_PATH:$(QOOXDOO_PATH) -m CALLBACKERY_PATH:$(CALLBACKERY_PATH) -m CACHE:./cache -m BUILD_PATH:../public build

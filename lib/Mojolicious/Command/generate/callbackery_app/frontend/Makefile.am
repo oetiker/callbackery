@@ -8,7 +8,7 @@ EXTRA_DIST = config.json Manifest.json source/index.html \
 
 if BUILD_QOOXDOO_APP
 
-CALLBACKERY_PATH := $(shell PERL5LIB=$(PERL5LIB) $(PERL) -I../lib -I../thirdparty/lib/perl5 -e 'use File::Basename;use Cwd qw(realpath); eval { require CallBackery }; print !$$@ ? realpath(dirname($$INC{q{CallBackery/Config.pm}}).q{/qooxdoo}) : "CALLBACKERY_NOT_FOUND" ' )
+CALLBACKERY_PATH := $(shell PERL5LIB=../lib:$(PERL5LIB):../thirdparty/lib/perl5 $(PERL) -e 'use File::Basename;use Cwd qw(realpath); eval { require CallBackery }; print !$$@ ? realpath(dirname($$INC{q{CallBackery/Config.pm}}).q{/qooxdoo}) : "CALLBACKERY_NOT_FOUND" ' )
 
 GENTARGETS := lint pretty migration translation api source-all source-hybrid source
 
