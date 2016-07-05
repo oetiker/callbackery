@@ -38,6 +38,7 @@ has tableCfg => sub {
             width => '1*',
             key => 'cbuser_id',
             sortable => $self->true,
+            primary => $self->true,
         },
         {
             label => trm('Username'),

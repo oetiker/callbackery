@@ -54,6 +54,7 @@ has tableCfg => sub {
             width => '1*',
             key => 'song_id',
             sortable => $self->true,
+            primary => $self->true
         },
         {
             label => trm('Title'),
@@ -138,9 +139,14 @@ has actionCfg => sub {
                 my $id = $args->{selection}{song_id};
                 die mkerror(4992,"You have to select a song first")
                     if not $id;
-                return {
-                    # no action required ... table reload on popup close is default
-                };
+                my $db = $self->user->db;
+                if ($db->deleteData('song',$id) == 1){
+                    return {
+                         action => 'reload',
+                    };
+                }
+                die mkerror(4993,"Faild to remove song $id");
+                return {};
             }
         }
     ];
