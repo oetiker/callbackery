@@ -243,7 +243,7 @@ sub getData {
 
 =head2 massageConfig
 
-Function to integrate the plugin configuration into the main config
+Function to integrate the plugin configuration recursively into the main config
 hash.
 
 =cut
@@ -261,10 +261,11 @@ sub massageConfig {
                 = $self->app->config->loadAndNewPlugin($button->{backend}{plugin});
             $popup->config($button->{backend}{config});
             $popup->name($button->{name});
+            $popup->app($self->app);
+            $popup->massageConfig($cfg);
         }
     }
 }
-
 
 1;
 __END__
