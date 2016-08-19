@@ -1,3 +1,6 @@
+0.6.5 2016-08-19 tobi@oetiker.ch
+ * allow popups to open further popups via popup actions
+
 0.6.4 2016-07-04 tobi@oetiker.ch
  * fix line focus ... keep focus if at least one table row has the property primary set
 
