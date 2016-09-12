@@ -204,6 +204,6 @@ S<Tobias Oetiker E<lt>tobi@oetiker.chE<gt>>
 
 =head1 HISTORY
 
- <%= "$p->{date} $p->{username}" %> 0.0 first version
+ <%= "$p->{date} $p->{userName}" %> 0.0 first version
 
 =cut

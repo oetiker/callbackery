@@ -3,23 +3,40 @@ use Mojo::Base 'Mojolicious::Command';
 use File::Basename;
 use Mojo::Util qw(class_to_file class_to_path slurp);
 use POSIX qw(strftime);
+use Cwd 'getcwd';
+use File::Spec::Functions qw(catdir catfile);
 
 has description => 'Generate CallBackery web application directory structure.';
 has usage => sub { shift->extract_usage };
 
-sub run {
-    my ($self, $class) = @_;
-    $class ||= 'MyCallBackeryApp';
+has cwd => sub {
+    getcwd();
+};
 
-    # Prevent bad applications
+sub rel_dir  {
+    my $self=shift;
+    catdir $self->cwd,  split('/', pop)
+}
+
+sub rel_file {
+    my $self =shift;
+    catfile $self->cwd, split('/', pop);
+}
+
+sub run {
+    my ($self, $app) = @_;
+    $app ||= 'MyCallBackeryApp';
+    my @dir = split /\//, $app;
+    my $class = pop @dir;
+
     die <<EOF unless $class =~ /^[A-Z](?:\w|::)+$/;
 Your application name has to be a well formed (CamelCase) Perl module name
 like "MyApp".
 EOF
+    $self->cwd(join '/', @dir) if @dir;
 
     my $name = class_to_file $class;
     my $class_path = class_to_path $class;
-
     # Configure Main Dir
     my $file = {
         'configure.ac' => 'configure.ac',
@@ -84,8 +101,11 @@ EOF
     $self->create_rel_dir("$name/templates");
     $self->create_rel_dir("$name/frontend/source/resource/$name");
     $self->create_rel_dir("$name/frontend/source/translation");
-    chdir $name;
+    chdir $self->cwd.'/'.$name;
     system "./bootstrap";
+
+    say "** Generated App $class in ".$self->cwd.'/'.$name;
+
 }
 
 sub render_data {
@@ -94,3 +114,60 @@ sub render_data {
     ->render(slurp(dirname($INC{'Mojolicious/Command/generate/callbackery_app.pm'}).'/callbackery_app/'.$name), @_);
 }
 1;
+
+=encoding utf8
+
+=head1 NAME
+
+Mojolicious::Command::generate::callbackery_app - Calbackery App generator command
+
+=head1 SYNOPSIS
+
+  Usage: mojo generate callbackery_app [OPTIONS] [NAME]
+
+    mojo generate callbackery_app
+    mojo generate callbackery_app [/full/path/]TestApp
+
+  Options:
+    -h, --help   Show this summary of available options
+
+=head1 DESCRIPTION
+
+L<Mojolicious::Command::generate::callbackery_app> generates application directory
+structures for fully functional L<CallBackery> applications.
+
+=head1 ATTRIBUTES
+
+L<Mojolicious::Command::generate::callbackery_app> inherits all attributes from
+L<Mojolicious::Command> and implements the following new ones.
+
+=head2 description
+
+  my $description = $app->description;
+  $app            = $app->description('Foo');
+
+Short description of this command, used for the command list.
+
+=head2 usage
+
+  my $usage = $app->usage;
+  $app      = $app->usage('Foo');
+
+Usage information for this command, used for the help screen.
+
+=head1 METHODS
+
+L<Mojolicious::Command::generate::callbackery_app> inherits all methods from
+L<Mojolicious::Command> and implements the following new ones.
+
+=head2 run
+
+  $app->run(@ARGV);
+
+Run this command.
+
+=head1 SEE ALSO
+
+L<CallBackery>, L<http://callbackery.org>.
+
+=cut
