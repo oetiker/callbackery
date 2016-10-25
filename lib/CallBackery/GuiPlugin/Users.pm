@@ -88,6 +88,7 @@ has actionCfg => sub {
         $admin ? ({
             label => trm('Add User'),
             action => 'popup',
+            addToContextMenu => $self->true,
             name => 'userFormAdd',
             popupTitle => trm('New User'),
             backend => {
@@ -100,6 +101,8 @@ has actionCfg => sub {
         {
             label => trm('Edit User'),
             action => 'popup',
+            addToContextMenu => $self->true,
+            defaultAction => $self->true,
             name => 'userFormEdit',
             popupTitle => trm('Edit User'),
             backend => {
@@ -112,6 +115,7 @@ has actionCfg => sub {
         $admin ? ({
             label => trm('Delete User'),
             action => 'submitVerify',
+            addToContextMenu => $self->true,
             question => trm('Do you really want to delete the selected user ?'),
             key => 'delete',
             handler => sub {

@@ -108,6 +108,7 @@ has actionCfg => sub {
         {
             label => trm('Add Song'),
             action => 'popup',
+            addToContextMenu => $self->true,
             name => 'songFormAdd',
             popupTitle => trm('New Song'),
             backend => {
@@ -120,6 +121,8 @@ has actionCfg => sub {
         {
             label => trm('Edit Song'),
             action => 'popup',
+            addToContextMenu => $self->true,
+            defaultAction => $self->true,
             name => 'songFormEdit',
             popupTitle => trm('Edit Song'),
             backend => {
@@ -132,6 +135,7 @@ has actionCfg => sub {
         {
             label => trm('Delete Song'),
             action => 'submitVerify',
+            addToContextMenu => $self->true,
             question => trm('Do you really want to delete the selected Song '),
             key => 'delete',
             handler => sub {

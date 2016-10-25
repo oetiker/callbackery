@@ -17,6 +17,7 @@ WriteMakefile(
     'Locale::PO' => '0.27',
     'Config::Grammar' => '1.12',
     'Mojo::SQLite' => '1.000',
+    'Pod::Markdown::Github' =>'0',
     'PPI' => '0',
   },
   META_MERGE   => {
@@ -44,11 +45,11 @@ sub MY::postamble {
 
 all:: README.md README
 
-README.md: $self->{VERSION_FROM}
-	\$(PERL) -I$tpd/lib/perl5 -MPod::Markdown::Github -e 'binmode(STDOUT, ":utf8");Pod::Markdown::Github->new->filter(q{$self->{VERSION_FROM}})' > README.md
+#README.md: $self->{VERSION_FROM}
+#	\$(PERL) -I$tpd/lib/perl5 -MPod::Markdown::Github -e 'binmode(STDOUT, ":utf8");Pod::Markdown::Github->new->filter(q{$self->{VERSION_FROM}})' > README.md
 
-README: README.md
-	cp README.md README
+#README: README.md
+#	cp README.md README
 
 thirdparty: $tpd/touch
 	mkdir -p $tpd

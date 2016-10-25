@@ -1,3 +1,6 @@
+0.7.0
+ * new action properties:  addToContextMenu and defaultAction. These two will get used in the table Plugin
+ 
 0.6.5 2016-08-19 tobi@oetiker.ch
  * allow popups to open further popups via popup actions
 
@@ -11,7 +14,7 @@
  * it should be options not option
 
 0.6.1 2016-06-27 tobi@oetiker.ch
- * introduced default screenCfg->{options}{warnAboutUnsavedData} => 1 
+ * introduced default screenCfg->{options}{warnAboutUnsavedData} => 1
  * handle date as a column type for tables
  * introduce btnCfg->{option}{noReload} => 1
  * improved build system in template project
