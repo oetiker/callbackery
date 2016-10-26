@@ -44,7 +44,7 @@ sub MY::postamble {
    warn "** call 'make thirdparty' to build missing dependencies ...\n";
    return <<"EOF";
 
-all:: README.md README
+#all:: README.md README
 
 #README.md: $self->{VERSION_FROM}
 #	\$(PERL) -I$tpd/lib/perl5 -MPod::Markdown::Github -e 'binmode(STDOUT, ":utf8");Pod::Markdown::Github->new->filter(q{$self->{VERSION_FROM}})' > README.md
