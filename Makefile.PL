@@ -19,6 +19,7 @@ WriteMakefile(
     'Mojo::SQLite' => '1.000',
     'Pod::Markdown::Github' =>'0',
     'PPI' => '0',
+    'CPAN::Uploader' => 0
   },
   META_MERGE   => {
     requires  => {perl => '5.010001'},
@@ -56,6 +57,6 @@ thirdparty: $tpd/touch
 
 $tpd/touch: Makefile
 	\$(NOECHO) \$(ECHO) "*** INSTALLING MISSING BITS FOR TESTING ***"
-	curl -L http://cpanmin.us | PERL_CPANM_HOME=$tpd \$(PERL) - -q --notest --local-lib-contained $tpd $modules && touch $tpd/touch
+	curl -L https://raw.githubusercontent.com/miyagawa/cpanminus/devel/cpanm | PERL_CPANM_HOME=$tpd \$(PERL) - -q --notest --local-lib-contained $tpd $modules && touch $tpd/touch
 EOF
 }
