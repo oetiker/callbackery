@@ -35,6 +35,14 @@ my $DUMMY_PASSWORD = '>>NOt REALly a PaSSwoRd<<';
 
 has formCfg => sub {
     my $self = shift;
+
+    if ($self->config->{type} eq 'edit' and not $self->args->{selection}{cbuser_id}){
+        return [{
+            label => trm('Error'),
+            widget => 'header',
+            note => trm('No user selected.')
+        }];
+    }
     return [
         $self->config->{type} eq 'edit' ? {
             key => 'cbuser_id',
@@ -132,6 +140,10 @@ has actionCfg => sub {
     my $self = shift;
     my $mode = $self->config->{mode} // 'default';
     my $type = $self->config->{type} // 'new';
+    if ($type eq 'edit' and not $self->args->{selection}{cbuser_id}){
+        return [];
+    }
+
     my $handler = sub {
         my $args = shift;
         my $admin = ($self->user->may('admin') or $mode eq 'init');

@@ -105,6 +105,12 @@ has actionCfg => sub {
             defaultAction => $self->true,
             name => 'userFormEdit',
             popupTitle => trm('Edit User'),
+            handler => sub {
+                my $args = shift;
+                my $id = $args->{selection}{cbuser_id};
+                die mkerror(393,"You have to select a user first")
+                    if not $id;
+            },
             backend => {
                 plugin => 'UserForm',
                 config => {
@@ -126,10 +132,13 @@ has actionCfg => sub {
                 die mkerror(4993,"You can not delete the user you are logged in with")
                     if $id == $self->user->userId;
                 my $db = $self->user->db;
-                $db->deleteData('cbuser',$id);
-                return {
-                    # no action required, table reload on popup close is default
-                };
+
+                if ($db->deleteData('cbuser',$id) == 1){
+                    return {
+                         action => 'reload',
+                    };
+                }
+                die mkerror(4993,"Faild to remove user $id");
             }
         }) : (),
     ];

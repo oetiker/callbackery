@@ -136,6 +136,14 @@ has log => sub {
     shift->app->log;
 };
 
+=head2 args
+
+some meta information provided when instanciating the plugin
+
+=cut
+
+has 'args' => sub { {} };
+
 =head2 screenCfg
 
 Returns the information for building a plugin configuration screen.

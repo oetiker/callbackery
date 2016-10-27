@@ -147,8 +147,9 @@ get an instance for the given plugin
 sub instanciatePlugin {
     my $self = shift;
     my $name = shift;
+    my $args = shift;
     my $user = $self->user;
-    return $self->config->instanciatePlugin($name,$user);
+    return $self->config->instanciatePlugin($name,$user,$args);
 }
 
 =head2 processPluginData(plugin,args)
@@ -231,7 +232,7 @@ sub getPluginConfig {
     my $self = shift;
     my $plugin = shift;
     my $args = shift;
-    my $obj = $self->instanciatePlugin($plugin);
+    my $obj = $self->instanciatePlugin($plugin,$args);
     return $obj->filterHashKey($obj->screenCfg,'backend');
 }
 
