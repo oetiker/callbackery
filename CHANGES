@@ -1,3 +1,6 @@
+0.8.2
+ * make sure args always returns at least a hashpointer
+
 0.8.1
  * allow escape to cancle popupClosed
  

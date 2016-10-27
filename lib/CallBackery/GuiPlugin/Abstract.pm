@@ -142,7 +142,7 @@ some meta information provided when instanciating the plugin
 
 =cut
 
-has 'args' => sub { {} };
+has 'args';
 
 =head2 screenCfg
 

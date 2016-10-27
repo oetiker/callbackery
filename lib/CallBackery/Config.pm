@@ -378,7 +378,7 @@ sub instanciatePlugin {
         user => $user,
         name => $prototype->name,
         config => $prototype->config,
-        args => $args,
+        args => $args // {},
         app => $self->app,
     );
     die mkerror(39944,"No permission to access $name")
