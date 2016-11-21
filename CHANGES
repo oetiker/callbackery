@@ -1,3 +1,5 @@
+0.8.5
+ * tr is not available in server.js
 0.8.3
  * fix args regression
 0.8.2
