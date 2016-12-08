@@ -87,6 +87,8 @@ has mojoSqlDb => sub {
     return $self->sql->db;
 };
 
+=over 4
+
 =item my($fields,$values) = $self->C<map2sql(table,data)>;
 
 Provide two hash pointers and quote the field names for inclusion into an
@@ -374,7 +376,7 @@ sub getConfigValue {
     return ($@ ? undef : $value);
 }
 
-=head2 setConfigValue($key,$value)
+=item setConfigValue($key,$value)
 
 write a config value
 

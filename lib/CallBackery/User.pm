@@ -266,8 +266,6 @@ sub makeSessionCookie {
 1;
 __END__
 
-=back
-
 =head1 COPYRIGHT
 
 Copyright (c) 2013 by OETIKER+PARTNER AG. All rights reserved.
