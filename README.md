@@ -18,12 +18,17 @@ Open a terminal and follow these instructions below. We have tested them on
 ubuntu 14.04 but they should work on any recent linux system with at least
 perl 5.10.1 installed.
 
-First make sure you have curl and automake installed. The following commands
-will work on debian and ubuntu.  For redhat try `yum` instead of `apt-get`.
+First make sure you have gcc, perl curl and automake installed. The following commands
+will work on debian and ubuntu. 
 
 ```
-sudo apt-get install curl
-sudo apt-get install automake
+sudo apt-get install curl automake perl gcc unzip
+```
+
+For redhat try
+
+```
+sudo yum install curl automake perl-core openssl-devel gcc unzip
 ```
 
 Now setup callbackery and all its requirements. You can set the `PREFIX` to
