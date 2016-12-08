@@ -41,7 +41,7 @@ export PERL_CPANM_OPT="--local-lib $PREFIX"
 export PERL5LIB=$PREFIX/lib/perl5
 export PATH=$PREFIX/bin:$PATH
 curl -L cpanmin.us \
-  | perl - -n https://github.com/oetiker/callbackery/archive/master.tar.gz
+  | perl - -n --no-lwp https://github.com/oetiker/callbackery/archive/master.tar.gz
 ```
 
 Finally lets generate the CallBackery sample application.
