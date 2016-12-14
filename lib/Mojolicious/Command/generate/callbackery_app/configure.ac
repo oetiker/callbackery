@@ -102,7 +102,7 @@ if test x$actual_prefix = xNONE; then
 fi
 
 AC_MSG_CHECKING([Checking Install Prefix])
-if test x`stat -c %i $0` = x`stat -c %i $actual_prefix/configure 2>/dev/null`; then
+if test -f $actual_prefix/configure; then
     AC_MSG_ERROR([The install prefix must NOT point to the directory where you unpacked the source.])
 else
     AC_MSG_RESULT([install Prefix is fine])
