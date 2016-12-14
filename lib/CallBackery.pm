@@ -30,7 +30,7 @@ use CallBackery::Config;
 use CallBackery::Plugin::Doc;
 use CallBackery::Database;
 
-our $VERSION = '0.8.7';
+our $VERSION = '0.8.8';
 
 use Mojo::Base 'Mojolicious';
 
