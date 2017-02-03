@@ -1,3 +1,6 @@
+0.8.9
+ * properly handle row selection after table reload
+
 0.8.5
  * tr is not available in server.js
 0.8.3
