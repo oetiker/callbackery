@@ -111,6 +111,10 @@ has actionCfg => sub {
             addToContextMenu => $self->true,
             name => 'songFormAdd',
             popupTitle => trm('New Song'),
+            set => {
+                minHeight => 600,
+                minWidth => 500
+            },
             backend => {
                 plugin => 'SongForm',
                 config => {
