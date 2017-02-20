@@ -11,6 +11,7 @@ use PPI::Dumper;
 use File::Find;
 use Data::Dumper;
 use Locale::PO;
+use Encode;
 
 my %idStr;
 
@@ -32,7 +33,7 @@ find ({
             my $location = $el->location;
             my $next = $el->snext_sibling;            
             next if not $next->isa('PPI::Structure::List');
-            my $id = $next->find_first('PPI::Token::Quote')->string;
+            my $id = decode('utf8',$next->find_first('PPI::Token::Quote')->string);
             my $filename = $_;
             $filename =~ s{^$root/?}{};
             push @{$idStr{$id}},$filename.':'.$el->line_number;
