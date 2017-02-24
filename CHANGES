@@ -1,3 +1,6 @@
+0.8.12
+  * make login screen configurable
+
 0.8.9
  * properly handle row selection after table reload
 
