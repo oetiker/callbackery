@@ -186,7 +186,10 @@ DOC
         },
         FRONTEND => {
             _doc => 'Settings for the Web FRONTEND',
-            _vars => [ qw(logo logo_small title initial_plugin company_name company_url company_support) ],
+            _vars => [ qw(logo logo_small title initial_plugin company_name company_url company_support
+			  hide_password hide_release hide_company
+			)
+                     ],
             _sections => [ qw(COLORS) ],
             logo => {
                 _doc => 'url for the logo brand the login sceen',
@@ -208,6 +211,21 @@ DOC
             },
             initial_plugin => {
                 _doc => 'which tab should be active upon login ?'
+            },
+            hide_password => {
+	        _doc => 'hide password field on login screen',
+	        _re => '(yes|no)',
+                _re_error => 'pick yes or no',
+            },
+            hide_release => {
+	        _doc => 'hide release string on login screen',
+	        _re => '(yes|no)',
+                _re_error => 'pick yes or no',
+            },
+            hide_company => {
+	        _doc => 'hide company string on login screen',
+	        _re => '(yes|no)',
+                _re_error => 'pick yes or no',
             },
         },
         'FRONTEND-COLORS' => {

@@ -24,14 +24,13 @@ use warnings;
 use Mojolicious::Plugin::Qooxdoo;
 use Mojo::URL;
 use Mojo::JSON;
-use Mojo::Util qw(hmac_sha1_sum);
-use Mojo::File qw(path);
+use Mojo::Util qw(hmac_sha1_sum slurp);
 use File::Basename;
 use CallBackery::Config;
 use CallBackery::Plugin::Doc;
 use CallBackery::Database;
 
-our $VERSION = '0.8.12';
+our $VERSION = '0.8.11';
 
 use Mojo::Base 'Mojolicious';
 
@@ -158,7 +157,7 @@ sub startup {
         $app->config->reConfigure;
     }
 
-    $app->secrets([path($app->config->secretFile)->slurp]);
+    $app->secrets([slurp $app->config->secretFile]);
 
     my $routes = $app->routes;
 
