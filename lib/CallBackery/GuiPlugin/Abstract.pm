@@ -422,7 +422,10 @@ has template => sub {
     monkey_patch $mt->namespace,
         dbLookup => $dbLookup;
     monkey_patch $mt->namespace,
-        slurp => \&slurp;
+        slurp => sub {
+            my $filename = shift;
+            return path($filename)->slurp;
+        };
     monkey_patch $mt->namespace,
         cfgHash => sub { $self->user->app->config->cfgHash };
     monkey_patch $mt->namespace,
@@ -442,7 +445,7 @@ sub renderTemplate{
     my $template = shift;
     my $destination = shift;
     $self->log->debug('['.$self->name.'] processing template '.$template);
-    my $newData = $self->template->render(slurp $self->app->home->rel_file('share/'.$template));
+    my $newData = $self->template->render($self->app->home->rel_file('share/'.$template)->slurp);
     if (-r $destination){
         my $oldData = slurp $destination;
         if ($newData eq $oldData){
