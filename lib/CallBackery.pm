@@ -29,7 +29,7 @@ use File::Basename;
 use CallBackery::Config;
 use CallBackery::Plugin::Doc;
 
-our $VERSION = '0.8.12';
+our $VERSION = '0.8.11';
 
 use Mojo::Base 'Mojolicious';
 
