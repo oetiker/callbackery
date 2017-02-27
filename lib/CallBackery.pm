@@ -28,7 +28,6 @@ use Mojo::Util qw(hmac_sha1_sum slurp);
 use File::Basename;
 use CallBackery::Config;
 use CallBackery::Plugin::Doc;
-use CallBackery::Database;
 
 our $VERSION = '0.8.12';
 
@@ -60,6 +59,7 @@ An instance of L<CallBackery::Database> or a module with the same API.
 =cut
 
 has 'database' => sub {
+    require 'CallBackery::Database';
     CallBackery::Database->new(app=>shift);
 };
 
