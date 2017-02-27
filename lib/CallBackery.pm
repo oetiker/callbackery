@@ -24,12 +24,14 @@ use warnings;
 use Mojolicious::Plugin::Qooxdoo;
 use Mojo::URL;
 use Mojo::JSON;
-use Mojo::Util qw(hmac_sha1_sum slurp);
+use Mojo::Util qw(hmac_sha1_sum);
+use Mojo::File qw(path);
 use File::Basename;
 use CallBackery::Config;
 use CallBackery::Plugin::Doc;
+use CallBackery::Database;
 
-our $VERSION = '0.8.12';
+our $VERSION = '0.8.13';
 
 use Mojo::Base 'Mojolicious';
 
@@ -59,7 +61,6 @@ An instance of L<CallBackery::Database> or a module with the same API.
 =cut
 
 has 'database' => sub {
-    require 'CallBackery::Database';
     CallBackery::Database->new(app=>shift);
 };
 
@@ -157,7 +158,7 @@ sub startup {
         $app->config->reConfigure;
     }
 
-    $app->secrets([slurp $app->config->secretFile]);
+    $app->secrets([ path($app->config->secretFile)->slurp ]);
 
     my $routes = $app->routes;
 

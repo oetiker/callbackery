@@ -1,3 +1,8 @@
+0.8.13
+  * use require to load Mojo::SQLite in the sql property of the database module
+    opening up the option for using a diffrent database or none at all
+  * more Mojo::File cleanup
+
 0.8.12
   * make login screen configurable
 

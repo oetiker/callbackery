@@ -8,7 +8,6 @@ use Data::Dumper;
 use Carp qw(croak);
 use CallBackery::Exception qw(mkerror);
 use Scalar::Util qw(weaken);
-use Mojo::SQLite;
 
 =head1 NAME
 
@@ -60,7 +59,8 @@ my $lastFlush = time;
 
 has sql => sub {
     my $self = shift;
-
+ 
+    require 'Mojo::SQLite';
     my $sql = Mojo::SQLite->new($self->config->cfgHash->{BACKEND}{cfg_db});
 
     $sql->options({
