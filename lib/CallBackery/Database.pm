@@ -60,7 +60,7 @@ my $lastFlush = time;
 has sql => sub {
     my $self = shift;
  
-    require 'Mojo::SQLite';
+    require Mojo::SQLite;
     my $sql = Mojo::SQLite->new($self->config->cfgHash->{BACKEND}{cfg_db});
 
     $sql->options({
