@@ -82,7 +82,8 @@ has sql => sub {
     return $sql;
 };
 
-has mojoSqlDb => sub {
+# this must be fresh ... always!
+sub mojoSqlDb {
     my $self = shift;
     return $self->sql->db;
 };
