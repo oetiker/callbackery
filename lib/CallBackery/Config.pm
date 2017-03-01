@@ -190,7 +190,6 @@ DOC
 			  hide_password hide_release hide_company
 			)
                      ],
-            _sections => [ qw(COLORS) ],
             logo => {
                 _doc => 'url for the logo brand the login sceen',
             },
