@@ -100,6 +100,7 @@ ${E}head1 SYNOPSIS
 
  *** FRONTEND ***
  logo = logo.png
+ spinner = myspinner.gif
  logo_small = logo-small.png
  title = Appliance Configurator
 
@@ -186,7 +187,7 @@ DOC
         },
         FRONTEND => {
             _doc => 'Settings for the Web FRONTEND',
-            _vars => [ qw(logo logo_small title initial_plugin company_name company_url company_support
+            _vars => [ qw(logo logo_small spinner title initial_plugin company_name company_url company_support
 			  hide_password hide_release hide_company
 			)
                      ],
@@ -204,6 +205,9 @@ DOC
             },
             logo_small => {
                 _doc => 'url for the small logo brand the UI',
+            },
+            spinner => {
+                _doc => 'url for the busy animation spinner gif',
             },
             title => {
                 _doc => 'title string for the application'
