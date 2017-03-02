@@ -57,7 +57,7 @@ has formCfg => sub {
         $self->config->{type} eq 'edit' ? {
             key => 'song_id',
             label => trm('SongId'),
-            widget => 'text',
+            widget => 'hiddenText',
             set => {
                 readOnly => $self->true,
             },

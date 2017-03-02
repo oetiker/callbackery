@@ -47,7 +47,7 @@ has formCfg => sub {
         $self->config->{type} eq 'edit' ? {
             key => 'cbuser_id',
             label => trm('UserId'),
-            widget => 'text',
+            widget => 'hiddenText',
             set => {
                 readOnly => $self->true,
             },
