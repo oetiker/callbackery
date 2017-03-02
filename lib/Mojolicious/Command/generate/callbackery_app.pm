@@ -77,7 +77,7 @@ EOF
     my $email = $userName.'@'.$domain;
 
     if ( -r $ENV{HOME} . '/.gitconfig' ){
-        my $in = Mojo::File->path($ENV{HOME} . '/.gitconfig')->slurp;
+        my $in = Mojo::File->new($ENV{HOME} . '/.gitconfig')->slurp;
         $in =~ /name\s*=\s*(\S.+\S)/ and $fullName = $1;
         $in =~ /email\s*=\s*(\S+)/ and $email = $1;
     }
@@ -113,7 +113,7 @@ EOF
 sub render_data {
   my ($self, $name) = (shift, shift);
     Mojo::Template->new->name("template $name")
-    ->render(Mojo::File->path(dirname($INC{'Mojolicious/Command/generate/callbackery_app.pm'}).'/callbackery_app/'.$name)->slurp, @_);
+    ->render(Mojo::File->new(dirname($INC{'Mojolicious/Command/generate/callbackery_app.pm'}).'/callbackery_app/'.$name)->slurp, @_);
 }
 1;
 

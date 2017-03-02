@@ -71,6 +71,11 @@ has formCfg => sub {
                 required => $self->true,
             },
         },
+        {
+            widget => 'header',
+            label => trm('Song Details'),
+            note => trm('Use the following fields to write down some extra information about the song.')
+        },
         (map {
             {
                 key => 'song_voice_'.$_,
@@ -102,6 +107,7 @@ has formCfg => sub {
             key => 'song_note',
             label => trm('Note'),
             widget => 'textArea',
+            note => trm('Use this area to write down additional notes on the particular song.'),
             set => {
                 placeholder => 'some extra information about this song',
             }
