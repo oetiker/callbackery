@@ -47,7 +47,7 @@ has formCfg => sub {
         $self->config->{type} eq 'edit' ? {
             key => 'cbuser_id',
             label => trm('UserId'),
-            widget => 'text',
+            widget => 'hiddenText',
             set => {
                 readOnly => $self->true,
             },
@@ -140,9 +140,6 @@ has actionCfg => sub {
     my $self = shift;
     my $mode = $self->config->{mode} // 'default';
     my $type = $self->config->{type} // 'new';
-    if ($type eq 'edit' and not $self->args->{selection}{cbuser_id}){
-        return [];
-    }
 
     my $handler = sub {
         my $args = shift;

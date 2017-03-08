@@ -13,7 +13,7 @@ $ENV{CALLBACKERY_CONF} = $FindBin::Bin.'/callbackery.cfg';
 
 my $t = Test::Mojo->new('CallBackery');
 
-$t->post_ok('/QX-JSON-RPC','{"id":1,"service": "default", "method":"ping"}')
+$t->post_ok('/QX-JSON-RPC' => json => { id => 1, service => 'default', method => 'ping'} )
   ->status_is(200)
   ->content_type_is('application/json; charset=utf-8')
   ->json_is({id => 1,result => "pong"});

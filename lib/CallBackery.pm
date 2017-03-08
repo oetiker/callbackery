@@ -29,8 +29,9 @@ use Mojo::File qw(path);
 use File::Basename;
 use CallBackery::Config;
 use CallBackery::Plugin::Doc;
+use CallBackery::Database;
 
-our $VERSION = '0.8.12';
+our $VERSION = '0.9.0';
 
 use Mojo::Base 'Mojolicious';
 
@@ -60,7 +61,6 @@ An instance of L<CallBackery::Database> or a module with the same API.
 =cut
 
 has 'database' => sub {
-    require 'CallBackery::Database';
     CallBackery::Database->new(app=>shift);
 };
 
@@ -158,7 +158,7 @@ sub startup {
         $app->config->reConfigure;
     }
 
-    $app->secrets([path($app->config->secretFile)->slurp]);
+    $app->secrets([ path($app->config->secretFile)->slurp ]);
 
     my $routes = $app->routes;
 

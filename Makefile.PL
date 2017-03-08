@@ -12,13 +12,12 @@ WriteMakefile(
   AUTHOR       => 'Tobias Oetiker <tobi@oetiker.ch>',
   LICENSE      => 'gpl_3',
   PREREQ_PM    => {
-    'Mojolicious' => '7.05',
-    'Mojolicious::Plugin::Qooxdoo' => '0.904',
-    'Locale::PO' => '0.27',
+    'Mojolicious' => '7.26',
+    'Mojolicious::Plugin::Qooxdoo' => '0.905',
     'Config::Grammar' => '1.12',
-    'Mojo::SQLite' => '1.000',
-    'Pod::Markdown::Github' =>'0',
-    'PPI' => '0',
+    'Locale::PO' => '0.27',
+  },
+  BUILD_REQUIRES => {
     'CPAN::Uploader' => 0
   },
   META_MERGE   => {

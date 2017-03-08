@@ -1,5 +1,13 @@
+0.8.14
+  * added some dependencies back in
+
+0.8.13
+  * use require to load Mojo::SQLite in the sql property of the database module
+    opening up the option for using a diffrent database or none at all
+  * more Mojo::File cleanup
+
 0.8.12
-  * replace usage of deprecated Mojo::Util::slurp
+  * make login screen configurable
 
 0.8.9
  * properly handle row selection after table reload

@@ -57,7 +57,7 @@ has formCfg => sub {
         $self->config->{type} eq 'edit' ? {
             key => 'song_id',
             label => trm('SongId'),
-            widget => 'text',
+            widget => 'hiddenText',
             set => {
                 readOnly => $self->true,
             },
@@ -70,6 +70,11 @@ has formCfg => sub {
             set => {
                 required => $self->true,
             },
+        },
+        {
+            widget => 'header',
+            label => trm('Song Details'),
+            note => trm('Use the following fields to write down some extra information about the song.')
         },
         (map {
             {
@@ -102,6 +107,7 @@ has formCfg => sub {
             key => 'song_note',
             label => trm('Note'),
             widget => 'textArea',
+            note => trm('Use this area to write down additional notes on the particular song.'),
             set => {
                 placeholder => 'some extra information about this song',
             }

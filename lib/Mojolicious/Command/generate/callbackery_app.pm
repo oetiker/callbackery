@@ -2,7 +2,8 @@ package Mojolicious::Command::generate::callbackery_app;
 use Mojo::Base 'Mojolicious::Command';
 use File::Basename;
 use Mojo::Util qw(class_to_file class_to_path);
-use Mojo::File qw(path);
+use Mojo::File;
+
 use POSIX qw(strftime);
 use Cwd 'getcwd';
 use File::Spec::Functions qw(catdir catfile);
@@ -76,7 +77,7 @@ EOF
     my $email = $userName.'@'.$domain;
 
     if ( -r $ENV{HOME} . '/.gitconfig' ){
-        my $in = path->($ENV{HOME} . '/.gitconfig')->slurp;
+        my $in = Mojo::File->new($ENV{HOME} . '/.gitconfig')->slurp;
         $in =~ /name\s*=\s*(\S.+\S)/ and $fullName = $1;
         $in =~ /email\s*=\s*(\S+)/ and $email = $1;
     }
@@ -112,7 +113,7 @@ EOF
 sub render_data {
   my ($self, $name) = (shift, shift);
     Mojo::Template->new->name("template $name")
-    ->render(path(dirname($INC{'Mojolicious/Command/generate/callbackery_app.pm'}).'/callbackery_app/'.$name)->slurp, @_);
+    ->render(Mojo::File->new(dirname($INC{'Mojolicious/Command/generate/callbackery_app.pm'}).'/callbackery_app/'.$name)->slurp, @_);
 }
 1;
 

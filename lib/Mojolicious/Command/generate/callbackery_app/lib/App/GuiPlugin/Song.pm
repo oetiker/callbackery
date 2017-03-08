@@ -31,8 +31,15 @@ has formCfg => sub {
 
     return [
         {
+            widget => 'header',
+            label => trm('*'),
+            note => trm('Nice Start')
+        },
+        {
             key => 'song_title',
             widget => 'text',
+            note => 'Just type the title of a song',
+            label => 'Search',
             set => {
                 placeholder => 'Song Title',
             },
@@ -108,7 +115,7 @@ has actionCfg => sub {
         {
             label => trm('Add Song'),
             action => 'popup',
-            addToContextMenu => $self->true,
+            addToContextMenu => $self->false,
             name => 'songFormAdd',
             popupTitle => trm('New Song'),
             set => {
@@ -121,6 +128,9 @@ has actionCfg => sub {
                     type => 'add'
                 }
             }
+        },
+        {
+            action => 'separator'
         },
         {
             label => trm('Edit Song'),
