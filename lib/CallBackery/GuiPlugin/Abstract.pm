@@ -5,7 +5,8 @@ use Carp qw(carp croak);
 use Storable qw(dclone);
 use Data::Dumper;
 use Mojo::Template;
-use Mojo::Util qw(monkey_patch slurp);
+use Mojo::Util qw(monkey_patch);
+use Mojo::File qw(path);
 use CallBackery::Exception qw(mkerror);
 use autodie;
 use Scalar::Util 'blessed';
@@ -445,9 +446,13 @@ sub renderTemplate{
     my $template = shift;
     my $destination = shift;
     $self->log->debug('['.$self->name.'] processing template '.$template);
+<<<<<<< HEAD
     my $newData = $self->template->render($self->app->home->rel_file('share/'.$template)->slurp);
+=======
+    my $newData = $self->template->render(path($self->app->home->rel_file('share/'.$template))->slurp);
+>>>>>>> 67dae262481121edd7e05155397e1494cbc1e78a
     if (-r $destination){
-        my $oldData = slurp $destination;
+	my $oldData = path($destination)->slurp;
         if ($newData eq $oldData){
             return 0
         }
