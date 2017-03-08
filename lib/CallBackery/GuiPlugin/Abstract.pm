@@ -511,7 +511,7 @@ sub setConfigValue {
     return $value;
 }
 
-=head2 system(args)
+=head2 systemNoFd(args)
 
 A version of the system function that makes sure to NOT to inherit any
 extra filehandles to the kids and sends the output of the call system
@@ -527,7 +527,7 @@ active.
 
 =cut
 
-sub system {
+sub systemNoFd {
     my $self = shift;
     my $binary = shift;
     my $logoutput = 1;
