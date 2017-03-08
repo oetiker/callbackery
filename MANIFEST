@@ -54,6 +54,7 @@ lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/data/__init__.js
 lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Footer.js
 lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/TabView.js
 lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/form/Auto.js
+lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/form/DateTime.js
 lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/form/renderer/NoteForm.js
 lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/form/renderer/HBox.js
 lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/plugin/Action.js
