@@ -11,19 +11,21 @@ BIN = bin/$(MJ_SCRIPT).pl
 PUB := $(shell find public -type d -name ".??*" -prune -o -not -name ".*" -a -not -name "*~" -a -not -name "*.tmp"  -a -type f -print )
 
 TEMPL := $(shell test -d templates && find templates -type f -name "*.ep")
+SHARE := $(shell test -d share && find share -type f -name "*.po") $(SHARE)
 
 PERLTESTS := $(shell find t -name "*.t")
 
 THIRDPARTY_DIR := $(shell pwd)/thirdparty
 
 EXTRA_DIST = VERSION PERL_MODULES COPYRIGHT LICENSE CHANGES AUTHORS bootstrap $(PUB) \
-	$(wildcard t/*.t) $(BIN) $(POD) $(TEMPL) $(PERLTESTS)
+	$(wildcard t/*.t) $(BIN) $(POD) $(TEMPL) $(PERLTESTS) $(SHARE)
+
 
 YEAR := $(shell date +%Y)
 DATE := $(shell date +%Y-%m-%d)
 
 datadir = $(prefix)
-nobase_data_DATA = $(PUB) $(TEMPL)
+nobase_data_DATA = $(PUB) $(TEMPL) $(SHARE)
 
 dist_bin_SCRIPTS = $(BIN)
 

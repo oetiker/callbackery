@@ -188,7 +188,7 @@ DOC
         FRONTEND => {
             _doc => 'Settings for the Web FRONTEND',
             _vars => [ qw(logo logo_small spinner title initial_plugin company_name company_url company_support
-			  hide_password hide_release hide_company
+			  hide_password hide_release hide_company max_width
 			)
                      ],
             logo => {
@@ -199,6 +199,9 @@ DOC
             },
             company_url => {
                 _doc => 'link to the company homepage'
+            },
+            max_width => {
+                _doc => 'maximum content width'
             },
             company_support => {
                 _doc => 'company support eMail'
