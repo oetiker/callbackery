@@ -217,6 +217,7 @@ sub getUserConfig {
         }
     }
     return {
+        userInfo => $self->user->userInfo,
         plugins => \@plugins,
     };
 }
