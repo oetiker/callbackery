@@ -87,8 +87,7 @@ has log => sub {
 };
 
 has db => sub {
-    my $self = shift;
-    $self->app->database->new(app => $self->app);
+    shift->app->database;
 };
 
 =head2 $self->mojoSqlDb
