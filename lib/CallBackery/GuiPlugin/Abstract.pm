@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Carp qw(carp croak);
 use Storable qw(dclone);
+use Encode;
 use Data::Dumper;
 use Mojo::Template;
 use Mojo::Util qw(monkey_patch slurp);
@@ -65,7 +66,7 @@ What should the tab holding this plugin be called
 =cut
 
 has 'tabName' => sub {
-    return shift->config->{'tab-name'};
+    return decode('utf8', shift->config->{'tab-name'});
 };
 
 =head2 true
