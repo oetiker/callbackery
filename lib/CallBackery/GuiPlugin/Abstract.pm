@@ -5,7 +5,7 @@ use Carp qw(carp croak);
 use Storable qw(dclone);
 use Data::Dumper;
 use Mojo::Template;
-use Mojo::Util qw(monkey_patch slurp);
+use Mojo::Util qw(monkey_patch);
 use CallBackery::Exception qw(mkerror);
 use autodie;
 use Scalar::Util 'blessed';
@@ -13,6 +13,7 @@ use IPC::Open3;
 use POSIX qw<F_SETFD F_GETFD FD_CLOEXEC>;
 use Time::HiRes qw(usleep);
 use Mojo::JSON qw(encode_json decode_json);
+use Mojo::File;
 # disable warnings below, otherwise testing will give warnings
 eval { local $^W=0; require "sys/ioctl.ph" };
 
@@ -424,7 +425,7 @@ has template => sub {
     monkey_patch $mt->namespace,
         slurp => sub {
             my $filename = shift;
-            return path($filename)->slurp;
+            return Mojo::File->new($filename)->slurp;
         };
     monkey_patch $mt->namespace,
         cfgHash => sub { $self->user->app->config->cfgHash };
@@ -447,7 +448,7 @@ sub renderTemplate{
     $self->log->debug('['.$self->name.'] processing template '.$template);
     my $newData = $self->template->render($self->app->home->rel_file('share/'.$template)->slurp);
     if (-r $destination){
-        my $oldData = slurp $destination;
+        my $oldData = Mojo::File->new($destination)->slurp;
         if ($newData eq $oldData){
             return 0
         }
