@@ -38,6 +38,7 @@ EOF
     $self->cwd(join '/', @dir) if @dir;
 
     my $name = class_to_file $class;
+    $name =~ s/_/-/g;
     my $class_path = class_to_path $class;
     # Configure Main Dir
     my $file = {
