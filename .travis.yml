@@ -4,6 +4,7 @@ language: perl
 
 perl:
   - "5.22"
+  - "5.24"
 
 before_install:
   - cpanm --notest
@@ -14,4 +15,8 @@ before_install:
 
 script:
   - cover -test -report coveralls
+  - perl Makefile.PL
+  - make thirdparty
+  - perl -I thirdparty/lib/perl5/ -I lib thirdparty/bin/mojo  generate  callbackery_app
+
 
