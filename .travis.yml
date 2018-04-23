@@ -9,9 +9,6 @@ perl:
 before_install:
   - cpanm --notest
     Devel::Cover::Report::Coveralls
-    IO::Socket::SSL Mojolicious@7.26
-    Mojolicious::Plugin::Qooxdoo@0.905
-    Mojo::SQLite@0.011 Config::Grammar@1.10
 
 script:
   - cover -test -report coveralls
