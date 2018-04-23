@@ -21,7 +21,7 @@ perl 5.10.1 installed.
 First make sure you have gcc, perl curl and automake installed. The following commands
 will work on debian and ubuntu. 
 
-```
+```console
 sudo apt-get install curl automake perl gcc unzip
 ```
 
