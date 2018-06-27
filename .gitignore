@@ -17,3 +17,6 @@ nytprof.out
 /pm_to_blib
 *.o
 *.bs
+thirdparty/
+*.gz
+*.tar

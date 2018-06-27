@@ -462,9 +462,16 @@ sub getConfigBlob {
 
     my $zip = Archive::Zip->new();
     my $cfg = $self->cfgHash;
+    # flush all the changes in the database to the db file
+    my $dumpfile = '/tmp/cbdump'.$$;
+    unlink $dumpfile if -f $dumpfile;
+    open my $dump, '|-','/usr/bin/sqlite3',$cfg->{BACKEND}{cfg_db};
+    print $dump ".output $dumpfile\n";
+    print $dump ".dump\n";
+    close $dump; 
     $zip->addFile({
-        filename => $cfg->{BACKEND}{cfg_db},
-        zipName => '{DATABASE}',
+        filename => $dumpfile,
+        zipName => '{DATABASEDUMP}',
     });
     for my $obj (@{$self->configPlugins}){
         my $name = $obj->name;
@@ -509,9 +516,16 @@ sub restoreConfigBlob {
         for ($member->fileName){
             /^\{DATABASE\}$/ && do {
                 $self->log->warn("Restoring Database!");
+                unlink glob $cfg->{BACKEND}{cfg_db}.'*';
                 $member->extractToFileNamed($cfg->{BACKEND}{cfg_db});
-                open my $gen, '>', $cfg->{BACKEND}{cfg_db}.'.flush';
-                close $gen;
+                last;
+            };
+            /^\{DATABASEDUMP\}$/ && do {
+                $self->log->warn("Restoring Database Dump!");
+                unlink glob $cfg->{BACKEND}{cfg_db}.'*';
+                open my $sqlite, '|-', '/usr/bin/sqlite3',$cfg->{BACKEND}{cfg_db};
+                print $sqlite $member->contents();
+                close $sqlite;
                 last;
             };
             m/^\{PLUGINSTATE\.([^.]+)\}(.+)/ && do {
