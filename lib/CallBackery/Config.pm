@@ -524,7 +524,9 @@ sub restoreConfigBlob {
                 $self->log->warn("Restoring Database Dump!");
                 unlink glob $cfg->{BACKEND}{cfg_db}.'*';
                 open my $sqlite, '|-', '/usr/bin/sqlite3',$cfg->{BACKEND}{cfg_db};
-                print $sqlite $member->contents();
+                my $sql = $member->contents();
+                $sql =~ s/0$//; # for some reason the dump ends in 0
+                print $sqlite $sql;
                 close $sqlite;
                 last;
             };
