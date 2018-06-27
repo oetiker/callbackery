@@ -377,13 +377,13 @@ sub postProcessCfg {
     return $cfg;
 }
 
-=head2 instanciatePlugin(pluginName,userObj)
+=head2 instantiatePlugin(pluginName,userObj)
 
 create a new instance of this plugin prototype
 
 =cut
 
-sub instanciatePlugin {
+sub instantiatePlugin {
     my $self = shift;
     my $name = shift;
 
@@ -423,7 +423,7 @@ has configPlugins => sub {
     my @plugins;
     for my $name (@{$cfg->{PLUGIN}{list}}){
         my $obj = eval {
-            $self->instanciatePlugin($name,$user);
+            $self->instantiatePlugin($name,$user);
         } or next;
         push @plugins, $obj;
     }
@@ -519,7 +519,7 @@ sub restoreConfigBlob {
                 my $file = $2;
                 if (not $stateFileCache{$plugin}){
                     my $obj = eval {
-                         $self->instanciatePlugin($plugin,$user);
+                         $self->instantiatePlugin($plugin,$user);
                     };
                     if (not $obj){
                         $self->log->warn("Ignoring $file from plugin $plugin since the plugin is not available here.");
