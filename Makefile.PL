@@ -38,7 +38,7 @@ WriteMakefile(
 sub MY::postamble {
    my $self = shift;
    my %r = (%{ $self->{PREREQ_PM} || {} }, %{ $self->{BUILD_REQUIRES} || {} }, %{ $self->{TEST_REQUIRES} || {} } );
-   my $modules = join " ", grep !/^perl\@/, map { $r{$_} ? $_ .'@'. $r{$_} : $_ } keys %r;
+   my $modules = join " ", grep !/^perl\~/, map { $r{$_} ? $_ .'~'. $r{$_} : $_ } keys %r;
    my $tpd = "$FindBin::RealBin/thirdparty";
    warn "** call 'make thirdparty' to build missing dependencies ...\n";
    return <<"EOF";
