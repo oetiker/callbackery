@@ -22,3 +22,4 @@ thirdparty/
 *.tar
 dist.sh
 t/callbackery.cfg.secret
+*~

@@ -1,4 +1,4 @@
-package Mojolicious::Command::generate::callbackery_app;
+package Mojolicious::Command::Author::generate::callbackery_app;
 use Mojo::Base 'Mojolicious::Command';
 use File::Basename;
 use Mojo::Util qw(class_to_file class_to_path);
@@ -118,7 +118,7 @@ EOF
 sub render_data {
   my ($self, $name) = (shift, shift);
     Mojo::Template->new->name("template $name")
-    ->render(Mojo::File->new(dirname($INC{'Mojolicious/Command/generate/callbackery_app.pm'}).'/callbackery_app/'.$name)->slurp, @_);
+    ->render(Mojo::File->new(dirname($INC{'Mojolicious/Command/Author/generate/callbackery_app.pm'}).'/callbackery_app/'.$name)->slurp, @_);
 }
 1;
 
