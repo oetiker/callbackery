@@ -261,7 +261,7 @@ sub getData {
         return $self->getAllFieldValues(@_);
     }
     else {
-        die mkerror(38334, 'Requested unknown data type' . ($type // 'unknown');
+        die mkerror(38334, 'Requested unknown data type' . ($type // 'unknown'));
     }
 }
 
