@@ -20,3 +20,5 @@ nytprof.out
 thirdparty/
 *.gz
 *.tar
+dist.sh
+t/callbackery.cfg.secret
