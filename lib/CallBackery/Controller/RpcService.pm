@@ -116,10 +116,10 @@ sub login { ## no critic (RequireArgUnpacking)
     my $login = shift;
     my $password = shift;
     my $cfg = $self->config->cfgHash->{BACKEND};
-    my $login = $self->user->login($login,$password);
-    if (eval { blessed $login && $login->isa('Mojo::Promise') }){
+    my $ok = $self->user->login($login,$password);
+    if (eval { blessed $ok && $ok->isa('Mojo::Promise') }){
         my $ret = Mojo::Promise->new;
-        $login->then(
+        $ok->then(
             sub {
                 if (shift){
                     $ret->resolve({            
@@ -136,7 +136,7 @@ sub login { ## no critic (RequireArgUnpacking)
         );
         return $ret;
     }
-    if ($login) {
+    if ($ok) {
         return {
             sessionCookie => $self->user->makeSessionCookie()
         };
@@ -389,7 +389,6 @@ sub handleUpload {
                 }
             }
             return $self->render(text=>encode_json({exception=>{message=>$err,code=>9999}}));
-        });
         });
         $self->render_later;
         return $return;
