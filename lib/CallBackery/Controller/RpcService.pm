@@ -100,17 +100,17 @@ set CALLBACKERY_RPC_LOG for extensive logging messages. Note that all values wit
 
 # our own logging
 sub logRpcCall {
+    my $self = shift;
     if ($ENV{CALLBACKERY_RPC_LOG}){
-        my $self = shift;
         my $method = shift;
         my $data = shift;
         $self->dataCleaner($data,qr{(?i)(?:password|_pass)});
-        my $userId = eval { $self->user->userId };
+        my $userId = eval { $self->user->userId } // 'UnknowUser';
         my $remoteAddr = $self->tx->remote_address;
-        $self->log->debug("[$userId|$remoteAddress] CALL $method(".encode_json($data).")");
+        $self->log->debug("[$userId|$remoteAddr] CALL $method(".encode_json($data).")");
     }
     else {
-        SUPER::logRpcCall(@_);
+        $self->SUPER::logRpcCall(@_);
     }
 }
 
@@ -122,16 +122,16 @@ set CALLBACKERY_RPC_LOG for extensive logging messages. Note that all values wit
 
 # our own logging
 sub logRpcReturn {
+    my $self = shift;
     if ($ENV{CALLBACKERY_RPC_LOG}){
-        my $self = shift;
         my $data = shift;
         $self->dataCleaner($data,qr{(?i)(?:password|_pass)});
-        my $userId = eval { $self->user->userId };
+        my $userId = eval { $self->user->userId } // 'UnknowUser';
         my $remoteAddr = $self->tx->remote_address;
-        $self->log->debug("[$userId|$remoteAddress] RETURN ".encode_json($data).")");
+        $self->log->debug("[$userId|$remoteAddr] RETURN ".encode_json($data).")");
     }
     else {
-        SUPER::logRpcReturn(@_);
+        $self->SUPER::logRpcReturn(@_);
     }
 
 }
