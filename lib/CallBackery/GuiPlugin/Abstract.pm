@@ -4,6 +4,7 @@ use warnings;
 use Carp qw(carp croak);
 use Storable qw(dclone);
 use Data::Dumper;
+use Encode;
 use Mojo::Template;
 use Mojo::Util qw(monkey_patch);
 use CallBackery::Exception qw(mkerror);
@@ -66,7 +67,7 @@ What should the tab holding this plugin be called
 =cut
 
 has tabName => sub {
-    return shift->config->{'tab-name'};
+    return decode('UTF-8', shift->config->{'tab-name'});
 };
 
 =head2 instantiationMode
