@@ -1,5 +1,6 @@
 package CallBackery;
 
+
 =head1 NAME
 
 CallBackery - Appliance Frontend Builder
@@ -33,7 +34,7 @@ use CallBackery::Plugin::Doc;
 use CallBackery::Database;
 use CallBackery::User;
 
-our $VERSION = '0.14.8';
+our $VERSION = '0.15.0';
 
 use Mojo::Base 'Mojolicious';
 
