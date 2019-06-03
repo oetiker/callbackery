@@ -219,7 +219,7 @@ sub getAllFieldValues {
     my $self = shift;
     my $parentForm = shift;
     my $currentForm = shift;
-    $self->args({currentFormData: $currentForm});
+    $self->args({currentFormData: $currentForm}) if $currentForm;
     my %map;
     my @promises;
     for my $key (keys %{$self->formCfgMap}){
