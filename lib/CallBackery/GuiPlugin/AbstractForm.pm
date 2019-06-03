@@ -217,6 +217,9 @@ Return all field values of the form.
 
 sub getAllFieldValues {
     my $self = shift;
+    my $parentForm = shift;
+    my $currentForm = shift;
+    $self->args({currentFormData: $currentForm});
     my %map;
     my @promises;
     for my $key (keys %{$self->formCfgMap}){
