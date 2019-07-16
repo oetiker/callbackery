@@ -221,7 +221,7 @@ sub getAllFieldValues {
     my $currentForm = shift;
     my %map;
     my @promises;
-    $self->args({currentFormData => $currentForm}) if $currentForm;
+    $self->args($currentForm) if $currentForm;
     for my $key (keys %{$self->formCfgMap}){
         my $value = $self->getFieldValue($key);
         if (eval { blessed $value && $value->isa('Mojo::Promise')}){
