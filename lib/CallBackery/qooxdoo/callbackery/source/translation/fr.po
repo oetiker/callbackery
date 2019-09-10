@@ -53,11 +53,11 @@ msgstr ""
 
 #: callbackery/ui/MsgBox.js:69
 msgid "Yes"
-msgstr ""
+msgstr "Oui"
 
 #: callbackery/ui/MsgBox.js:70
 msgid "No"
-msgstr ""
+msgstr "No"
 
 #: callbackery/ui/MsgBox.js:177
 msgid "RPC Error %1"
@@ -69,7 +69,7 @@ msgstr ""
 
 #: callbackery/ui/TabView.js:46
 msgid "This form contains unsaved data. Do you still want to switch?"
-msgstr ""
+msgstr "Ce formulaire contient des données non sauvegardées. Voulez-vous toujours changer?"
 
 #: callbackery/ui/form/Auto.js:72 callbackery/ui/form/Auto.js:80
 msgid "dd.MM.yyyy"
