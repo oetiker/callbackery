@@ -9,7 +9,7 @@
         "APPLICATION"  : "callbackery",
         "QXTHEME"      : "callbackery.theme.Theme",
         "API_EXCLUDE"  : ["qx.test.*","${APPLICATION}.theme.*", "${APPLICATION}.test.*", "${APPLICATION}.simulation.*"],
-        "LOCALES"      : [ "en","de" ],
+        "LOCALES"      : [ "en","de","fr","it" ],
         "CACHE"        : "./cache",
         "ROOT"         : "."
     },
