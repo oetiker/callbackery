@@ -18,8 +18,10 @@ nytprof.out
 *.o
 *.bs
 thirdparty/
+frontend/compiled/
+t/callbackery.cfg.secret
+my-call-backery-app/
 *.gz
 *.tar
 dist.sh
-t/callbackery.cfg.secret
 *~
