@@ -16,6 +16,8 @@ script:
   - perl Makefile.PL
   - make thirdparty
   - make
-  - perl -I./thirdparty/lib/perl5/ -I./lib thirdparty/bin/mojo  generate  callbackery_app
-
+  - perl -I./thirdparty/lib/perl5/ -I./lib thirdparty/bin/mojo generate callbackery_app
+  - cd my-call-backery-app
+  - ./configure
+  - make
 
