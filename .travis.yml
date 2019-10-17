@@ -10,6 +10,8 @@ perl:
 before_install:
   - cpanm --notest
     Devel::Cover::Report::Coveralls
+  - nvm install 10
+  - nvm use 10
 
 script:
   - cover -test -report coveralls
