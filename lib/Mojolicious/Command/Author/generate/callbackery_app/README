@@ -45,7 +45,8 @@ using the built-in Mojo webserver.
   cd ../bin
   ./<%= $p->{name} %>-source-mode.sh
 
-You can now connect to the CallBackery app with your web browser.
+You can now connect to the CallBackery app with your web browser. Just point it at `localhost:5444`.
+(If port 5444 is already used, change it in the last line of `./<%= $p->{name} %>-source-mode.sh`.)
 
 If you need any additional perl modules, write their names into the PERL_MODULES
 file and run ./bootstrap.
