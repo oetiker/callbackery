@@ -45,8 +45,14 @@ using the built-in Mojo webserver.
   cd ../bin
   ./<%= $p->{name} %>-source-mode.sh
 
-You can now connect to the CallBackery app with your web browser. Just point it at `localhost:5444`.
-(If port 5444 is already used, change it in the last line of `./<%= $p->{name} %>-source-mode.sh`.)
+The output should look like
+
+  bin$ ./cb-demo-source-mode.sh
+  [2019-10-22 10:25:05.07824] [8090] [info] Listening at "http://*:5444"
+
+You can now connect to the CallBackery app with your web browser. Point it at the port it advertises,
+in this case `localhost:5444`.
+(If you don't like the chosen port, change it in the last line of `./<%= $p->{name} %>-source-mode.sh`.)
 
 If you need any additional perl modules, write their names into the PERL_MODULES
 file and run ./bootstrap.
