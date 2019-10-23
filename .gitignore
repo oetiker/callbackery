@@ -24,6 +24,7 @@ my-call-backery-app/
 *.gz
 *.tar
 dist.sh
+.vscode
 
 # Backup files
 *~

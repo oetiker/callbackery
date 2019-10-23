@@ -9,40 +9,13 @@ applications with a desktopish look and feel.  For many applications, all
 you have todo is write a few lines of perl code and all the rest is taken
 care of by CallBackery.
 
-To get you started, CallBackery comes with a sample application ...
+To get you started, have a look at the CallBackery sample application. It is contained
+in the Mojolicious::Command::Author::generate::automake_app package.
 
 Quickstart
 ----------
 
-Open a terminal and follow these instructions below. We have tested them on
-ubuntu 14.04 but they should work on any recent linux system with at least
-perl 5.10.1 installed.
-
-First make sure you have gcc, perl curl and automake installed. The following commands
-will work on debian and ubuntu.
-
-```console
-sudo apt-get install curl automake perl gcc unzip
-```
-
-For redhat try
-
-```console
-sudo yum install curl automake perl-core openssl-devel gcc unzip
-```
-
-Now setup callbackery and all its requirements. You can set the `PREFIX` to
-wherever you want callbackery to be installed.
-
-```console
-PREFIX=$HOME/opt/callbackery
-export PERL_CPANM_HOME=$PREFIX
-export PERL_CPANM_OPT="--local-lib $PREFIX"
-export PERL5LIB=$PREFIX/lib/perl5
-export PATH=$PREFIX/bin:$PATH
-curl -L cpanmin.us \
-  | perl - -n --no-lwp https://github.com/oetiker/callbackery/archive/master.tar.gz
-```
+Follow the instructions in <https://github.com/oposs/mojolicious-automake>
 
 Finally lets generate the CallBackery sample application.
 
@@ -59,15 +32,9 @@ README you find in the `cb_demo` directory.
 
 Developing / Contributing
 -------------------------
-- Fork this repo (Using the github UI: https://github.com/oetiker/callbackery -> "Fork" in the top-right corner
+
+- Fork this repo (Using the github UI: https://github.com/oetiker/callbackery -> "Fork" in the top-right corner)
 - Clone your repo (In your fork, push "Clone or Download" and use the URL there for you `git clone` command)
-```console
-cd
-mkdir -p checkouts
-cd checkouts
-# your git clone command, here
-cd callbackery
-```
 - Make a branch (You will PR that branch, later)
 
 Generate the demo app from your checkout
@@ -77,7 +44,7 @@ perl Makefile.pl
 cd
 mkdir -p src
 cd src
-perl -I ~/checkouts/callbackery/thirdparty/lib/perl5 -I ~/checkouts/callbackery/lib ~/checkouts/callbackery/thirdparty/bin/mojo generate callbackery_app CbDemo
+perl -I../thirdparty/lib/perl5 -Ilib ~/checkouts/callbackery/thirdparty/bin/mojo generate callbackery_app CbDemo
 ```
 Now, proceed with the README in `~/src/cb-demo`
 

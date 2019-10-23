@@ -10,17 +10,10 @@ perl:
 before_install:
   - cpanm --notest
     Devel::Cover::Report::Coveralls
-  - nvm install 10
-  - nvm use 10
 
 script:
   - cover -test -report coveralls
   - perl Makefile.PL
   - make thirdparty
-  - make
-  - perl -I./thirdparty/lib/perl5/ -I./lib thirdparty/bin/mojo generate callbackery_app
-  - cd my-call-backery-app
-  - ./configure
-  # - curl https://cpanmin.us | PERL_CPANM_HOME=`pwd`/thirdparty perl - -q --notest --local-lib `pwd`/thirdparty --save-dists `pwd`/thirdparty --force `pwd`/..
-  # - make
+  - make test
 
