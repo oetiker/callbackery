@@ -409,7 +409,7 @@ sub setPreDestroyAction {
 
 sub DESTROY {
     my $self = shift;
-    $self->log->debug('Destroying RpcService controller');
+    eval { $self->helper->log->debug('Destroying RpcService controller'); };
 }
 
 
