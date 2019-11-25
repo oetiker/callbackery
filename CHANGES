@@ -1,3 +1,11 @@
+0.24.1 2019-11-25 10:53:02 +0100 Tobias Oetiker <tobi@oetiker.ch>
+
+ - actually include the new functionality
+
+0.24.0 2019-11-25 10:44:35 +0100 Tobias Oetiker <tobi@oetiker.ch>
+
+ - added support for boolean cells (fritz)
+
 0.23.1 2019-11-19 09:20:20 +0100 Tobias Oetiker <tobi@oetiker.ch>
 
  - change vertical spacing in form renderer so that no extra space is produced
