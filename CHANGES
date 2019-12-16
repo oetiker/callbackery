@@ -1,3 +1,7 @@
+0.25.1 2019-12-16 09:50:38 +0100 Tobias Oetiker <tobi@oetiker.ch>
+
+ - merge translations
+
 0.25.0 2019-12-16 09:44:32 +0100 Tobias Oetiker <tobi@oetiker.ch>
 
  - pass the output of config.getUrlConfig under the key urlConfig to the getUserConfig backend call
