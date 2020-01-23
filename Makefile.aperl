@@ -1,0 +1,1204 @@
+# This Makefile is for the CallBackery extension to perl.
+#
+# It was generated automatically by MakeMaker version
+# 7.24 (Revision: 72400) from the contents of
+# Makefile.PL. Don't edit this file, edit Makefile.PL instead.
+#
+#       ANY CHANGES MADE HERE WILL BE LOST!
+#
+#   MakeMaker ARGV: (q[DIR=], q[MAKEFILE=Makefile.aperl], q[LINKTYPE=static], q[MAKEAPERL=1], q[NORECURS=1], q[CCCDLFLAGS=])
+#
+
+#   MakeMaker Parameters:
+
+#     ABSTRACT => q[CallBackery is a Mojolicious+Qoodoo Framework for building Web Applications]
+#     AUTHOR => [q[Tobias Oetiker <tobi@oetiker.ch>]]
+#     BUILD_REQUIRES => { CPAN::Uploader=>q[0] }
+#     CONFIGURE_REQUIRES => {  }
+#     LICENSE => q[gpl_3]
+#     META_MERGE => { no_index=>{ directory=>[q[t], q[example], q[setup], q[lib/Mojolicious/Command/Author/generate/callbackery_app]] }, requires=>{ perl=>q[5.022000] }, resources=>{ bugtracker=>q[https://github.com/oetiker/callbackery/issues], license=>q[http://opensource.org/licenses/GPL-3.0], repository=>q[https://github.com/oetiker/callbackery] } }
+#     NAME => q[CallBackery]
+#     PREREQ_PM => { CPAN::Uploader=>q[0], Config::Grammar=>q[1.13], Locale::PO=>q[0.27], Mojolicious=>q[8.26], Mojolicious::Plugin::Qooxdoo=>q[v1.0.8] }
+#     TEST_REQUIRES => {  }
+#     VERSION_FROM => q[lib/CallBackery.pm]
+#     dist => { PREOP=>q[$(PERL) -i -p -e 's/CallBackery\@\d+(\.\d+){2}/CallBackery\@$(VERSION)/g' lib/Mojolicious/Command/generate/callbackery_app/PERL_MODULES] }
+#     test => { TESTS=>q[t/*.t] }
+
+# --- MakeMaker post_initialize section:
+
+
+# --- MakeMaker const_config section:
+
+# These definitions are from config.sh (via /usr/lib/x86_64-linux-gnu/perl/5.26/Config.pm).
+# They may have been overridden via Makefile.PL or on the command line.
+AR = ar
+CC = x86_64-linux-gnu-gcc
+CCCDLFLAGS = -fPIC
+CCDLFLAGS = -Wl,-E
+DLEXT = so
+DLSRC = dl_dlopen.xs
+EXE_EXT = 
+FULL_AR = /usr/bin/ar
+LD = x86_64-linux-gnu-gcc
+LDDLFLAGS = -shared -L/usr/local/lib -fstack-protector-strong
+LDFLAGS =  -fstack-protector-strong -L/usr/local/lib
+LIBC = libc-2.27.so
+LIB_EXT = .a
+OBJ_EXT = .o
+OSNAME = linux
+OSVERS = 4.9.0
+RANLIB = :
+SITELIBEXP = /usr/local/share/perl/5.26.1
+SITEARCHEXP = /usr/local/lib/x86_64-linux-gnu/perl/5.26.1
+SO = so
+VENDORARCHEXP = /usr/lib/x86_64-linux-gnu/perl5/5.26
+VENDORLIBEXP = /usr/share/perl5
+
+
+# --- MakeMaker constants section:
+AR_STATIC_ARGS = cr
+DIRFILESEP = /
+DFSEP = $(DIRFILESEP)
+NAME = CallBackery
+NAME_SYM = CallBackery
+VERSION = 0.26.1
+VERSION_MACRO = VERSION
+VERSION_SYM = 0_26_1
+DEFINE_VERSION = -D$(VERSION_MACRO)=\"$(VERSION)\"
+XS_VERSION = 0.26.1
+XS_VERSION_MACRO = XS_VERSION
+XS_DEFINE_VERSION = -D$(XS_VERSION_MACRO)=\"$(XS_VERSION)\"
+INST_ARCHLIB = blib/arch
+INST_SCRIPT = blib/script
+INST_BIN = blib/bin
+INST_LIB = blib/lib
+INST_MAN1DIR = blib/man1
+INST_MAN3DIR = blib/man3
+MAN1EXT = 1p
+MAN3EXT = 3pm
+INSTALLDIRS = site
+DESTDIR = 
+PREFIX = $(SITEPREFIX)
+PERLPREFIX = /usr
+SITEPREFIX = /usr/local
+VENDORPREFIX = /usr
+INSTALLPRIVLIB = /usr/share/perl/5.26
+DESTINSTALLPRIVLIB = $(DESTDIR)$(INSTALLPRIVLIB)
+INSTALLSITELIB = /usr/local/share/perl/5.26.1
+DESTINSTALLSITELIB = $(DESTDIR)$(INSTALLSITELIB)
+INSTALLVENDORLIB = /usr/share/perl5
+DESTINSTALLVENDORLIB = $(DESTDIR)$(INSTALLVENDORLIB)
+INSTALLARCHLIB = /usr/lib/x86_64-linux-gnu/perl/5.26
+DESTINSTALLARCHLIB = $(DESTDIR)$(INSTALLARCHLIB)
+INSTALLSITEARCH = /usr/local/lib/x86_64-linux-gnu/perl/5.26.1
+DESTINSTALLSITEARCH = $(DESTDIR)$(INSTALLSITEARCH)
+INSTALLVENDORARCH = /usr/lib/x86_64-linux-gnu/perl5/5.26
+DESTINSTALLVENDORARCH = $(DESTDIR)$(INSTALLVENDORARCH)
+INSTALLBIN = /usr/bin
+DESTINSTALLBIN = $(DESTDIR)$(INSTALLBIN)
+INSTALLSITEBIN = /usr/local/bin
+DESTINSTALLSITEBIN = $(DESTDIR)$(INSTALLSITEBIN)
+INSTALLVENDORBIN = /usr/bin
+DESTINSTALLVENDORBIN = $(DESTDIR)$(INSTALLVENDORBIN)
+INSTALLSCRIPT = /usr/bin
+DESTINSTALLSCRIPT = $(DESTDIR)$(INSTALLSCRIPT)
+INSTALLSITESCRIPT = /usr/local/bin
+DESTINSTALLSITESCRIPT = $(DESTDIR)$(INSTALLSITESCRIPT)
+INSTALLVENDORSCRIPT = /usr/bin
+DESTINSTALLVENDORSCRIPT = $(DESTDIR)$(INSTALLVENDORSCRIPT)
+INSTALLMAN1DIR = /usr/share/man/man1
+DESTINSTALLMAN1DIR = $(DESTDIR)$(INSTALLMAN1DIR)
+INSTALLSITEMAN1DIR = /usr/local/man/man1
+DESTINSTALLSITEMAN1DIR = $(DESTDIR)$(INSTALLSITEMAN1DIR)
+INSTALLVENDORMAN1DIR = /usr/share/man/man1
+DESTINSTALLVENDORMAN1DIR = $(DESTDIR)$(INSTALLVENDORMAN1DIR)
+INSTALLMAN3DIR = /usr/share/man/man3
+DESTINSTALLMAN3DIR = $(DESTDIR)$(INSTALLMAN3DIR)
+INSTALLSITEMAN3DIR = /usr/local/man/man3
+DESTINSTALLSITEMAN3DIR = $(DESTDIR)$(INSTALLSITEMAN3DIR)
+INSTALLVENDORMAN3DIR = /usr/share/man/man3
+DESTINSTALLVENDORMAN3DIR = $(DESTDIR)$(INSTALLVENDORMAN3DIR)
+PERL_LIB = /usr/share/perl/5.26
+PERL_ARCHLIB = /usr/lib/x86_64-linux-gnu/perl/5.26
+PERL_ARCHLIBDEP = /usr/lib/x86_64-linux-gnu/perl/5.26
+LIBPERL_A = libperl.a
+FIRST_MAKEFILE = Makefile.aperl
+MAKEFILE_OLD = Makefile.aperl.old
+MAKE_APERL_FILE = Makefile.aperl.aperl
+PERLMAINCC = $(CC)
+PERL_INC = /usr/lib/x86_64-linux-gnu/perl/5.26/CORE
+PERL_INCDEP = /usr/lib/x86_64-linux-gnu/perl/5.26/CORE
+PERL = "/usr/bin/perl"
+FULLPERL = "/usr/bin/perl"
+ABSPERL = $(PERL)
+PERLRUN = $(PERL)
+FULLPERLRUN = $(FULLPERL)
+ABSPERLRUN = $(ABSPERL)
+PERLRUNINST = $(PERLRUN) "-I$(INST_ARCHLIB)" "-I$(INST_LIB)"
+FULLPERLRUNINST = $(FULLPERLRUN) "-I$(INST_ARCHLIB)" "-I$(INST_LIB)"
+ABSPERLRUNINST = $(ABSPERLRUN) "-I$(INST_ARCHLIB)" "-I$(INST_LIB)"
+PERL_CORE = 0
+PERM_DIR = 755
+PERM_RW = 644
+PERM_RWX = 755
+
+MAKEMAKER   = /usr/share/perl/5.26/ExtUtils/MakeMaker.pm
+MM_VERSION  = 7.24
+MM_REVISION = 72400
+
+# FULLEXT = Pathname for extension directory (eg Foo/Bar/Oracle).
+# BASEEXT = Basename part of FULLEXT. May be just equal FULLEXT. (eg Oracle)
+# PARENT_NAME = NAME without BASEEXT and no trailing :: (eg Foo::Bar)
+# DLBASE  = Basename part of dynamic library. May be just equal BASEEXT.
+MAKE = make
+FULLEXT = CallBackery
+BASEEXT = CallBackery
+PARENT_NAME = 
+DLBASE = $(BASEEXT)
+VERSION_FROM = lib/CallBackery.pm
+OBJECT = 
+LDFROM = $(OBJECT)
+LINKTYPE = static
+BOOTDEP = 
+
+# Handy lists of source code files:
+XS_FILES = 
+C_FILES  = 
+O_FILES  = 
+H_FILES  = 
+MAN1PODS = 
+MAN3PODS = lib/CallBackery.pm \
+	lib/CallBackery/Config.pm \
+	lib/CallBackery/Controller/RpcService.pm \
+	lib/CallBackery/Database.pm \
+	lib/CallBackery/Exception.pm \
+	lib/CallBackery/GuiPlugin/Abstract.pm \
+	lib/CallBackery/GuiPlugin/AbstractForm.pm \
+	lib/CallBackery/GuiPlugin/AbstractHtml.pm \
+	lib/CallBackery/GuiPlugin/AbstractTable.pm \
+	lib/CallBackery/GuiPlugin/UserForm.pm \
+	lib/CallBackery/GuiPlugin/Users.pm \
+	lib/CallBackery/Index.pod \
+	lib/CallBackery/Plugin/Doc.pm \
+	lib/CallBackery/Translate.pm \
+	lib/CallBackery/User.pm
+
+# Where is the Config information that we are using/depend on
+CONFIGDEP = $(PERL_ARCHLIBDEP)$(DFSEP)Config.pm $(PERL_INCDEP)$(DFSEP)config.h
+
+# Where to build things
+INST_LIBDIR      = $(INST_LIB)
+INST_ARCHLIBDIR  = $(INST_ARCHLIB)
+
+INST_AUTODIR     = $(INST_LIB)/auto/$(FULLEXT)
+INST_ARCHAUTODIR = $(INST_ARCHLIB)/auto/$(FULLEXT)
+
+INST_STATIC      = 
+INST_DYNAMIC     = 
+INST_BOOT        = 
+
+# Extra linker info
+EXPORT_LIST        = 
+PERL_ARCHIVE       = 
+PERL_ARCHIVEDEP    = 
+PERL_ARCHIVE_AFTER = 
+
+
+TO_INST_PM = lib/CallBackery.pm \
+	lib/CallBackery/Config.pm \
+	lib/CallBackery/Controller/RpcService.pm \
+	lib/CallBackery/Database.pm \
+	lib/CallBackery/Exception.pm \
+	lib/CallBackery/GuiPlugin/Abstract.pm \
+	lib/CallBackery/GuiPlugin/AbstractForm.pm \
+	lib/CallBackery/GuiPlugin/AbstractHtml.pm \
+	lib/CallBackery/GuiPlugin/AbstractTable.pm \
+	lib/CallBackery/GuiPlugin/UserForm.pm \
+	lib/CallBackery/GuiPlugin/Users.pm \
+	lib/CallBackery/Index.pod \
+	lib/CallBackery/Plugin/Doc.pm \
+	lib/CallBackery/Translate.pm \
+	lib/CallBackery/User.pm \
+	lib/CallBackery/qooxdoo/README \
+	lib/CallBackery/qooxdoo/callbackery/Manifest.json \
+	lib/CallBackery/qooxdoo/callbackery/config.json \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/Application.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/__init__.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/data/Config.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/data/MHistoryRelaxedEncoding.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/data/RemoteTableModel.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/data/Server.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/data/__init__.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/test/DemoTest.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/theme/Appearance.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/theme/Color.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/theme/Decoration.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/theme/Font.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/theme/Theme.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Busy.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Desktop.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Footer.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Header.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Login.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/MsgBox.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Page.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Plugins.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Popup.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Screen.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/TabView.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/__init__.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/form/Auto.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/form/DateTime.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/form/renderer/HBox.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/form/renderer/NoteForm.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/plugin/Action.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/plugin/Form.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/plugin/Html.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/plugin/Table.js \
+	lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/util/format/NumberFormat.js \
+	lib/CallBackery/qooxdoo/callbackery/source/resource/callbackery/spinner.gif \
+	lib/CallBackery/qooxdoo/callbackery/source/translation/de.po \
+	lib/CallBackery/qooxdoo/callbackery/source/translation/en.po \
+	lib/CallBackery/qooxdoo/callbackery/source/translation/fr.po \
+	lib/CallBackery/qooxdoo/callbackery/source/translation/it.po \
+	lib/CallBackery/qooxdoo/callbackery/source/translation/readme.txt \
+	lib/CallBackery/qooxdoo/uploadwidget/Manifest.json \
+	lib/CallBackery/qooxdoo/uploadwidget/source/class/uploadwidget/UploadButton.js \
+	lib/CallBackery/qooxdoo/uploadwidget/source/class/uploadwidget/UploadField.js \
+	lib/CallBackery/qooxdoo/uploadwidget/source/class/uploadwidget/UploadForm.js \
+	lib/CallBackery/qooxdoo/uploadwidget/source/class/uploadwidget/UploadToolbarButton.js \
+	lib/CallBackery/qooxdoo/uploadwidget/source/resource/readme.txt \
+	lib/CallBackery/qooxdoo/uploadwidget/source/translation/readme.txt \
+	lib/CallBackery/templates/doc.html.ep
+
+
+# --- MakeMaker platform_constants section:
+MM_Unix_VERSION = 7.24
+PERL_MALLOC_DEF = -DPERL_EXTMALLOC_DEF -Dmalloc=Perl_malloc -Dfree=Perl_mfree -Drealloc=Perl_realloc -Dcalloc=Perl_calloc
+
+
+# --- MakeMaker tool_autosplit section:
+# Usage: $(AUTOSPLITFILE) FileToSplit AutoDirToSplitInto
+AUTOSPLITFILE = $(ABSPERLRUN)  -e 'use AutoSplit;  autosplit($$$$ARGV[0], $$$$ARGV[1], 0, 1, 1)' --
+
+
+
+# --- MakeMaker tool_xsubpp section:
+
+XSUBPPDIR = /usr/share/perl/5.26/ExtUtils
+XSUBPP = "$(XSUBPPDIR)$(DFSEP)xsubpp"
+XSUBPPRUN = $(PERLRUN) $(XSUBPP)
+XSPROTOARG = 
+XSUBPPDEPS = /usr/share/perl/5.26/ExtUtils/typemap /usr/share/perl/5.26/ExtUtils$(DFSEP)xsubpp
+XSUBPPARGS = -typemap '/usr/share/perl/5.26/ExtUtils/typemap'
+XSUBPP_EXTRA_ARGS =
+
+
+# --- MakeMaker tools_other section:
+SHELL = /bin/sh
+CHMOD = chmod
+CP = cp
+MV = mv
+NOOP = $(TRUE)
+NOECHO = @
+RM_F = rm -f
+RM_RF = rm -rf
+TEST_F = test -f
+TOUCH = touch
+UMASK_NULL = umask 0
+DEV_NULL = > /dev/null 2>&1
+MKPATH = $(ABSPERLRUN) -MExtUtils::Command -e 'mkpath' --
+EQUALIZE_TIMESTAMP = $(ABSPERLRUN) -MExtUtils::Command -e 'eqtime' --
+FALSE = false
+TRUE = true
+ECHO = echo
+ECHO_N = echo -n
+UNINST = 0
+VERBINST = 0
+MOD_INSTALL = $(ABSPERLRUN) -MExtUtils::Install -e 'install([ from_to => {@ARGV}, verbose => '\''$(VERBINST)'\'', uninstall_shadows => '\''$(UNINST)'\'', dir_mode => '\''$(PERM_DIR)'\'' ]);' --
+DOC_INSTALL = $(ABSPERLRUN) -MExtUtils::Command::MM -e 'perllocal_install' --
+UNINSTALL = $(ABSPERLRUN) -MExtUtils::Command::MM -e 'uninstall' --
+WARN_IF_OLD_PACKLIST = $(ABSPERLRUN) -MExtUtils::Command::MM -e 'warn_if_old_packlist' --
+MACROSTART = 
+MACROEND = 
+USEMAKEFILE = -f
+FIXIN = $(ABSPERLRUN) -MExtUtils::MY -e 'MY->fixin(shift)' --
+CP_NONEMPTY = $(ABSPERLRUN) -MExtUtils::Command::MM -e 'cp_nonempty' --
+
+
+# --- MakeMaker makemakerdflt section:
+makemakerdflt : all
+	$(NOECHO) $(NOOP)
+
+
+# --- MakeMaker dist section:
+TAR = tar
+TARFLAGS = cvf
+ZIP = zip
+ZIPFLAGS = -r
+COMPRESS = gzip --best
+SUFFIX = .gz
+SHAR = shar
+PREOP = $(PERL) -i -p -e 's/CallBackery\@\d+(\.\d+){2}/CallBackery\@$(VERSION)/g' lib/Mojolicious/Command/generate/callbackery_app/PERL_MODULES
+POSTOP = $(NOECHO) $(NOOP)
+TO_UNIX = $(NOECHO) $(NOOP)
+CI = ci -u
+RCS_LABEL = rcs -Nv$(VERSION_SYM): -q
+DIST_CP = best
+DIST_DEFAULT = tardist
+DISTNAME = CallBackery
+DISTVNAME = CallBackery-0.26.1
+
+
+# --- MakeMaker macro section:
+
+
+# --- MakeMaker depend section:
+
+
+# --- MakeMaker cflags section:
+
+CCFLAGS = -D_REENTRANT -D_GNU_SOURCE -DDEBIAN -fwrapv -fno-strict-aliasing -pipe -I/usr/local/include -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
+OPTIMIZE = -O2 -g
+PERLTYPE = 
+MPOLLUTE = 
+
+
+# --- MakeMaker const_loadlibs section:
+
+# CallBackery might depend on some other libraries:
+# See ExtUtils::Liblist for details
+#
+
+
+# --- MakeMaker const_cccmd section:
+CCCMD = $(CC) -c $(PASTHRU_INC) $(INC) \
+	$(CCFLAGS) $(OPTIMIZE) \
+	$(PERLTYPE) $(MPOLLUTE) $(DEFINE_VERSION) \
+	$(XS_DEFINE_VERSION)
+
+# --- MakeMaker post_constants section:
+
+
+# --- MakeMaker pasthru section:
+
+PASTHRU = LIBPERL_A="$(LIBPERL_A)"\
+	LINKTYPE="$(LINKTYPE)"\
+	OPTIMIZE="$(OPTIMIZE)"\
+	LD="$(LD)"\
+	PREFIX="$(PREFIX)"\
+	PASTHRU_DEFINE='$(DEFINE) $(PASTHRU_DEFINE)'\
+	PASTHRU_INC='$(INC) $(PASTHRU_INC)'
+
+
+# --- MakeMaker special_targets section:
+.SUFFIXES : .xs .c .C .cpp .i .s .cxx .cc $(OBJ_EXT)
+
+.PHONY: all config static dynamic test linkext manifest blibdirs clean realclean disttest distdir pure_all subdirs clean_subdirs makemakerdflt manifypods realclean_subdirs subdirs_dynamic subdirs_pure_nolink subdirs_static subdirs-test_dynamic subdirs-test_static test_dynamic test_static
+
+
+
+# --- MakeMaker c_o section:
+
+.c.i:
+	x86_64-linux-gnu-gcc  -E -c $(PASTHRU_INC) $(INC) \
+	$(CCFLAGS) $(OPTIMIZE) \
+	$(PERLTYPE) $(MPOLLUTE) $(DEFINE_VERSION) \
+	$(XS_DEFINE_VERSION) $(CCCDLFLAGS) "-I$(PERL_INC)" $(PASTHRU_DEFINE) $(DEFINE) $*.c > $*.i
+
+.c.s :
+	$(CCCMD) -S $(CCCDLFLAGS) "-I$(PERL_INC)" $(PASTHRU_DEFINE) $(DEFINE) $*.c 
+
+.c$(OBJ_EXT) :
+	$(CCCMD) $(CCCDLFLAGS) "-I$(PERL_INC)" $(PASTHRU_DEFINE) $(DEFINE) $*.c
+
+.cpp$(OBJ_EXT) :
+	$(CCCMD) $(CCCDLFLAGS) "-I$(PERL_INC)" $(PASTHRU_DEFINE) $(DEFINE) $*.cpp
+
+.cxx$(OBJ_EXT) :
+	$(CCCMD) $(CCCDLFLAGS) "-I$(PERL_INC)" $(PASTHRU_DEFINE) $(DEFINE) $*.cxx
+
+.cc$(OBJ_EXT) :
+	$(CCCMD) $(CCCDLFLAGS) "-I$(PERL_INC)" $(PASTHRU_DEFINE) $(DEFINE) $*.cc
+
+.C$(OBJ_EXT) :
+	$(CCCMD) $(CCCDLFLAGS) "-I$(PERL_INC)" $(PASTHRU_DEFINE) $(DEFINE) $*.C
+
+
+# --- MakeMaker xs_c section:
+
+.xs.c:
+	$(XSUBPPRUN) $(XSPROTOARG) $(XSUBPPARGS) $(XSUBPP_EXTRA_ARGS) $*.xs > $*.xsc
+	$(MV) $*.xsc $*.c
+
+
+# --- MakeMaker xs_o section:
+.xs$(OBJ_EXT) :
+	$(XSUBPPRUN) $(XSPROTOARG) $(XSUBPPARGS) $*.xs > $*.xsc
+	$(MV) $*.xsc $*.c
+	$(CCCMD) $(CCCDLFLAGS) "-I$(PERL_INC)" $(PASTHRU_DEFINE) $(DEFINE) $*.c 
+
+
+# --- MakeMaker top_targets section:
+all :: pure_all manifypods
+	$(NOECHO) $(NOOP)
+
+pure_all :: config pm_to_blib subdirs linkext
+	$(NOECHO) $(NOOP)
+
+	$(NOECHO) $(NOOP)
+
+subdirs :: $(MYEXTLIB)
+	$(NOECHO) $(NOOP)
+
+config :: $(FIRST_MAKEFILE) blibdirs
+	$(NOECHO) $(NOOP)
+
+help :
+	perldoc ExtUtils::MakeMaker
+
+
+# --- MakeMaker blibdirs section:
+blibdirs : $(INST_LIBDIR)$(DFSEP).exists $(INST_ARCHLIB)$(DFSEP).exists $(INST_AUTODIR)$(DFSEP).exists $(INST_ARCHAUTODIR)$(DFSEP).exists $(INST_BIN)$(DFSEP).exists $(INST_SCRIPT)$(DFSEP).exists $(INST_MAN1DIR)$(DFSEP).exists $(INST_MAN3DIR)$(DFSEP).exists
+	$(NOECHO) $(NOOP)
+
+# Backwards compat with 6.18 through 6.25
+blibdirs.ts : blibdirs
+	$(NOECHO) $(NOOP)
+
+$(INST_LIBDIR)$(DFSEP).exists :: Makefile.PL
+	$(NOECHO) $(MKPATH) $(INST_LIBDIR)
+	$(NOECHO) $(CHMOD) $(PERM_DIR) $(INST_LIBDIR)
+	$(NOECHO) $(TOUCH) $(INST_LIBDIR)$(DFSEP).exists
+
+$(INST_ARCHLIB)$(DFSEP).exists :: Makefile.PL
+	$(NOECHO) $(MKPATH) $(INST_ARCHLIB)
+	$(NOECHO) $(CHMOD) $(PERM_DIR) $(INST_ARCHLIB)
+	$(NOECHO) $(TOUCH) $(INST_ARCHLIB)$(DFSEP).exists
+
+$(INST_AUTODIR)$(DFSEP).exists :: Makefile.PL
+	$(NOECHO) $(MKPATH) $(INST_AUTODIR)
+	$(NOECHO) $(CHMOD) $(PERM_DIR) $(INST_AUTODIR)
+	$(NOECHO) $(TOUCH) $(INST_AUTODIR)$(DFSEP).exists
+
+$(INST_ARCHAUTODIR)$(DFSEP).exists :: Makefile.PL
+	$(NOECHO) $(MKPATH) $(INST_ARCHAUTODIR)
+	$(NOECHO) $(CHMOD) $(PERM_DIR) $(INST_ARCHAUTODIR)
+	$(NOECHO) $(TOUCH) $(INST_ARCHAUTODIR)$(DFSEP).exists
+
+$(INST_BIN)$(DFSEP).exists :: Makefile.PL
+	$(NOECHO) $(MKPATH) $(INST_BIN)
+	$(NOECHO) $(CHMOD) $(PERM_DIR) $(INST_BIN)
+	$(NOECHO) $(TOUCH) $(INST_BIN)$(DFSEP).exists
+
+$(INST_SCRIPT)$(DFSEP).exists :: Makefile.PL
+	$(NOECHO) $(MKPATH) $(INST_SCRIPT)
+	$(NOECHO) $(CHMOD) $(PERM_DIR) $(INST_SCRIPT)
+	$(NOECHO) $(TOUCH) $(INST_SCRIPT)$(DFSEP).exists
+
+$(INST_MAN1DIR)$(DFSEP).exists :: Makefile.PL
+	$(NOECHO) $(MKPATH) $(INST_MAN1DIR)
+	$(NOECHO) $(CHMOD) $(PERM_DIR) $(INST_MAN1DIR)
+	$(NOECHO) $(TOUCH) $(INST_MAN1DIR)$(DFSEP).exists
+
+$(INST_MAN3DIR)$(DFSEP).exists :: Makefile.PL
+	$(NOECHO) $(MKPATH) $(INST_MAN3DIR)
+	$(NOECHO) $(CHMOD) $(PERM_DIR) $(INST_MAN3DIR)
+	$(NOECHO) $(TOUCH) $(INST_MAN3DIR)$(DFSEP).exists
+
+
+
+# --- MakeMaker linkext section:
+
+linkext :: static
+	$(NOECHO) $(NOOP)
+
+
+# --- MakeMaker dlsyms section:
+
+
+# --- MakeMaker dynamic_bs section:
+
+BOOTSTRAP =
+
+
+# --- MakeMaker dynamic section:
+
+dynamic :: $(FIRST_MAKEFILE) config $(INST_BOOT) $(INST_DYNAMIC)
+	$(NOECHO) $(NOOP)
+
+
+# --- MakeMaker dynamic_lib section:
+
+
+# --- MakeMaker static section:
+
+## $(INST_PM) has been moved to the all: target.
+## It remains here for awhile to allow for old usage: "make static"
+static :: $(FIRST_MAKEFILE) $(INST_STATIC)
+	$(NOECHO) $(NOOP)
+
+
+# --- MakeMaker static_lib section:
+
+
+# --- MakeMaker manifypods section:
+
+POD2MAN_EXE = $(PERLRUN) "-MExtUtils::Command::MM" -e pod2man "--"
+POD2MAN = $(POD2MAN_EXE)
+
+
+manifypods : pure_all config  \
+	lib/CallBackery.pm \
+	lib/CallBackery/Config.pm \
+	lib/CallBackery/Controller/RpcService.pm \
+	lib/CallBackery/Database.pm \
+	lib/CallBackery/Exception.pm \
+	lib/CallBackery/GuiPlugin/Abstract.pm \
+	lib/CallBackery/GuiPlugin/AbstractForm.pm \
+	lib/CallBackery/GuiPlugin/AbstractHtml.pm \
+	lib/CallBackery/GuiPlugin/AbstractTable.pm \
+	lib/CallBackery/GuiPlugin/UserForm.pm \
+	lib/CallBackery/GuiPlugin/Users.pm \
+	lib/CallBackery/Index.pod \
+	lib/CallBackery/Plugin/Doc.pm \
+	lib/CallBackery/Translate.pm \
+	lib/CallBackery/User.pm
+	$(NOECHO) $(POD2MAN) --section=$(MAN3EXT) --perm_rw=$(PERM_RW) -u \
+	  lib/CallBackery.pm $(INST_MAN3DIR)/CallBackery.$(MAN3EXT) \
+	  lib/CallBackery/Config.pm $(INST_MAN3DIR)/CallBackery::Config.$(MAN3EXT) \
+	  lib/CallBackery/Controller/RpcService.pm $(INST_MAN3DIR)/CallBackery::Controller::RpcService.$(MAN3EXT) \
+	  lib/CallBackery/Database.pm $(INST_MAN3DIR)/CallBackery::Database.$(MAN3EXT) \
+	  lib/CallBackery/Exception.pm $(INST_MAN3DIR)/CallBackery::Exception.$(MAN3EXT) \
+	  lib/CallBackery/GuiPlugin/Abstract.pm $(INST_MAN3DIR)/CallBackery::GuiPlugin::Abstract.$(MAN3EXT) \
+	  lib/CallBackery/GuiPlugin/AbstractForm.pm $(INST_MAN3DIR)/CallBackery::GuiPlugin::AbstractForm.$(MAN3EXT) \
+	  lib/CallBackery/GuiPlugin/AbstractHtml.pm $(INST_MAN3DIR)/CallBackery::GuiPlugin::AbstractHtml.$(MAN3EXT) \
+	  lib/CallBackery/GuiPlugin/AbstractTable.pm $(INST_MAN3DIR)/CallBackery::GuiPlugin::AbstractTable.$(MAN3EXT) \
+	  lib/CallBackery/GuiPlugin/UserForm.pm $(INST_MAN3DIR)/CallBackery::GuiPlugin::UserForm.$(MAN3EXT) \
+	  lib/CallBackery/GuiPlugin/Users.pm $(INST_MAN3DIR)/CallBackery::GuiPlugin::Users.$(MAN3EXT) \
+	  lib/CallBackery/Index.pod $(INST_MAN3DIR)/CallBackery::Index.$(MAN3EXT) \
+	  lib/CallBackery/Plugin/Doc.pm $(INST_MAN3DIR)/CallBackery::Plugin::Doc.$(MAN3EXT) \
+	  lib/CallBackery/Translate.pm $(INST_MAN3DIR)/CallBackery::Translate.$(MAN3EXT) \
+	  lib/CallBackery/User.pm $(INST_MAN3DIR)/CallBackery::User.$(MAN3EXT) 
+
+
+
+
+# --- MakeMaker processPL section:
+
+
+# --- MakeMaker installbin section:
+
+
+# --- MakeMaker subdirs section:
+
+# none
+
+# --- MakeMaker clean_subdirs section:
+clean_subdirs :
+	$(NOECHO) $(NOOP)
+
+
+# --- MakeMaker clean section:
+
+# Delete temporary files but do not touch installed files. We don't delete
+# the Makefile here so a later make realclean still has a makefile to use.
+
+clean :: clean_subdirs
+	- $(RM_F) \
+	  $(BASEEXT).bso $(BASEEXT).def \
+	  $(BASEEXT).exp $(BASEEXT).x \
+	  $(BOOTSTRAP) $(INST_ARCHAUTODIR)/extralibs.all \
+	  $(INST_ARCHAUTODIR)/extralibs.ld $(MAKE_APERL_FILE) \
+	  *$(LIB_EXT) *$(OBJ_EXT) \
+	  *perl.core MYMETA.json \
+	  MYMETA.yml blibdirs.ts \
+	  core core.*perl.*.? \
+	  core.[0-9] core.[0-9][0-9] \
+	  core.[0-9][0-9][0-9] core.[0-9][0-9][0-9][0-9] \
+	  core.[0-9][0-9][0-9][0-9][0-9] lib$(BASEEXT).def \
+	  mon.out perl \
+	  perl$(EXE_EXT) perl.exe \
+	  perlmain.c pm_to_blib \
+	  pm_to_blib.ts so_locations \
+	  tmon.out 
+	- $(RM_RF) \
+	  blib 
+	  $(NOECHO) $(RM_F) $(MAKEFILE_OLD)
+	- $(MV) $(FIRST_MAKEFILE) $(MAKEFILE_OLD) $(DEV_NULL)
+
+
+# --- MakeMaker realclean_subdirs section:
+# so clean is forced to complete before realclean_subdirs runs
+realclean_subdirs : clean
+	$(NOECHO) $(NOOP)
+
+
+# --- MakeMaker realclean section:
+# Delete temporary files (via clean) and also delete dist files
+realclean purge :: realclean_subdirs
+	- $(RM_F) \
+	  $(FIRST_MAKEFILE) $(MAKEFILE_OLD) 
+	- $(RM_RF) \
+	  $(DISTVNAME) 
+
+
+# --- MakeMaker metafile section:
+metafile : create_distdir
+	$(NOECHO) $(ECHO) Generating META.yml
+	$(NOECHO) $(ECHO) '---' > META_new.yml
+	$(NOECHO) $(ECHO) 'abstract: '\''CallBackery is a Mojolicious+Qoodoo Framework for building Web Applications'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) 'author:' >> META_new.yml
+	$(NOECHO) $(ECHO) '  - '\''Tobias Oetiker <tobi@oetiker.ch>'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) 'build_requires:' >> META_new.yml
+	$(NOECHO) $(ECHO) '  CPAN::Uploader: '\''0'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) 'configure_requires:' >> META_new.yml
+	$(NOECHO) $(ECHO) '  ExtUtils::MakeMaker: '\''0'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) 'dynamic_config: 1' >> META_new.yml
+	$(NOECHO) $(ECHO) 'generated_by: '\''ExtUtils::MakeMaker version 7.24, CPAN::Meta::Converter version 2.150010'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) 'license: gpl' >> META_new.yml
+	$(NOECHO) $(ECHO) 'meta-spec:' >> META_new.yml
+	$(NOECHO) $(ECHO) '  url: http://module-build.sourceforge.net/META-spec-v1.4.html' >> META_new.yml
+	$(NOECHO) $(ECHO) '  version: '\''1.4'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) 'name: CallBackery' >> META_new.yml
+	$(NOECHO) $(ECHO) 'no_index:' >> META_new.yml
+	$(NOECHO) $(ECHO) '  directory:' >> META_new.yml
+	$(NOECHO) $(ECHO) '    - t' >> META_new.yml
+	$(NOECHO) $(ECHO) '    - inc' >> META_new.yml
+	$(NOECHO) $(ECHO) '    - t' >> META_new.yml
+	$(NOECHO) $(ECHO) '    - example' >> META_new.yml
+	$(NOECHO) $(ECHO) '    - setup' >> META_new.yml
+	$(NOECHO) $(ECHO) '    - lib/Mojolicious/Command/Author/generate/callbackery_app' >> META_new.yml
+	$(NOECHO) $(ECHO) 'requires:' >> META_new.yml
+	$(NOECHO) $(ECHO) '  Config::Grammar: '\''1.13'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) '  Locale::PO: '\''0.27'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) '  Mojolicious: '\''8.26'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) '  Mojolicious::Plugin::Qooxdoo: v1.0.8' >> META_new.yml
+	$(NOECHO) $(ECHO) '  perl: '\''5.022000'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) 'resources:' >> META_new.yml
+	$(NOECHO) $(ECHO) '  bugtracker: https://github.com/oetiker/callbackery/issues' >> META_new.yml
+	$(NOECHO) $(ECHO) '  license: http://opensource.org/licenses/GPL-3.0' >> META_new.yml
+	$(NOECHO) $(ECHO) '  repository: https://github.com/oetiker/callbackery' >> META_new.yml
+	$(NOECHO) $(ECHO) 'version: v0.26.1' >> META_new.yml
+	$(NOECHO) $(ECHO) 'x_serialization_backend: '\''CPAN::Meta::YAML version 0.018'\''' >> META_new.yml
+	-$(NOECHO) $(MV) META_new.yml $(DISTVNAME)/META.yml
+	$(NOECHO) $(ECHO) Generating META.json
+	$(NOECHO) $(ECHO) '{' > META_new.json
+	$(NOECHO) $(ECHO) '   "abstract" : "CallBackery is a Mojolicious+Qoodoo Framework for building Web Applications",' >> META_new.json
+	$(NOECHO) $(ECHO) '   "author" : [' >> META_new.json
+	$(NOECHO) $(ECHO) '      "Tobias Oetiker <tobi@oetiker.ch>"' >> META_new.json
+	$(NOECHO) $(ECHO) '   ],' >> META_new.json
+	$(NOECHO) $(ECHO) '   "dynamic_config" : 1,' >> META_new.json
+	$(NOECHO) $(ECHO) '   "generated_by" : "ExtUtils::MakeMaker version 7.24, CPAN::Meta::Converter version 2.150010",' >> META_new.json
+	$(NOECHO) $(ECHO) '   "license" : [' >> META_new.json
+	$(NOECHO) $(ECHO) '      "gpl_3"' >> META_new.json
+	$(NOECHO) $(ECHO) '   ],' >> META_new.json
+	$(NOECHO) $(ECHO) '   "meta-spec" : {' >> META_new.json
+	$(NOECHO) $(ECHO) '      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",' >> META_new.json
+	$(NOECHO) $(ECHO) '      "version" : "2"' >> META_new.json
+	$(NOECHO) $(ECHO) '   },' >> META_new.json
+	$(NOECHO) $(ECHO) '   "name" : "CallBackery",' >> META_new.json
+	$(NOECHO) $(ECHO) '   "no_index" : {' >> META_new.json
+	$(NOECHO) $(ECHO) '      "directory" : [' >> META_new.json
+	$(NOECHO) $(ECHO) '         "t",' >> META_new.json
+	$(NOECHO) $(ECHO) '         "inc",' >> META_new.json
+	$(NOECHO) $(ECHO) '         "t",' >> META_new.json
+	$(NOECHO) $(ECHO) '         "example",' >> META_new.json
+	$(NOECHO) $(ECHO) '         "setup",' >> META_new.json
+	$(NOECHO) $(ECHO) '         "lib/Mojolicious/Command/Author/generate/callbackery_app"' >> META_new.json
+	$(NOECHO) $(ECHO) '      ]' >> META_new.json
+	$(NOECHO) $(ECHO) '   },' >> META_new.json
+	$(NOECHO) $(ECHO) '   "prereqs" : {' >> META_new.json
+	$(NOECHO) $(ECHO) '      "build" : {' >> META_new.json
+	$(NOECHO) $(ECHO) '         "requires" : {' >> META_new.json
+	$(NOECHO) $(ECHO) '            "CPAN::Uploader" : "0"' >> META_new.json
+	$(NOECHO) $(ECHO) '         }' >> META_new.json
+	$(NOECHO) $(ECHO) '      },' >> META_new.json
+	$(NOECHO) $(ECHO) '      "configure" : {' >> META_new.json
+	$(NOECHO) $(ECHO) '         "requires" : {' >> META_new.json
+	$(NOECHO) $(ECHO) '            "ExtUtils::MakeMaker" : "0"' >> META_new.json
+	$(NOECHO) $(ECHO) '         }' >> META_new.json
+	$(NOECHO) $(ECHO) '      },' >> META_new.json
+	$(NOECHO) $(ECHO) '      "runtime" : {' >> META_new.json
+	$(NOECHO) $(ECHO) '         "requires" : {' >> META_new.json
+	$(NOECHO) $(ECHO) '            "Config::Grammar" : "1.13",' >> META_new.json
+	$(NOECHO) $(ECHO) '            "Locale::PO" : "0.27",' >> META_new.json
+	$(NOECHO) $(ECHO) '            "Mojolicious" : "8.26",' >> META_new.json
+	$(NOECHO) $(ECHO) '            "Mojolicious::Plugin::Qooxdoo" : "v1.0.8",' >> META_new.json
+	$(NOECHO) $(ECHO) '            "perl" : "5.022000"' >> META_new.json
+	$(NOECHO) $(ECHO) '         }' >> META_new.json
+	$(NOECHO) $(ECHO) '      }' >> META_new.json
+	$(NOECHO) $(ECHO) '   },' >> META_new.json
+	$(NOECHO) $(ECHO) '   "release_status" : "stable",' >> META_new.json
+	$(NOECHO) $(ECHO) '   "resources" : {' >> META_new.json
+	$(NOECHO) $(ECHO) '      "bugtracker" : {' >> META_new.json
+	$(NOECHO) $(ECHO) '         "web" : "https://github.com/oetiker/callbackery/issues"' >> META_new.json
+	$(NOECHO) $(ECHO) '      },' >> META_new.json
+	$(NOECHO) $(ECHO) '      "license" : [' >> META_new.json
+	$(NOECHO) $(ECHO) '         "http://opensource.org/licenses/GPL-3.0"' >> META_new.json
+	$(NOECHO) $(ECHO) '      ],' >> META_new.json
+	$(NOECHO) $(ECHO) '      "repository" : {' >> META_new.json
+	$(NOECHO) $(ECHO) '         "url" : "https://github.com/oetiker/callbackery"' >> META_new.json
+	$(NOECHO) $(ECHO) '      }' >> META_new.json
+	$(NOECHO) $(ECHO) '   },' >> META_new.json
+	$(NOECHO) $(ECHO) '   "version" : "v0.26.1",' >> META_new.json
+	$(NOECHO) $(ECHO) '   "x_serialization_backend" : "JSON::PP version 2.27400_02"' >> META_new.json
+	$(NOECHO) $(ECHO) '}' >> META_new.json
+	-$(NOECHO) $(MV) META_new.json $(DISTVNAME)/META.json
+
+
+# --- MakeMaker signature section:
+signature :
+	cpansign -s
+
+
+# --- MakeMaker dist_basics section:
+distclean :: realclean distcheck
+	$(NOECHO) $(NOOP)
+
+distcheck :
+	$(PERLRUN) "-MExtUtils::Manifest=fullcheck" -e fullcheck
+
+skipcheck :
+	$(PERLRUN) "-MExtUtils::Manifest=skipcheck" -e skipcheck
+
+manifest :
+	$(PERLRUN) "-MExtUtils::Manifest=mkmanifest" -e mkmanifest
+
+veryclean : realclean
+	$(RM_F) *~ */*~ *.orig */*.orig *.bak */*.bak *.old */*.old
+
+
+
+# --- MakeMaker dist_core section:
+
+dist : $(DIST_DEFAULT) $(FIRST_MAKEFILE)
+	$(NOECHO) $(ABSPERLRUN) -l -e 'print '\''Warning: Makefile possibly out of date with $(VERSION_FROM)'\''' \
+	  -e '    if -e '\''$(VERSION_FROM)'\'' and -M '\''$(VERSION_FROM)'\'' < -M '\''$(FIRST_MAKEFILE)'\'';' --
+
+tardist : $(DISTVNAME).tar$(SUFFIX)
+	$(NOECHO) $(NOOP)
+
+uutardist : $(DISTVNAME).tar$(SUFFIX)
+	uuencode $(DISTVNAME).tar$(SUFFIX) $(DISTVNAME).tar$(SUFFIX) > $(DISTVNAME).tar$(SUFFIX)_uu
+	$(NOECHO) $(ECHO) 'Created $(DISTVNAME).tar$(SUFFIX)_uu'
+
+$(DISTVNAME).tar$(SUFFIX) : distdir
+	$(PREOP)
+	$(TO_UNIX)
+	$(TAR) $(TARFLAGS) $(DISTVNAME).tar $(DISTVNAME)
+	$(RM_RF) $(DISTVNAME)
+	$(COMPRESS) $(DISTVNAME).tar
+	$(NOECHO) $(ECHO) 'Created $(DISTVNAME).tar$(SUFFIX)'
+	$(POSTOP)
+
+zipdist : $(DISTVNAME).zip
+	$(NOECHO) $(NOOP)
+
+$(DISTVNAME).zip : distdir
+	$(PREOP)
+	$(ZIP) $(ZIPFLAGS) $(DISTVNAME).zip $(DISTVNAME)
+	$(RM_RF) $(DISTVNAME)
+	$(NOECHO) $(ECHO) 'Created $(DISTVNAME).zip'
+	$(POSTOP)
+
+shdist : distdir
+	$(PREOP)
+	$(SHAR) $(DISTVNAME) > $(DISTVNAME).shar
+	$(RM_RF) $(DISTVNAME)
+	$(NOECHO) $(ECHO) 'Created $(DISTVNAME).shar'
+	$(POSTOP)
+
+
+# --- MakeMaker distdir section:
+create_distdir :
+	$(RM_RF) $(DISTVNAME)
+	$(PERLRUN) "-MExtUtils::Manifest=manicopy,maniread" \
+		-e "manicopy(maniread(),'$(DISTVNAME)', '$(DIST_CP)');"
+
+distdir : create_distdir distmeta 
+	$(NOECHO) $(NOOP)
+
+
+
+# --- MakeMaker dist_test section:
+disttest : distdir
+	cd $(DISTVNAME) && $(ABSPERLRUN) Makefile.PL "DIR=" "MAKEFILE=Makefile.aperl" "LINKTYPE=static" "MAKEAPERL=1" "NORECURS=1" "CCCDLFLAGS="
+	cd $(DISTVNAME) && $(MAKE) $(PASTHRU)
+	cd $(DISTVNAME) && $(MAKE) test $(PASTHRU)
+
+
+
+# --- MakeMaker dist_ci section:
+ci :
+	$(ABSPERLRUN) -MExtUtils::Manifest=maniread -e '@all = sort keys %{ maniread() };' \
+	  -e 'print(qq{Executing $(CI) @all\n});' \
+	  -e 'system(qq{$(CI) @all}) == 0 or die $$!;' \
+	  -e 'print(qq{Executing $(RCS_LABEL) ...\n});' \
+	  -e 'system(qq{$(RCS_LABEL) @all}) == 0 or die $$!;' --
+
+
+# --- MakeMaker distmeta section:
+distmeta : create_distdir metafile
+	$(NOECHO) cd $(DISTVNAME) && $(ABSPERLRUN) -MExtUtils::Manifest=maniadd -e 'exit unless -e q{META.yml};' \
+	  -e 'eval { maniadd({q{META.yml} => q{Module YAML meta-data (added by MakeMaker)}}) }' \
+	  -e '    or die "Could not add META.yml to MANIFEST: $${'\''@'\''}"' --
+	$(NOECHO) cd $(DISTVNAME) && $(ABSPERLRUN) -MExtUtils::Manifest=maniadd -e 'exit unless -f q{META.json};' \
+	  -e 'eval { maniadd({q{META.json} => q{Module JSON meta-data (added by MakeMaker)}}) }' \
+	  -e '    or die "Could not add META.json to MANIFEST: $${'\''@'\''}"' --
+
+
+
+# --- MakeMaker distsignature section:
+distsignature : distmeta
+	$(NOECHO) cd $(DISTVNAME) && $(ABSPERLRUN) -MExtUtils::Manifest=maniadd -e 'eval { maniadd({q{SIGNATURE} => q{Public-key signature (added by MakeMaker)}}) }' \
+	  -e '    or die "Could not add SIGNATURE to MANIFEST: $${'\''@'\''}"' --
+	$(NOECHO) cd $(DISTVNAME) && $(TOUCH) SIGNATURE
+	cd $(DISTVNAME) && cpansign -s
+
+
+
+# --- MakeMaker install section:
+
+install :: pure_install doc_install
+	$(NOECHO) $(NOOP)
+
+install_perl :: pure_perl_install doc_perl_install
+	$(NOECHO) $(NOOP)
+
+install_site :: pure_site_install doc_site_install
+	$(NOECHO) $(NOOP)
+
+install_vendor :: pure_vendor_install doc_vendor_install
+	$(NOECHO) $(NOOP)
+
+pure_install :: pure_$(INSTALLDIRS)_install
+	$(NOECHO) $(NOOP)
+
+doc_install :: doc_$(INSTALLDIRS)_install
+	$(NOECHO) $(NOOP)
+
+pure__install : pure_site_install
+	$(NOECHO) $(ECHO) INSTALLDIRS not defined, defaulting to INSTALLDIRS=site
+
+doc__install : doc_site_install
+	$(NOECHO) $(ECHO) INSTALLDIRS not defined, defaulting to INSTALLDIRS=site
+
+pure_perl_install :: all
+	$(NOECHO) umask 022; $(MOD_INSTALL) \
+		"$(INST_LIB)" "$(DESTINSTALLPRIVLIB)" \
+		"$(INST_ARCHLIB)" "$(DESTINSTALLARCHLIB)" \
+		"$(INST_BIN)" "$(DESTINSTALLBIN)" \
+		"$(INST_SCRIPT)" "$(DESTINSTALLSCRIPT)" \
+		"$(INST_MAN1DIR)" "$(DESTINSTALLMAN1DIR)" \
+		"$(INST_MAN3DIR)" "$(DESTINSTALLMAN3DIR)"
+	$(NOECHO) $(WARN_IF_OLD_PACKLIST) \
+		"$(SITEARCHEXP)/auto/$(FULLEXT)"
+
+
+pure_site_install :: all
+	$(NOECHO) umask 02; $(MOD_INSTALL) \
+		read "$(SITEARCHEXP)/auto/$(FULLEXT)/.packlist" \
+		write "$(DESTINSTALLSITEARCH)/auto/$(FULLEXT)/.packlist" \
+		"$(INST_LIB)" "$(DESTINSTALLSITELIB)" \
+		"$(INST_ARCHLIB)" "$(DESTINSTALLSITEARCH)" \
+		"$(INST_BIN)" "$(DESTINSTALLSITEBIN)" \
+		"$(INST_SCRIPT)" "$(DESTINSTALLSITESCRIPT)" \
+		"$(INST_MAN1DIR)" "$(DESTINSTALLSITEMAN1DIR)" \
+		"$(INST_MAN3DIR)" "$(DESTINSTALLSITEMAN3DIR)"
+	$(NOECHO) $(WARN_IF_OLD_PACKLIST) \
+		"$(PERL_ARCHLIB)/auto/$(FULLEXT)"
+
+pure_vendor_install :: all
+	$(NOECHO) umask 022; $(MOD_INSTALL) \
+		"$(INST_LIB)" "$(DESTINSTALLVENDORLIB)" \
+		"$(INST_ARCHLIB)" "$(DESTINSTALLVENDORARCH)" \
+		"$(INST_BIN)" "$(DESTINSTALLVENDORBIN)" \
+		"$(INST_SCRIPT)" "$(DESTINSTALLVENDORSCRIPT)" \
+		"$(INST_MAN1DIR)" "$(DESTINSTALLVENDORMAN1DIR)" \
+		"$(INST_MAN3DIR)" "$(DESTINSTALLVENDORMAN3DIR)"
+
+
+doc_perl_install :: all
+
+doc_site_install :: all
+	$(NOECHO) $(ECHO) Appending installation info to "$(DESTINSTALLSITEARCH)/perllocal.pod"
+	-$(NOECHO) umask 02; $(MKPATH) "$(DESTINSTALLSITEARCH)"
+	-$(NOECHO) umask 02; $(DOC_INSTALL) \
+		"Module" "$(NAME)" \
+		"installed into" "$(INSTALLSITELIB)" \
+		LINKTYPE "$(LINKTYPE)" \
+		VERSION "$(VERSION)" \
+		EXE_FILES "$(EXE_FILES)" \
+		>> "$(DESTINSTALLSITEARCH)/perllocal.pod"
+
+doc_vendor_install :: all
+
+
+uninstall :: uninstall_from_$(INSTALLDIRS)dirs
+	$(NOECHO) $(NOOP)
+
+uninstall_from_perldirs ::
+
+uninstall_from_sitedirs ::
+	$(NOECHO) $(UNINSTALL) "$(SITEARCHEXP)/auto/$(FULLEXT)/.packlist"
+
+uninstall_from_vendordirs ::
+
+
+# --- MakeMaker force section:
+# Phony target to force checking subdirectories.
+FORCE :
+	$(NOECHO) $(NOOP)
+
+
+# --- MakeMaker perldepend section:
+
+
+# --- MakeMaker makefile section:
+# We take a very conservative approach here, but it's worth it.
+# We move Makefile to Makefile.old here to avoid gnu make looping.
+$(FIRST_MAKEFILE) : Makefile.PL $(CONFIGDEP)
+	$(NOECHO) $(ECHO) "Makefile out-of-date with respect to $?"
+	$(NOECHO) $(ECHO) "Cleaning current config before rebuilding Makefile..."
+	-$(NOECHO) $(RM_F) $(MAKEFILE_OLD)
+	-$(NOECHO) $(MV)   $(FIRST_MAKEFILE) $(MAKEFILE_OLD)
+	- $(MAKE) $(USEMAKEFILE) $(MAKEFILE_OLD) clean $(DEV_NULL)
+	$(PERLRUN) Makefile.PL "DIR=" "MAKEFILE=Makefile.aperl" "LINKTYPE=static" "MAKEAPERL=1" "NORECURS=1" "CCCDLFLAGS="
+	$(NOECHO) $(ECHO) "==> Your Makefile has been rebuilt. <=="
+	$(NOECHO) $(ECHO) "==> Please rerun the $(MAKE) command.  <=="
+	$(FALSE)
+
+
+
+# --- MakeMaker staticmake section:
+
+# --- MakeMaker makeaperl section ---
+MAP_TARGET    = perl
+FULLPERL      = "/usr/bin/perl"
+MAP_PERLINC   = "-Iblib/arch" "-Iblib/lib" "-I/usr/lib/x86_64-linux-gnu/perl/5.26" "-I/usr/share/perl/5.26"
+
+MAP_LINKCMD   = $(CC) -fstack-protector-strong -L/usr/local/lib -Wl,-E
+MAP_STATIC    = 
+MAP_STATICDEP = 
+
+MAP_PRELIBS   = -ldl -lm -lpthread -lc -lcrypt 
+
+MAP_LIBPERL = /usr/lib/x86_64-linux-gnu/perl/5.26/../../libperl.a
+MAP_LIBPERLDEP = /usr/lib/x86_64-linux-gnu/perl/5.26/../../libperl.a
+LLIBPERL    = $(MAP_LIBPERL)
+
+$(INST_ARCHAUTODIR)/extralibs.all : $(INST_ARCHAUTODIR)$(DFSEP).exists 
+	$(NOECHO) $(RM_F)  $@
+	$(NOECHO) $(TOUCH) $@
+$(MAP_TARGET) :: ./perlmain$(OBJ_EXT) $(MAP_LIBPERLDEP) $(MAP_STATICDEP) $(INST_ARCHAUTODIR)/extralibs.all
+	$(MAP_LINKCMD) $(LDFROM) $(OPTIMIZE) ./perlmain$(OBJ_EXT) -o $@ $(MAP_STATIC) "$(LLIBPERL)" `cat $(INST_ARCHAUTODIR)/extralibs.all` $(MAP_PRELIBS)
+	$(NOECHO) $(ECHO) "To install the new '$(MAP_TARGET)' binary, call"
+	$(NOECHO) $(ECHO) "    $(MAKE) $(USEMAKEFILE) Makefile.aperl inst_perl MAP_TARGET=$(MAP_TARGET)"
+	$(NOECHO) $(ECHO) "    $(MAKE) $(USEMAKEFILE) Makefile.aperl map_clean"
+
+./perlmain\$(OBJ_EXT): ./perlmain.c
+	cd . && $(PERLMAINCC) -c $(PASTHRU_INC)  "-I/usr/lib/x86_64-linux-gnu/perl/5.26/CORE"  \
+	$(CCFLAGS) $(OPTIMIZE) \
+	$(PERLTYPE) $(MPOLLUTE) $(DEFINE_VERSION) \
+	$(XS_DEFINE_VERSION) -fPIC "-I$(PERL_INC)" perlmain.c
+
+./perlmain.c: Makefile.aperl
+	$(NOECHO) $(ECHO) Writing $@
+	$(NOECHO) $(PERL) $(MAP_PERLINC) "-MExtUtils::Miniperl" \
+		-e "writemain(grep(s#.*/auto/##s, @ARGV), q(DynaLoader))" $(MAP_STATIC) > $@t
+	$(MV) $@t $@
+
+
+doc_inst_perl :
+	$(NOECHO) $(ECHO) Appending installation info to "$(DESTINSTALLARCHLIB)/perllocal.pod"
+	-$(NOECHO) $(MKPATH) "$(DESTINSTALLARCHLIB)"
+	-$(NOECHO) $(DOC_INSTALL) \
+		"Perl binary" "$(MAP_TARGET)" \
+		MAP_STATIC "$(MAP_STATIC)" \
+		MAP_EXTRA "`cat $(INST_ARCHAUTODIR)/extralibs.all`" \
+		MAP_LIBPERL "$(MAP_LIBPERL)" \
+		>> "$(DESTINSTALLARCHLIB)/perllocal.pod"
+
+
+inst_perl : pure_inst_perl doc_inst_perl
+
+pure_inst_perl : $(MAP_TARGET)
+	cp $(MAP_TARGET) "$(DESTINSTALLBIN)/$(MAP_TARGET)"
+
+clean :: map_clean
+
+map_clean :
+	rm -f ./perlmain$(OBJ_EXT) ./perlmain.c $(MAP_TARGET) Makefile.aperl $(INST_ARCHAUTODIR)/extralibs.all
+
+
+# --- MakeMaker test section:
+TEST_VERBOSE=0
+TEST_TYPE=test_$(LINKTYPE)
+TEST_FILE = test.pl
+TEST_FILES = t/*.t
+TESTDB_SW = -d
+
+testdb :: testdb_$(LINKTYPE)
+	$(NOECHO) $(NOOP)
+
+test :: $(TEST_TYPE)
+	$(NOECHO) $(NOOP)
+
+# Occasionally we may face this degenerate target:
+test_ : test_dynamic
+	$(NOECHO) $(NOOP)
+
+subdirs-test_dynamic :: dynamic pure_all
+
+test_dynamic :: subdirs-test_dynamic
+	PERL_DL_NONLAZY=1 $(FULLPERLRUN) "-MExtUtils::Command::MM" "-MTest::Harness" "-e" "undef *Test::Harness::Switches; test_harness($(TEST_VERBOSE), '$(INST_LIB)', '$(INST_ARCHLIB)')" $(TEST_FILES)
+
+testdb_dynamic :: dynamic pure_all
+	PERL_DL_NONLAZY=1 $(FULLPERLRUN) $(TESTDB_SW) "-I$(INST_LIB)" "-I$(INST_ARCHLIB)" $(TEST_FILE)
+
+subdirs-test_static :: static pure_all
+
+test_static :: subdirs-test_static $(MAP_TARGET)
+	PERL_DL_NONLAZY=1 "/home/oetiker/checkouts/callbackery/$(MAP_TARGET)" $(MAP_PERLINC) "-MExtUtils::Command::MM" "-MTest::Harness" "-e" "undef *Test::Harness::Switches; test_harness($(TEST_VERBOSE), '$(INST_LIB)', '$(INST_ARCHLIB)')" $(TEST_FILES)
+
+testdb_static :: static pure_all $(MAP_TARGET)
+	PERL_DL_NONLAZY=1 "/home/oetiker/checkouts/callbackery/$(MAP_TARGET)" $(MAP_PERLINC) "-I$(INST_LIB)" "-I$(INST_ARCHLIB)" $(TEST_FILE)
+
+
+
+# --- MakeMaker ppd section:
+# Creates a PPD (Perl Package Description) for a binary distribution.
+ppd :
+	$(NOECHO) $(ECHO) '<SOFTPKG NAME="CallBackery" VERSION="0.26.1">' > CallBackery.ppd
+	$(NOECHO) $(ECHO) '    <ABSTRACT>CallBackery is a Mojolicious+Qoodoo Framework for building Web Applications</ABSTRACT>' >> CallBackery.ppd
+	$(NOECHO) $(ECHO) '    <AUTHOR>Tobias Oetiker &lt;tobi@oetiker.ch&gt;</AUTHOR>' >> CallBackery.ppd
+	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> CallBackery.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Config::Grammar" VERSION="1.13" />' >> CallBackery.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Locale::PO" VERSION="0.27" />' >> CallBackery.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Mojolicious::" VERSION="8.26" />' >> CallBackery.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Mojolicious::Plugin::Qooxdoo" VERSION="v1.0.8" />' >> CallBackery.ppd
+	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="x86_64-linux-gnu-thread-multi-5.26" />' >> CallBackery.ppd
+	$(NOECHO) $(ECHO) '        <CODEBASE HREF="" />' >> CallBackery.ppd
+	$(NOECHO) $(ECHO) '    </IMPLEMENTATION>' >> CallBackery.ppd
+	$(NOECHO) $(ECHO) '</SOFTPKG>' >> CallBackery.ppd
+
+
+# --- MakeMaker pm_to_blib section:
+
+pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
+	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
+	  'lib/CallBackery.pm' 'blib/lib/CallBackery.pm' \
+	  'lib/CallBackery/Config.pm' 'blib/lib/CallBackery/Config.pm' \
+	  'lib/CallBackery/Controller/RpcService.pm' 'blib/lib/CallBackery/Controller/RpcService.pm' \
+	  'lib/CallBackery/Database.pm' 'blib/lib/CallBackery/Database.pm' \
+	  'lib/CallBackery/Exception.pm' 'blib/lib/CallBackery/Exception.pm' \
+	  'lib/CallBackery/GuiPlugin/Abstract.pm' 'blib/lib/CallBackery/GuiPlugin/Abstract.pm' \
+	  'lib/CallBackery/GuiPlugin/AbstractForm.pm' 'blib/lib/CallBackery/GuiPlugin/AbstractForm.pm' \
+	  'lib/CallBackery/GuiPlugin/AbstractHtml.pm' 'blib/lib/CallBackery/GuiPlugin/AbstractHtml.pm' \
+	  'lib/CallBackery/GuiPlugin/AbstractTable.pm' 'blib/lib/CallBackery/GuiPlugin/AbstractTable.pm' \
+	  'lib/CallBackery/GuiPlugin/UserForm.pm' 'blib/lib/CallBackery/GuiPlugin/UserForm.pm' \
+	  'lib/CallBackery/GuiPlugin/Users.pm' 'blib/lib/CallBackery/GuiPlugin/Users.pm' \
+	  'lib/CallBackery/Index.pod' 'blib/lib/CallBackery/Index.pod' \
+	  'lib/CallBackery/Plugin/Doc.pm' 'blib/lib/CallBackery/Plugin/Doc.pm' \
+	  'lib/CallBackery/Translate.pm' 'blib/lib/CallBackery/Translate.pm' \
+	  'lib/CallBackery/User.pm' 'blib/lib/CallBackery/User.pm' \
+	  'lib/CallBackery/qooxdoo/README' 'blib/lib/CallBackery/qooxdoo/README' \
+	  'lib/CallBackery/qooxdoo/callbackery/Manifest.json' 'blib/lib/CallBackery/qooxdoo/callbackery/Manifest.json' \
+	  'lib/CallBackery/qooxdoo/callbackery/config.json' 'blib/lib/CallBackery/qooxdoo/callbackery/config.json' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/Application.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/Application.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/__init__.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/__init__.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/data/Config.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/data/Config.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/data/MHistoryRelaxedEncoding.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/data/MHistoryRelaxedEncoding.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/data/RemoteTableModel.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/data/RemoteTableModel.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/data/Server.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/data/Server.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/data/__init__.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/data/__init__.js' 
+	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/test/DemoTest.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/test/DemoTest.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/theme/Appearance.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/theme/Appearance.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/theme/Color.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/theme/Color.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/theme/Decoration.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/theme/Decoration.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/theme/Font.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/theme/Font.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/theme/Theme.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/theme/Theme.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Busy.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Busy.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Desktop.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Desktop.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Footer.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Footer.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Header.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Header.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Login.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Login.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/MsgBox.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/MsgBox.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Page.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Page.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Plugins.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Plugins.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Popup.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Popup.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Screen.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/Screen.js' 
+	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/TabView.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/TabView.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/__init__.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/__init__.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/form/Auto.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/form/Auto.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/form/DateTime.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/form/DateTime.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/form/renderer/HBox.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/form/renderer/HBox.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/form/renderer/NoteForm.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/form/renderer/NoteForm.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/plugin/Action.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/plugin/Action.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/plugin/Form.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/plugin/Form.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/plugin/Html.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/plugin/Html.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/plugin/Table.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/ui/plugin/Table.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/util/format/NumberFormat.js' 'blib/lib/CallBackery/qooxdoo/callbackery/source/class/callbackery/util/format/NumberFormat.js' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/resource/callbackery/spinner.gif' 'blib/lib/CallBackery/qooxdoo/callbackery/source/resource/callbackery/spinner.gif' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/translation/de.po' 'blib/lib/CallBackery/qooxdoo/callbackery/source/translation/de.po' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/translation/en.po' 'blib/lib/CallBackery/qooxdoo/callbackery/source/translation/en.po' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/translation/fr.po' 'blib/lib/CallBackery/qooxdoo/callbackery/source/translation/fr.po' \
+	  'lib/CallBackery/qooxdoo/callbackery/source/translation/it.po' 'blib/lib/CallBackery/qooxdoo/callbackery/source/translation/it.po' 
+	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
+	  'lib/CallBackery/qooxdoo/callbackery/source/translation/readme.txt' 'blib/lib/CallBackery/qooxdoo/callbackery/source/translation/readme.txt' \
+	  'lib/CallBackery/qooxdoo/uploadwidget/Manifest.json' 'blib/lib/CallBackery/qooxdoo/uploadwidget/Manifest.json' \
+	  'lib/CallBackery/qooxdoo/uploadwidget/source/class/uploadwidget/UploadButton.js' 'blib/lib/CallBackery/qooxdoo/uploadwidget/source/class/uploadwidget/UploadButton.js' \
+	  'lib/CallBackery/qooxdoo/uploadwidget/source/class/uploadwidget/UploadField.js' 'blib/lib/CallBackery/qooxdoo/uploadwidget/source/class/uploadwidget/UploadField.js' \
+	  'lib/CallBackery/qooxdoo/uploadwidget/source/class/uploadwidget/UploadForm.js' 'blib/lib/CallBackery/qooxdoo/uploadwidget/source/class/uploadwidget/UploadForm.js' \
+	  'lib/CallBackery/qooxdoo/uploadwidget/source/class/uploadwidget/UploadToolbarButton.js' 'blib/lib/CallBackery/qooxdoo/uploadwidget/source/class/uploadwidget/UploadToolbarButton.js' \
+	  'lib/CallBackery/qooxdoo/uploadwidget/source/resource/readme.txt' 'blib/lib/CallBackery/qooxdoo/uploadwidget/source/resource/readme.txt' \
+	  'lib/CallBackery/qooxdoo/uploadwidget/source/translation/readme.txt' 'blib/lib/CallBackery/qooxdoo/uploadwidget/source/translation/readme.txt' \
+	  'lib/CallBackery/templates/doc.html.ep' 'blib/lib/CallBackery/templates/doc.html.ep' 
+	$(NOECHO) $(TOUCH) pm_to_blib
+
+
+# --- MakeMaker selfdocument section:
+
+# here so even if top_targets is overridden, these will still be defined
+# gmake will silently still work if any are .PHONY-ed but nmake won't
+
+static ::
+	$(NOECHO) $(NOOP)
+
+dynamic ::
+	$(NOECHO) $(NOOP)
+
+config ::
+	$(NOECHO) $(NOOP)
+
+
+# --- MakeMaker postamble section:
+
+#all:: README.md README
+
+#README.md: lib/CallBackery.pm
+#	$(PERL) -I/home/oetiker/checkouts/callbackery/thirdparty/lib/perl5 -MPod::Markdown::Github -e 'binmode(STDOUT, ":utf8");Pod::Markdown::Github->new->filter(q{lib/CallBackery.pm})' > README.md
+
+#README: README.md
+#	cp README.md README
+
+thirdparty: /home/oetiker/checkouts/callbackery/thirdparty/touch
+	mkdir -p /home/oetiker/checkouts/callbackery/thirdparty
+
+CHANGES: lib/CallBackery.pm Makefile
+	echo 0.26.1 `date +"%Y-%m-%d %H:%M:%S %z"` `git config user.name` '<'`git config user.email`'>' >> CHANGES.new
+	@echo >> CHANGES.new
+	@echo ' -' >> CHANGES.new
+	@echo >> CHANGES.new
+	@cat CHANGES >> CHANGES.new && mv CHANGES.new CHANGES
+	@$$EDITOR CHANGES
+
+/home/oetiker/checkouts/callbackery/thirdparty/touch: Makefile
+	$(NOECHO) $(ECHO) "*** INSTALLING MISSING BITS FOR TESTING ***"
+	curl -L https://cpanmin.us | PERL_CPANM_HOME=/home/oetiker/checkouts/callbackery/thirdparty $(PERL) - -q --notest --local-lib-contained /home/oetiker/checkouts/callbackery/thirdparty Mojolicious::Plugin::Qooxdoo~v1.0.8 Config::Grammar~1.13 Mojolicious~8.26 Locale::PO~0.27 CPAN::Uploader && touch /home/oetiker/checkouts/callbackery/thirdparty/touch
+
+
+# End.
