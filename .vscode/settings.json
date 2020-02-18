@@ -1,0 +1,4 @@
+{
+    "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/schemas/v3.0/schema.json": "openapi.yaml",
+    "https://json-schema.org/draft-07/schema#": "config-schema.yaml"
+}

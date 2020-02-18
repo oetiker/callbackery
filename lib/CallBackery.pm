@@ -51,9 +51,7 @@ The config property is set automatically on startup.
 has 'config' => sub {
     my $app = shift;
     my $conf = CallBackery::Config->new(
-        app => $app,
-        file => $ENV{CALLBACKERY_CONF}
-            || $app->home->rel_file('etc/callbackery.cfg')
+        app => $app
     );
 };
 
