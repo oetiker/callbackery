@@ -25,8 +25,7 @@ my-call-backery-app/
 *.tar
 dist.sh
 .vscode/perl-lang/
-lib/CallBackery/qooxdoo/callbackery/cache
-
+node_modules
 # Backup files
 *~
 *.swp
