@@ -1,0 +1,58 @@
+name: Unit Tests
+
+on: 
+# push:
+#   paths-ignore:
+#     - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'    
+
+jobs:
+
+  build:
+    
+    strategy:
+      matrix:
+        os:
+          - ubuntu-18.04
+          # no libssl on windows
+          # - windows-latest
+
+        perl:
+          - '5.26'
+          - '5.30'
+
+      fail-fast: false
+    name: perl${{ matrix.perl }}/${{ matrix.os }}
+ 
+    runs-on: ${{ matrix.os }}
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Setup perl
+      uses: shogo82148/actions-setup-perl@v1
+      with:
+        perl-version: ${{ matrix.perl }}
+
+    - name: CPAN Cache
+      id: cpan-cache
+      uses: actions/cache@v1
+      with:
+        path: thirdparty
+        key: ${{ matrix.os }}-cpan-${{ matrix.perl }}-${{ hashFiles('Makefile.PL') }}
+
+    - name: Install Coveralls
+      run: |
+        cpanm --notest Devel::Cover::Report::Coveralls
+
+    - name: Build
+      run: |
+        perl Makefile.PL
+        make thirdparty
+    - name: Test
+      run: |
+         env COVERALLS_REPO_TOKEN=${{ secrets.GITHUB_TOKEN }} cover -test -report coveralls
