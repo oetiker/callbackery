@@ -1,3 +1,7 @@
+0.29.3 2020-02-28 09:57:50 +0100 Tobias Oetiker <tobi@oetiker.ch>
+
+ - do not translate empty strings
+
 0.29.2 2020-02-27 14:14:03 +0100 Tobias Oetiker <tobi@oetiker.ch>
 
  - fix popup instanciation with new YAML config
