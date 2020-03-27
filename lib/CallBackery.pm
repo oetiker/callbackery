@@ -34,7 +34,7 @@ use CallBackery::Plugin::Doc;
 use CallBackery::Database;
 use CallBackery::User;
 
-our $VERSION = '0.31.0';
+our $VERSION = '0.31.1';
 use Mojo::Base 'Mojolicious';
 
 =head2 config
@@ -194,7 +194,7 @@ HTML
     });
     # second stage of the deception. the answer page for login must not be the same as the original page
     # otherwise the browser assumes the login failed and does not offer to save the password.
-    $routes->post('login')->to(cb => sub {
+    $routes->post('/login')->to(cb => sub {
         shift->render(text=>'gugus :)');
     });
 

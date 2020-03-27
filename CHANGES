@@ -1,3 +1,7 @@
+0.31.1 2020-03-27 13:34:43 +0100 Tobias Oetiker <tobi@oetiker.ch>
+
+ - make work when mounted 'non root'
+
 0.31.0 2020-03-26 17:27:54 +0100 Tobias Oetiker <tobi@oetiker.ch>
 
  - fix login save trick to work with new compiler

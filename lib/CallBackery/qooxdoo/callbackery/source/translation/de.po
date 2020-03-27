@@ -16,8 +16,8 @@ msgid "Support"
 msgstr ""
 
 #: callbackery/ui/Footer.js:34
-msgid "Implemented by %1"
-msgstr "Implementiert von %1"
+msgid ", %1."
+msgstr ", %1."
 
 #: callbackery/ui/Footer.js:39
 msgid "Version %1, %2%3"
