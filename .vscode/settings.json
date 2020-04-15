@@ -1,4 +1,8 @@
 {
     "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/schemas/v3.0/schema.json": "openapi.yaml",
-    "https://json-schema.org/draft-07/schema#": "config-schema.yaml"
+    "https://json-schema.org/draft-07/schema#": "config-schema.yaml",
+    "didact.registered": [
+        "{\"name\":\"Didact Demo\",\"category\":\"Didact\",\"sourceUri\":\"/home/oetiker/.vscode/extensions/redhat.vscode-didact-0.1.6/demo/didact-demo.didact.md\"}",
+        "{\"name\":\"Create a New Didact Tutorial Extension\",\"category\":\"Didact\",\"sourceUri\":\"/home/oetiker/.vscode/extensions/redhat.vscode-didact-0.1.6/create_extension/create-new-tutorial-with-extension.didact.md\"}"
+    ]
 }
