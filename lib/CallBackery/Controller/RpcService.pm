@@ -95,7 +95,7 @@ sub dataCleaner {
     if (my $perMethodCleaner = $self->perMethodCleaner($method)){
         return $perMethodCleaner->($data);
     }
-    
+
     my $match = $self->passMatch;
     my $type = ref $data;
     for ($type) {
@@ -210,7 +210,7 @@ sub login { ## no critic (RequireArgUnpacking)
         $ok->then(
             sub {
                 if (shift){
-                    $ret->resolve({            
+                    $ret->resolve({
                         sessionCookie => $self->user->makeSessionCookie()
                     });
                 }
@@ -430,7 +430,7 @@ sub handleUpload {
     }
     my $name = $self->param('name');
     if (not $name){
-        return self->render(text=>encode_json({exception=>{message=>'Plugin Name missing',code=>3934}}));
+        return $self->render(text=>encode_json({exception=>{message=>'Plugin Name missing',code=>3934}}));
     }
 
     my $upload = $self->req->upload('file');
