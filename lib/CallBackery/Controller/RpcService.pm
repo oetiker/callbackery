@@ -557,7 +557,7 @@ sub handleDownload {
         $form = eval { from_json($formData) };
         if ($@){
             return $self->render(json=>{exception=>{
-                message=>trm('Data Decoding Problem ').$@,code=>3923}});
+                message=>trm('Data Decoding Problem %1',$@),code=>3923}});
         }
     }
     my $map = eval {
