@@ -1,3 +1,7 @@
+0.33.1 2020-05-08 22:35:47 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - fix merge issue
+
 0.33.0 2020-05-08 22:31:28 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - Add a new property reloadOnFormReset to form items.
