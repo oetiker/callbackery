@@ -363,7 +363,14 @@ sub getPluginConfig {
     my $plugin = shift;
     my $args = shift;
     my $obj = $self->instantiatePlugin($plugin,$args);
-    return $obj->filterHashKey($obj->screenCfg,'backend');
+    my $screenCfg = $obj->screenCfg;
+    if ($screenCfg->isa('Mojo::Promise')){
+        return $screenCfg->then(sub{
+            my $sC = shift;
+            return $obj->filterHashKey($sC,'backend');
+        });
+    }
+    return $obj->filterHashKey($screenCfg,'backend');
 }
 
 =head2 runEventActions(event[,args])
