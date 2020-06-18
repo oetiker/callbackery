@@ -34,12 +34,21 @@ Qooxdoo form.
 
 has screenCfg => sub {
     my $self = shift;
-    return {
-        type => 'form',
-        options => $self->screenOpts,
-        form => $self->formCfg,
-        action => $self->actionCfg,
+    my @data = $self->screenOpts,$self->formCfg,$self->actionCfg;
+    for my $p (@data) {
+        if (not $p->isa('Mojo::Promise')){
+            $p = Mojo::Promise->resolve($p)
+        }
     }
+    return Mojo::Promise->all(@data)->then(sub {
+        my ($sO,$fC,$aC) = @_;
+        return {
+            type => 'form',
+            options => $sO->[0],
+            form => $fC->[0],
+            action => $aC->[0],
+        }
+    });
 };
 
 =head2 screenOpts

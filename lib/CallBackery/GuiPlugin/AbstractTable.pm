@@ -1,6 +1,7 @@
 package CallBackery::GuiPlugin::AbstractTable;
 use Carp qw(carp croak);
 use CallBackery::Translate qw(trm);
+use Mojo::Promise;
 
 =head1 NAME
 
@@ -26,10 +27,22 @@ The attributes of the L<CallBackery::GuiPlugin::AbstractForm> class and these:
 
 has screenCfg => sub {
     my $self = shift;
-    my $screen = $self->SUPER::screenCfg;
-    $screen->{table} = $self->tableCfg;
-    $screen->{type} = 'table';
-    return $screen;
+    my $screenCfg = $self->SUPER::screenCfg;
+    my $tableCfg = $self->tableCfg;
+    if (not $tableCfg->isa('Mojo::Promise')){
+        $tableCfg = Mojo::Promise->resolve($tableCfg);
+    }
+    return Mojo::Promise->all($screenCfg,$tableCfg)->then(sub {
+        my ($sC,$tC) = @_;
+        return {
+            %{$cC->[0]},
+            type => 'html',
+            table => $tC->[0]
+            options => $sO->[0],
+            form => $fC->[0],
+            action => $aC->[0],
+        }
+    });
 };
 
 =head2 tableCfg
