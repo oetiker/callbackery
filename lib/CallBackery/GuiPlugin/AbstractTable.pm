@@ -116,7 +116,7 @@ sub getTableRowCount {
     return 0;
 }
 
-=head2 makeExportData(type => 'XLSX', filename => 'export-"now"')
+=head2 makeExportAction(type => 'XLSX', filename => 'export-"now"', label => 'Export')
 
 Create export button.
 The default type is XLSX, also available is CSV.
@@ -127,11 +127,12 @@ sub makeExportAction {
     my $self = shift;
     my %args = @_;
     my $type = $args{type} // 'XLSX';
+    my $label = $args{label} // trm("Export %1", $type);
     my $filename = $args{filename}
         // strftime('export-%Y-%m-%d-%H-%M-%S.',localtime(time)).lc($type);
 
     return  {
-        label            => trm("Export $type"),
+        label            => $label,
         action           => 'download',
         addToContextMenu => true,
         key              => 'export_csv',
