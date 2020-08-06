@@ -1,3 +1,9 @@
+0.34.3 2020-08-06 09:41:36 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - sync the visibility setting to 'note' properties
+ - allow visibility seting on header elements in forms
+ - improve left side spacing for forms with header sections and no side notes
+
 0.34.2 2020-07-31 13:49:05 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - translate on selectbox content reconfiguration
