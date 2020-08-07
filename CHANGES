@@ -1,3 +1,7 @@
+0.34.5 2020-08-07 16:05:10 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - false was treated as null in the required field check ... 
+
 0.34.4 2020-08-06 14:52:40 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - make sure that no reconf requests get lost if data is entered into the form while it is still loading
