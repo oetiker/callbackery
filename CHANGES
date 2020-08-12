@@ -1,3 +1,8 @@
+0.34.6 2020-08-12 14:06:26 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - reposition login window as the logo loads
+ - move max size logic into the popup window code
+
 0.34.5 2020-08-07 16:05:10 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - false was treated as null in the required field check ... 
