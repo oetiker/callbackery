@@ -145,13 +145,15 @@ sub makeExportAction {
                 lastRow => $self->getTableRowCount($args)
             });
 
-            # Use the translated table headers in row 1.
+            # Use the (translated) table headers in row 1.
             # Or the keys if undefined.
             my $loc = CallBackery::Translate->new(localeRoot=>$self->app->home->child("share"));
-            $loc->setLocale($self->user->userInfo->{lang});
+            $loc->setLocale($self->user->userInfo->{lang} // 'en');
             my @titles = map {
                 $_->{label}
-                    ? $loc->tra($_->{label}[0])
+                    ? ((ref $_->{label} eq 'CallBackery::Translate')
+                        ? $loc->tra($_->{label}[0])
+                        : $_->{label})
                     : $_->{key};
             } @{$self->tableCfg};
 
