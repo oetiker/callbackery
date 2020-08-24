@@ -137,7 +137,7 @@ sub loadAndNewPlugin {
     my $ok;
     for my $path (@{$self->pluginPath}) {
         if (my $e = load_class "${path}::$plugin") {
-            die merror(3894,"Exception: $e") if ref $e;
+            die mkerror(3894,"Exception: $e") if ref $e;
         } else {
             return "${path}::${plugin}"->new();
         }
