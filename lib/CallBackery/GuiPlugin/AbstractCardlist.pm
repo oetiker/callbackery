@@ -104,10 +104,10 @@ Default action configuration.
 
 has actionCfg => sub {
     my $self = shift;
-    return {
+    return [{
         action   => 'refresh',
         interval => $self->refreshInterval,
-    };
+    }];
 };
 
 =head2 refreshInterval
