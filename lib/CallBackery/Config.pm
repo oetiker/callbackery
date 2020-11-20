@@ -333,7 +333,7 @@ by the application.
 
 =cut
 
-my %postProcessed;
+my %postProcessingStarted;
 
 sub postProcessCfg {
     my $self = shift;
@@ -351,7 +351,8 @@ sub postProcessCfg {
             my $name = $1;
 
             # already processed?
-            return $cfg if $postProcessed{$name};
+            return $cfg if $postProcessingStarted{$name};
+            $postProcessingStarted{$name} = 1;
 
             $pluginOrder[$sec->{_order}] = $name;
             delete $sec->{_order};
@@ -364,7 +365,6 @@ sub postProcessCfg {
             $obj->massageConfig($cfg);
             # cleanup the config
             delete $cfg->{$section};
-            $postProcessed{$name} = 1;
         }
         $cfg->{PLUGIN}{list} = \@pluginOrder;
     }
