@@ -2,8 +2,6 @@ package CallBackery::GuiPlugin::AbstractCardlist;
 use Carp qw(carp croak);
 use CallBackery::Translate qw(trm);
 use CallBackery::Exception qw(mkerror);
-use Text::CSV;
-use Excel::Writer::XLSX;
 use Mojo::JSON qw(true false);
 use POSIX qw(strftime);
 
@@ -17,7 +15,7 @@ CallBackery::GuiPlugin::AbstractCardlist - Base Class for a cardlist plugin
 
 =head1 DESCRIPTION
 
-The base class for cardlist forms.
+The base class for cardlist forms, derived from CallBackery::GuiPlugin::AbstractForm
 
 =cut
 
@@ -41,45 +39,46 @@ has checkAccess => sub {
 
 Configuration of the card list cards
 
-return [
-    layout => {
-        class => 'qx.ui.layout.Grid',
-        setFunctions => {
-            setColumnFlex => [
-                [ 0, 1 ],
-                [ 5, 1 ],
-            ],
-            setColumnWidth => [
-                [ 5, 200 ],
-            ],
-            setColumnAlign => [
-                [ 5, 'right', 'bottom' ],
-            ],
-            setSpacingX => [ [20], ],
-            setSpacingY => [ [3],  ],
-        },
-    },
-    form => [
-        {
-            label => {
-                addSet => { row => 0, column => 0, },
-                set => {
-                    value => trm('Type'),
-                },
-            },
-            field => {
-                addSet => { row => 1, column => 0, },
-                class  => 'qx.ui.form.TextField',
-                key    => 'oatkg_label',
-                set    => { width => 100, readOnly => true },
-            },
-        },
-];
+ return [
+     layout => {
+         class => 'qx.ui.layout.Grid',
+         setFunctions => {
+             setColumnFlex => [
+                 [ 0, 1 ],
+                 [ 5, 1 ],
+             ],
+             setColumnWidth => [
+                 [ 5, 200 ],
+             ],
+             setColumnAlign => [
+                 [ 5, 'right', 'bottom' ],
+             ],
+             setSpacingX => [ [20], ],
+             setSpacingY => [ [3],  ],
+         },
+     },
+     form => [
+         {
+             label => {
+                 addSet => { row => 0, column => 0, },
+                 set => {
+                     value => trm('Type'),
+                 },
+             },
+             field => {
+                 addSet => { row => 1, column => 0, },
+                 class  => 'qx.ui.form.TextField',
+                 key    => 'oatkg_label',
+                 set    => { width => 100, readOnly => true },
+             },
+         },
+     ],
+ ];
 
 =cut
 
 has cardCfg => sub {
-    die mkerror(3456, "cardCfg must be defined in child class");
+    die mkerror(3456, trm("cardCfg must be defined in child class"));
 };
 
 =head2 screenCfg
@@ -96,35 +95,81 @@ has screenCfg => sub {
     return $screen;
 };
 
-=head2 actionCfg
+=head2 Auto refresh action
 
-Default action configuration.
+Add something like the following to your derived plugins to get an automatic
+refresh of the CardList.
 
-=cut
+ has actionCfg => sub {
+     my $self = shift;
+     return [{
+         action   => 'refresh',
+         interval => $self->refreshInterval,
+     }];
+ };
 
-has actionCfg => sub {
-    my $self = shift;
-    return [{
-        action   => 'refresh',
-        interval => $self->refreshInterval,
-    }];
-};
-
-=head2 refreshInterval
-
-Default screen refresh interval in milliseconds.
-
-=cut
-
-has refreshInterval => sub {
-    return 1000;
-};
+ has refreshInterval => sub {
+     return 1000; # in milliseconds
+ };
 
 =head1 METHODS
 
 All the methods of L<CallBackery::GuiPlugin::AbstractForm> plus:
 
 =cut
+
+=head2 getData(arguments)
+
+Receive current data for plug-in screen content.
+
+=cut
+
+sub getData {
+    my $self = shift;
+    my $call = shift;
+
+        state $valid = {
+        allFields    => 1,
+        deleteEntry  => 1,
+        updateEntry  => 1,
+    };
+    die mkerror(38948,"Unknown sub method $call\n") unless exists $valid->{$call};
+    return $self->$call(@_);
+}
+
+=head2 allEntries
+
+Create export button.
+The default type is XLSX, also available is CSV.
+
+=cut
+
+sub allEntries {
+    die mkerror(999, "allEntries() not yet implemented");
+}
+
+
+=head2 deleteEntry
+
+Delete selected card.
+
+=cut
+
+sub deleteEntry {
+    die mkerror(999, "deleteEntry() not yet implemented");
+}
+
+
+=head2 updateEntry
+
+Handle/save changes to card.
+
+=cut
+
+sub updateEntry {
+    die mkerror(999, "updateEntry() not yet implemented");
+}
+
 
 =head2 makeExportAction(type => 'XLSX', filename => 'export-"now"', label => 'Export')
 
