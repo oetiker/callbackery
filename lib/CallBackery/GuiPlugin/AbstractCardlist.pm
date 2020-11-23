@@ -15,24 +15,24 @@ CallBackery::GuiPlugin::AbstractCardlist - Base Class for a cardlist plugin
 
 =head1 DESCRIPTION
 
-The base class for cardlist forms, derived from CallBackery::GuiPlugin::AbstractForm
+The base class for cardlist plugins, derived from CallBackery::GuiPlugin::AbstractForm
 
 =cut
 
-use Mojo::Base 'CallBackery::GuiPlugin::AbstractForm';
+use Mojo::Base 'CallBackery::GuiPlugin::AbstractTable';
 
 =head1 ATTRIBUTES
 
-The attributes of the L<CallBackery::GuiPlugin::AbstractForm> class and these:
-
-=head2 checkAccess
-
-Check permissions.
+The attributes of the L<CallBackery::GuiPlugin::AbstractTable> class and these:
 
 =cut
 
-has checkAccess => sub {
-    shift->user->userId ? 1 : 0;
+has screenCfg => sub {
+    my $self = shift;
+    my $screen = $self->SUPER::screenCfg;
+    $screen->{type}    = 'cardlist';
+    $screen->{cardCfg} = $self->cardCfg;
+    return $screen;
 };
 
 =head2 cardCfg
@@ -78,108 +78,41 @@ Configuration of the card list cards
 =cut
 
 has cardCfg => sub {
-    die mkerror(3456, trm("cardCfg must be defined in child class"));
+    die mkerror(3456, trm("cardCfg must be defined in child plugin class"));
 };
 
-=head2 screenCfg
+=head2 tableCfg
 
-Custom default screen configuration.
+is not used for card plugins, use cardCfg instead.
 
 =cut
 
-has screenCfg => sub {
-    my $self = shift;
-    my $screen = $self->SUPER::screenCfg;
-    $screen->{type}    = 'cardlist';
-    $screen->{cardCfg} = $self->cardCfg;
-    return $screen;
-};
-
-=head2 Auto refresh action
-
-Add something like the following to your derived plugins to get an automatic
-refresh of the CardList.
-
- has actionCfg => sub {
-     my $self = shift;
-     return [{
-         action   => 'refresh',
-         interval => $self->refreshInterval,
-     }];
- };
-
- has refreshInterval => sub {
-     return 1000; # in milliseconds
- };
+has 'tableCfg';
 
 =head1 METHODS
 
-All the methods of L<CallBackery::GuiPlugin::AbstractForm> plus:
+All the methods of L<CallBackery::GuiPlugin::AbstractTable> plus:
 
 =cut
 
-=head2 getData(arguments)
+=head2 getTableRowCount({formData=>{}})
 
-Receive current data for plug-in screen content.
+is not used for card plugins.
 
 =cut
 
-sub getData {
-    my $self = shift;
-    my $call = shift;
-
-        state $valid = {
-        allFields    => 1,
-        deleteEntry  => 1,
-        updateEntry  => 1,
-    };
-    die mkerror(38948,"Unknown sub method $call\n") unless exists $valid->{$call};
-    return $self->$call(@_);
+sub getTableRowCount {
+    croak "Card plugins always get all data and have no getTableRowCount() method."
 }
-
-=head2 allEntries
-
-Create export button.
-The default type is XLSX, also available is CSV.
-
-=cut
-
-sub allEntries {
-    die mkerror(999, "allEntries() not yet implemented");
-}
-
-
-=head2 deleteEntry
-
-Delete selected card.
-
-=cut
-
-sub deleteEntry {
-    die mkerror(999, "deleteEntry() not yet implemented");
-}
-
-
-=head2 updateEntry
-
-Handle/save changes to card.
-
-=cut
-
-sub updateEntry {
-    die mkerror(999, "updateEntry() not yet implemented");
-}
-
 
 =head2 makeExportAction(type => 'XLSX', filename => 'export-"now"', label => 'Export')
 
-Create export button.
-The default type is XLSX, also available is CSV.
+Create export button. Not yet implemented for card plugins.
 
 =cut
 
 sub makeExportAction {
-    die mkerror(999, "makeExportAction() not yet implemented");
+    die mkerror(999, "makeExportAction() not yet implemented for card plugins");
 }
 
 1;
