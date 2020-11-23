@@ -102,7 +102,7 @@ is not used for card plugins.
 =cut
 
 sub getTableRowCount {
-    croak "Card plugins always get all data and have no getTableRowCount() method."
+    return;
 }
 
 =head2 makeExportAction(type => 'XLSX', filename => 'export-"now"', label => 'Export')
