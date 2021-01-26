@@ -1,3 +1,7 @@
+0.35.5 2021-01-26 13:28:43 +0100 Tobias Oetiker <tobi@oetiker.ch>
+
+ - fix form loading (regression from 0.35.4)
+
 0.35.4 2021-01-26 12:07:42 +0100 Tobias Oetiker <tobi@oetiker.ch>
 
  - if keys in form descriptions contained '-' this would break
