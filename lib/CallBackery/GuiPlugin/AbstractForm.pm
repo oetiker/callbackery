@@ -282,7 +282,7 @@ sub massageConfig {
     my $actionCfg = $self->actionCfg;
     for my $button (@$actionCfg){
         if ($button->{action} =~ /popup|wizzard/){
-            my $name = $button->{name};
+            my $name = $self->name . '_' . $button->{name};
             die "Plugin instance name $name is not unique\n"
                 if $cfg->{PLUGIN}{prototype}{$name};
             my $popup = $cfg->{PLUGIN}{prototype}{$name}
