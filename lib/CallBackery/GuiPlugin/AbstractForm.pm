@@ -288,6 +288,7 @@ sub massageConfig {
     my $cfg = shift;
     my $actionCfg = $self->actionCfg;
     for my $button (@$actionCfg){
+        next unless $button->{action};
         if ($button->{action} =~ /popup|wizzard/) {
             # prepend plugin name (see also screenCfg above)
             my $name = $self->name . '_' . $button->{name};
