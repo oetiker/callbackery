@@ -223,6 +223,9 @@ properties:
         description: for the small logo brand the UI
         type: string
         format: uri
+      logo_scale:
+        description: should the log be scaled on the login window
+        type: boolean
       spinner:
         type: string
         format: uri
@@ -236,6 +239,9 @@ properties:
       hide_password:
         type: boolean
         description: hide password field on login screen
+      hide_password_icon:
+        type: boolean
+        description: hide password dialog icon
       hide_release:
         type: boolean
         description: hide release string on login screen
