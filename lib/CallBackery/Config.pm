@@ -179,8 +179,8 @@ DOC
         },
         FRONTEND => {
             _doc => 'Settings for the Web FRONTEND',
-            _vars => [ qw(logo logo_small spinner title initial_plugin company_name company_url company_support
-			  hide_password hide_release hide_company max_width
+            _vars => [ qw(logo logo_small logo_scale spinner title initial_plugin company_name company_url company_support
+			  hide_password hide_password_icon hide_release hide_company max_width
 			)
                      ],
             logo => {
@@ -201,6 +201,9 @@ DOC
             logo_small => {
                 _doc => 'url for the small logo brand the UI',
             },
+            logo_scale => {
+                _doc => 'should logo on login window be scaled',
+            },
             spinner => {
                 _doc => 'url for the busy animation spinner gif',
             },
@@ -212,6 +215,11 @@ DOC
             },
             hide_password => {
 	        _doc => 'hide password field on login screen',
+	        _re => '(yes|no)',
+                _re_error => 'pick yes or no',
+            },
+            hide_password_icon => {
+	        _doc => 'hide password icon on login screen',
 	        _re => '(yes|no)',
                 _re_error => 'pick yes or no',
             },
