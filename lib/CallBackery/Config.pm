@@ -27,6 +27,7 @@ use autodie;
 use File::Spec;
 use Locale::PO;
 use Mojo::Loader qw(load_class);
+use Mojo::JSON qw(true false);
 
 =head2 file
 
@@ -376,6 +377,12 @@ sub postProcessCfg {
         delete $cfg->{'FRONTEND-COLORS'};
     }
     $cfg->{FRONTEND}{TRANSLATIONS} = $self->getTranslations();
+    if (exists $cfg->{FRONTEND}{logo_scale}) {
+        $cfg->{FRONTEND}{logo_scale} = ($cfg->{FRONTEND}{logo_scale} eq 'yes') ? true : false;
+    }
+    if (exists $cfg->{FRONTEND}{hide_password_icon}) {
+        $cfg->{FRONTEND}{hide_password_icon} = ($cfg->{FRONTEND}{hide_password_icon} eq 'yes') ? true : false;
+    }
     return $cfg;
 }
 
