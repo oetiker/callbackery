@@ -27,6 +27,7 @@ use autodie;
 use File::Spec;
 use Locale::PO;
 use Mojo::Loader qw(load_class);
+use Mojo::JSON qw(true false);
 
 =head2 file
 
