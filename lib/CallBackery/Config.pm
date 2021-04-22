@@ -180,7 +180,7 @@ DOC
         },
         FRONTEND => {
             _doc => 'Settings for the Web FRONTEND',
-            _vars => [ qw(logo logo_small logo_scale spinner title initial_plugin company_name company_url company_support
+            _vars => [ qw(logo logo_small logo_noscale spinner title initial_plugin company_name company_url company_support
 			  hide_password hide_password_icon hide_release hide_company max_width
 			)
                      ],
@@ -202,11 +202,10 @@ DOC
             logo_small => {
                 _doc => 'url for the small logo brand the UI',
             },
-            logo_scale => {
-                _doc => 'should logo on login window be scaled',
+            logo_noscale => {
+                _doc => "don't scale logo on login window",
 	        _re => '(yes|no|true|false)',
                 _re_error => 'pick yes or no OR true or false',
-                _default => 'true',
                 _sub => sub {
                     $_[0] = ($_[0] =~ /yes|true/) ? true : false;
                     return;
@@ -223,7 +222,6 @@ DOC
             },
             hide_password => {
 	        _doc => 'hide password field on login screen',
-                _default => 'false',
 	        _re => '(yes|no|true|false)',
                 _re_error => 'pick yes or no OR true or false',
                 _sub => sub {
@@ -233,7 +231,6 @@ DOC
             },
             hide_password_icon => {
 	        _doc => 'hide password icon on login screen',
-                _default => 'false',
 	        _re => '(yes|no|true|false)',
                 _re_error => 'pick yes or no OR true or false',
                 _sub => sub {
@@ -243,7 +240,6 @@ DOC
             },
             hide_release => {
 	        _doc => 'hide release string on login screen',
-                _default => 'false',
 	        _re => '(yes|no|true|false)',
                 _re_error => 'pick yes or no OR true or false',
                 _sub => sub {
@@ -254,7 +250,6 @@ DOC
             hide_company => {
 	        _doc => 'hide company string on login screen',
                 _re => '(yes|no|true|false)',
-                _default => 'false',
                 _re_error => 'pick yes or no OR true or false',
                 _sub => sub {
                     $_[0] = ($_[0] =~ /yes|true/) ? true : false;

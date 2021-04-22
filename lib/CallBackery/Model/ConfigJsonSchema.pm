@@ -232,10 +232,10 @@ properties:
         description: for the small logo brand the UI
         type: string
         format: uri
-      logo_scale:
+      logo_noscale:
         type: boolean
-        description: should the log be scaled on the login window
-        default: true
+        description: don't scale the login window logo
+        default: false
       spinner:
         type: string
         format: uri
