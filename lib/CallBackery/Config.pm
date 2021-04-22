@@ -27,7 +27,6 @@ use autodie;
 use File::Spec;
 use Locale::PO;
 use Mojo::Loader qw(load_class);
-use Mojo::JSON qw(true false);
 
 =head2 file
 
@@ -204,7 +203,13 @@ DOC
             },
             logo_scale => {
                 _doc => 'should logo on login window be scaled',
-                _default => true,
+	        _re => '(yes|no|true|false)',
+                _re_error => 'pick yes or no OR true or false',
+                _default => 'true',
+                _sub => sub {
+                    $_[0] = ($_[0] =~ /yes|true/) ? true : false;
+                    return;
+                },
             },
             spinner => {
                 _doc => 'url for the busy animation spinner gif',
@@ -217,8 +222,8 @@ DOC
             },
             hide_password => {
 	        _doc => 'hide password field on login screen',
-                _default => false,
-	        _re => '(yes|no)',
+                _default => 'false',
+	        _re => '(yes|no|true|false)',
                 _re_error => 'pick yes or no OR true or false',
                 _sub => sub {
                     $_[0] = ($_[0] =~ /yes|true/) ? true : false;
@@ -227,23 +232,18 @@ DOC
             },
             hide_password_icon => {
 	        _doc => 'hide password icon on login screen',
-                _default => false,
-	        _re => '(yes|no)',
+                _default => 'false',
+	        _re => '(yes|no|true|false)',
                 _re_error => 'pick yes or no OR true or false',
                 _sub => sub {
                     $_[0] = ($_[0] =~ /yes|true/) ? true : false;
                     return;
                 },
-            },
-            hide_password_icon => {
-	        _doc => 'hide password icon on login screen',
-	        _re => '(yes|no)',
-                _re_error => 'pick yes or no',
             },
             hide_release => {
 	        _doc => 'hide release string on login screen',
-                _default => false,
-	        _re => '(yes|no)',
+                _default => 'false',
+	        _re => '(yes|no|true|false)',
                 _re_error => 'pick yes or no OR true or false',
                 _sub => sub {
                     $_[0] = ($_[0] =~ /yes|true/) ? true : false;
@@ -252,8 +252,8 @@ DOC
             },
             hide_company => {
 	        _doc => 'hide company string on login screen',
-                _re => '(yes|no)',
-                _default => false,
+                _re => '(yes|no|true|false)',
+                _default => 'false',
                 _re_error => 'pick yes or no OR true or false',
                 _sub => sub {
                     $_[0] = ($_[0] =~ /yes|true/) ? true : false;
