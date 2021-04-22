@@ -99,7 +99,6 @@ sub postProcessCfg ($self) {
     }
     for my $prop (keys %{$schema->{properties}{FRONTEND}{properties}}) {
         my $default = $schema->{properties}{FRONTEND}{properties}{$prop}{default};
-        $self->log->debug("prop=$prop, default=", ($default // 'NONE'));
         $cfg->{FRONTEND}{$prop} //= $default if $default;
     }
     for my $item (@{$cfg->{PLUGIN}}) {
