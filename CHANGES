@@ -1,3 +1,10 @@
+0.36.2 2021-04-22 15:26:08 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - Convert to boolean in Config.pm
+ - Add YAML default handling
+ - Add defaults
+ - Simplify Login.js check for logo_scale
+
 0.36.1 2021-04-21 08:19:06 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - Allow disabling of logo scaling
