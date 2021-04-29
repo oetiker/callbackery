@@ -472,6 +472,8 @@ has template => sub {
     monkey_patch $mt->namespace,
         dbLookup => $dbLookup;
     monkey_patch $mt->namespace,
+        app => $self->app;
+    monkey_patch $mt->namespace,
         slurp => sub {
             my $filename = shift;
             return Mojo::File->new($filename)->slurp;
