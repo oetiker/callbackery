@@ -472,7 +472,7 @@ has template => sub {
     monkey_patch $mt->namespace,
         dbLookup => $dbLookup;
     monkey_patch $mt->namespace,
-        app => $self->app;
+        app => sub { $self->app },
     monkey_patch $mt->namespace,
         slurp => sub {
             my $filename = shift;

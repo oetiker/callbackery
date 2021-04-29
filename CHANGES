@@ -1,3 +1,7 @@
+0.36.5 2021-04-29 15:36:04 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - make app in templates actually work
+
 0.36.4 2021-04-29 15:04:03 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - provide app to template renderer
