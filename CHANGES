@@ -1,3 +1,7 @@
+0.36.9 2021-05-05 18:06:10 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - fix eventhandling in frontend code
+
 0.36.8 2021-05-02 13:47:46 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - add missing context to make form reload actually work
