@@ -1,6 +1,7 @@
 package CallBackery::Controller::RpcService;
 
-use Mojo::Base qw(Mojolicious::Plugin::Qooxdoo::JsonRpcController);
+use Mojo::Base qw(Mojolicious::Plugin::Qooxdoo::JsonRpcController), 
+    -signatures,-async_await;
 use CallBackery::Exception qw(mkerror);
 use CallBackery::Translate qw(trm);
 
@@ -8,7 +9,7 @@ use CallBackery::User;
 # use Data::Dumper;
 use Scalar::Util qw(blessed weaken);
 use Mojo::JSON qw(encode_json decode_json from_json);
-
+use Syntax::Keyword::Try;
 =head1 NAME
 
 CallBackery::RpcService - RPC services for CallBackery
@@ -45,27 +46,24 @@ my %allow = (
     getSessionCookie => 2
 );
 
-has config => sub {
-    shift->app->config;
+has config => sub ($self) {
+    $self->app->config;
 };
 
-has user => sub {
-    my $self = shift;
+has user => sub ($self) {
     my $obj = $self->app->userObject->new(controller=>$self,log=>$self->log);
     #
     weaken $obj->{controller};
     return $obj;
 };
 
-has pluginMap => sub {
-    my $map = shift->config->cfgHash->{PLUGIN};
+has pluginMap => sub ($self) {
+    my $map = $self->config->cfgHash->{PLUGIN};
     return $map;
 };
 
 
-sub allow_rpc_access {
-    my $self = shift;
-    my $method = shift;
+sub allow_rpc_access ($self,$method) {
     if (not $self->req->method eq 'POST') {
         # sorry we do not allow GET requests
         $self->log->error("refused ".$self->req->method." request");
@@ -90,13 +88,12 @@ sub allow_rpc_access {
 
 # dataCleaner($data)
 
-has passMatch => sub {
+has passMatch => sub ($self) {
     qr{(?i)(?:password|_pass)};
 };
 
-sub perMethodCleaner {
-    my $self = shift;
-    my $method = shift or return;
+sub perMethodCleaner ($self,$method=undef) {
+    $method or return;
     return {
         login => sub {
             my $data = shift;
@@ -108,10 +105,7 @@ sub perMethodCleaner {
     }->{$method};
 };
 
-sub dataCleaner {
-    my $self = shift;
-    my $data = shift;
-    my $method = shift;
+sub dataCleaner ($self,$data,$method=undef) {
 
     if (my $perMethodCleaner = $self->perMethodCleaner($method)){
         return $perMethodCleaner->($data);
@@ -220,37 +214,18 @@ Check login and provide the user specific interface configuration as a response.
 
 =cut
 
-sub login { ## no critic (RequireArgUnpacking)
+async sub login { ## no critic (RequireArgUnpacking)
     my $self = shift;
     my $login = shift;
     my $password = shift;
     my $cfg = $self->config->cfgHash->{BACKEND};
-    my $ok = $self->user->login($login,$password);
-    if (eval { blessed $ok && $ok->isa('Mojo::Promise') }){
-        my $ret = Mojo::Promise->new;
-        $ok->then(
-            sub {
-                if (shift){
-                    $ret->resolve({            
-                        sessionCookie => $self->user->makeSessionCookie()
-                    });
-                }
-                else {
-                    $ret->resolve(undef);
-                }
-            },
-            sub {
-                $ret->reject(@_);
-            }
-        );
-        return $ret;
-    }
-    if ($ok) {
-        return {
+    if (my $ok = await $self->user->login($login,$password)){
+        return {            
             sessionCookie => $self->user->makeSessionCookie()
-        };
+        }
+    } else {
+        return;
     }
-    return undef;
 }
 
 =head2 logout
@@ -273,12 +248,12 @@ get an instance for the given plugin
 
 =cut
 
-sub instantiatePlugin {
+async sub instantiatePlugin {
     my $self = shift;
     my $name = shift;
     my $args = shift;
     my $user = $self->user;
-    my $plugin = $self->config->instantiatePlugin($name,$user,$args);
+    my $plugin = await $self->config->instantiatePlugin($name,$user,$args);
     $plugin->log($self->log);
     return $plugin;
 }
@@ -289,13 +264,13 @@ handle form sumissions
 
 =cut
 
-sub processPluginData {
+async sub processPluginData {
     my $self = shift;
     my $plugin = shift;
     # creating two statements will make things
     # easier to debug since there is only one
     # thing that can go wrong per line.
-    my $instance = $self->instantiatePlugin($plugin);
+    my $instance = await $self->instantiatePlugin($plugin);
     return $instance->processData(@_);
 }
 
@@ -305,10 +280,10 @@ validate the content of the given field for the given plugin
 
 =cut
 
-sub validatePluginData {
+async sub validatePluginData {
     my $self = shift;
     my $plugin = shift;
-    return $self->instantiatePlugin($plugin)
+    return (await $self->instantiatePlugin($plugin))
         ->validateData(@_);
 }
 
@@ -318,10 +293,10 @@ return the current value for the given field
 
 =cut
 
-sub getPluginData {
+async sub getPluginData {
     my $self = shift;
     my $plugin = shift;
-    return $self->instantiatePlugin($plugin)
+    return (await $self->instantiatePlugin($plugin))
         ->getData(@_);
 }
 
@@ -332,16 +307,18 @@ returns user specific configuration information
 
 =cut
 
-sub getUserConfig {
+async sub getUserConfig {
     my $self = shift;
     my $args = shift;
     my @plugins;
     my $ph = $self->pluginMap;
-    for my $name (@{$ph->{list}}){
-        my $obj = eval {
-            $self->instantiatePlugin($name,$args);
-        };
-        warn "$@" if $@;
+    for my $plugin (@{$ph->{list}}){
+        my $obj;
+        try {
+            $obj = await $self->instantiatePlugin($plugin,$args);
+        } catch ($error) {
+            warn "$error";
+        }
         next unless $obj;
         push @plugins, {
             tabName => $obj->tabName,
@@ -350,7 +327,7 @@ sub getUserConfig {
         };
     }
     return {
-        userInfo => $self->user->userInfo,
+        userInfo => await $self->user->userInfo,
         plugins => \@plugins,
     };
 }
@@ -362,11 +339,11 @@ references in the process.
 
 =cut
 
-sub getPluginConfig {
+async sub getPluginConfig {
     my $self = shift;
     my $plugin = shift;
     my $args = shift;
-    my $obj = $self->instantiatePlugin($plugin,$args);
+    my $obj = await $self->instantiatePlugin($plugin,$args);
     return $obj->filterHashKey($obj->screenCfg,'backend');
 }
 
@@ -444,7 +421,7 @@ in the usual way, hence we  have to render our own response!
 =cut
 
 
-sub handleUpload {
+async sub handleUpload {
     my $self = shift;
     if (not $self->user->isUserAuthenticated){
         return $self->render(json => {exception=>{
@@ -461,7 +438,7 @@ sub handleUpload {
         return $self->render(json => {exception=>{
             message=>trm('Upload Missing'),code=>9384}});
     }
-    my $obj = $self->config->instantiatePlugin($name,$self->user);
+    my $obj = await $self->instantiatePlugin($name);
 
     my $form;
     if (my $formData = $self->req->param('formData')){
@@ -473,45 +450,27 @@ sub handleUpload {
     }
     $form->{uploadObj} = $upload;
 
-    my $return = eval {
-        $obj->processData({
+    my $return;
+    try {
+        $return = await $obj->processData({
             key => $self->req->param('key'),
             formData => $form,
         });
-    };
-    if ($@){
-        if (blessed $@){
-            if ($@->isa('CallBackery::Exception')){
+    } catch ($error) {
+        if (blessed $error){
+            if ($error->isa('CallBackery::Exception')){
                 return $self->render(json=>{exception=>{
-                    message=>$@->message,code=>$@->code}});
+                    message=>$error->message,code=>$error->code}});
             }
-            elsif ($@->isa('Mojo::Exception')){
-                return $self->render(json=>{exception=>{message=>$@->message,code=>9999}});
+            elsif ($error->isa('Mojo::Exception')){
+                return $self->render(json=>{exception=>{message=>$error->message,code=>9999}});
             }
         }
-        return $self->render(json=>{exception=>{message=>$@,code=>9999}});
+        return $self->render(json=>{exception=>{message=>$error,code=>9999}});
+
     }
-    if (eval { blessed $return and $return->isa('Mojo::Promise')}){
-        $return->then(sub {
-            $self->render(json=>shift);
-        },
-        sub {
-            my $err = shift;
-            if (blessed $err){
-                if ($err->isa('CallBackery::Exception')){
-                    return $self->render(json=>{exception=>{message=>$err->message,code=>$err->code}});
-                }
-                elsif ($err->isa('Mojo::Exception')){
-                    return $self->render(json=>{exception=>{message=>$err->message,code=>9999}});
-                }
-            }
-            return $self->render(json=>{exception=>{message=>$err,code=>9999}});
-        });
-        $self->render_later;
-        return $return;
-    }
-    #warn Dumper $return;
-    $self->render(json=>$return);
+    $self->render_later;
+    return await $self->render(json=>shift);
 }
 
 =head2 handleDownload
@@ -539,10 +498,10 @@ a L<Mojo::Asset>. eg C<Mojo::Asset::File->new(path => '/etc/passwd')>.
 
 =cut
 
-sub handleDownload {
+async sub handleDownload {
     my $self = shift;
 
-    if (not $self->user->isUserAuthenticated){
+    if (not await $self->user->isUserAuthenticated){
         return $self->render(json=>{exception=>{
             message=>trm('Access Denied'),code=>3928}});
     }
@@ -554,7 +513,7 @@ sub handleDownload {
             message=>trm('Plugin Name missing'),code=>3923}});
     }
 
-    my $obj = $self->config->instantiatePlugin($name,$self->user);
+    my $obj = await $self->instantiatePlugin($name);
 
     my $form;
     if (my $formData = $self->req->param('formData')){
@@ -564,50 +523,26 @@ sub handleDownload {
                 message=>trm('Data Decoding Problem %1',$@),code=>3923}});
         }
     }
-    my $map = eval {
-        $obj->processData({
+    my $map;
+    try {
+        $map = await $obj->processData({
             key => $key,
             formData => $form,
         });
-    };
-    if ($@){
-        if (blessed $@){
-            if ($@->isa('CallBackery::Exception')){
+    } catch ($error) {
+        if (blessed $error){
+            if ($error->isa('CallBackery::Exception')){
                 return $self->render(json=>{exception=>{
-                    message=>$@->message,code=>$@->code}});
+                    message=>$error->message,code=>$error->code}});
             }
-            elsif ($@->isa('Mojo::Exception')){
+            elsif ($error->isa('Mojo::Exception')){
                 return $self->render(json=>{exception=>{
-                    message=>$@->message,code=>9999}});
+                    message=>$error->message,code=>9999}});
             }
         }
-        return $self->render(json=>{exception=>{message=>$@,code=>9999}});
+        return $self->render(json=>{exception=>{message=>$error,code=>9999}});
     }
-    if (eval { blessed $map and $map->isa('Mojo::Promise')}){
-        $map->then(sub {
-            my $map = shift;
-            $self->res->headers->content_type($map->{type}.';name=' .$map->{filename});
-            $self->res->headers->content_disposition('attachment;filename='.$map->{filename});
-            $self->res->content->asset($map->{asset});
-            $self->rendered(200);
-        },
-        sub {
-            my $err = shift;
-            if (blessed $err){
-                if ($err->isa('CallBackery::Exception')){
-                    return $self->render(json=>{exception=>{message=>$err->message,code=>$err->code}});
-                }
-                elsif ($err->isa('Mojo::Exception')){
-                    return $self->render(json=>{exception=>{message=>$err->message,code=>9999}});
-                }
-            }
-            return $self->render(json=>{exception=>{
-                message=>$err,code=>9999}});
-        });
-        $self->render_later;
-        return $map;
-    }
-    #warn Dumper $return;
+    $self->render_later;
     $self->res->headers->content_type($map->{type}.';name=' .$map->{filename});
     $self->res->headers->content_disposition('attachment;filename='.$map->{filename});
     $self->res->content->asset($map->{asset});
