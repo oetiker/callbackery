@@ -10,6 +10,7 @@ use CallBackery::User;
 use Scalar::Util qw(blessed weaken);
 use Mojo::JSON qw(encode_json decode_json from_json);
 use Syntax::Keyword::Try;
+
 =head1 NAME
 
 CallBackery::RpcService - RPC services for CallBackery
@@ -72,16 +73,15 @@ sub allow_rpc_access ($self,$method) {
     if (not exists $allow{$method}){
         return 0;
     }
-
     for ($allow{$method}){
         /1/ && return 1;
+        return 1 if ($self->user->isUserAuthenticated);
         /3/ && do {
             my $plugin = $self->rpcParams->[0];
-            if ($self->instantiatePlugin($plugin)->mayAnonymous){
+            if ($self->config->instantiatePlugin($plugin,$self->user)->mayAnonymous){
                 return 1;    
             }
         };
-        return $self->user->isUserAuthenticated;
     }
     return 0;
 };
@@ -219,7 +219,8 @@ async sub login { ## no critic (RequireArgUnpacking)
     my $login = shift;
     my $password = shift;
     my $cfg = $self->config->cfgHash->{BACKEND};
-    if (my $ok = await $self->user->login($login,$password)){
+    if (my $ok = 
+        await $self->config->promisify($self->user->login($login,$password))){
         return {            
             sessionCookie => $self->user->makeSessionCookie()
         }
@@ -242,18 +243,18 @@ sub logout {
 
 
 
-=head2 instantiatePlugin
+=head2 instantiatePlugin_p
 
 get an instance for the given plugin
 
 =cut
 
-async sub instantiatePlugin {
+async sub instantiatePlugin_p {
     my $self = shift;
     my $name = shift;
     my $args = shift;
     my $user = $self->user;
-    my $plugin = await $self->config->instantiatePlugin($name,$user,$args);
+    my $plugin = await $self->config->instantiatePlugin_p($name,$user,$args);
     $plugin->log($self->log);
     return $plugin;
 }
@@ -270,7 +271,7 @@ async sub processPluginData {
     # creating two statements will make things
     # easier to debug since there is only one
     # thing that can go wrong per line.
-    my $instance = await $self->instantiatePlugin($plugin);
+    my $instance = await $self->instantiatePlugin_p($plugin);
     return $instance->processData(@_);
 }
 
@@ -283,7 +284,7 @@ validate the content of the given field for the given plugin
 async sub validatePluginData {
     my $self = shift;
     my $plugin = shift;
-    return (await $self->instantiatePlugin($plugin))
+    return (await $self->instantiatePlugin_p($plugin))
         ->validateData(@_);
 }
 
@@ -296,7 +297,7 @@ return the current value for the given field
 async sub getPluginData {
     my $self = shift;
     my $plugin = shift;
-    return (await $self->instantiatePlugin($plugin))
+    return (await $self->instantiatePlugin_p($plugin))
         ->getData(@_);
 }
 
@@ -315,7 +316,7 @@ async sub getUserConfig {
     for my $plugin (@{$ph->{list}}){
         my $obj;
         try {
-            $obj = await $self->instantiatePlugin($plugin,$args);
+            $obj = await $self->instantiatePlugin_p($plugin,$args);
         } catch ($error) {
             warn "$error";
         }
@@ -327,7 +328,7 @@ async sub getUserConfig {
         };
     }
     return {
-        userInfo => await $self->user->userInfo,
+        userInfo => await $self->config->promisify($self->user->userInfo),
         plugins => \@plugins,
     };
 }
@@ -343,7 +344,7 @@ async sub getPluginConfig {
     my $self = shift;
     my $plugin = shift;
     my $args = shift;
-    my $obj = await $self->instantiatePlugin($plugin,$args);
+    my $obj = await $self->instantiatePlugin_p($plugin,$args);
     return $obj->filterHashKey($obj->screenCfg,'backend');
 }
 
@@ -438,7 +439,7 @@ async sub handleUpload {
         return $self->render(json => {exception=>{
             message=>trm('Upload Missing'),code=>9384}});
     }
-    my $obj = await $self->instantiatePlugin($name);
+    my $obj = await $self->instantiatePlugin_p($name);
 
     my $form;
     if (my $formData = $self->req->param('formData')){
@@ -452,10 +453,10 @@ async sub handleUpload {
 
     my $return;
     try {
-        $return = await $obj->processData({
+        $return = await $self->config->promisify($obj->processData({
             key => $self->req->param('key'),
             formData => $form,
-        });
+        }));
     } catch ($error) {
         if (blessed $error){
             if ($error->isa('CallBackery::Exception')){
@@ -470,7 +471,7 @@ async sub handleUpload {
 
     }
     $self->render_later;
-    return await $self->render(json=>shift);
+    return $self->render(json=>shift);
 }
 
 =head2 handleDownload
@@ -501,7 +502,7 @@ a L<Mojo::Asset>. eg C<Mojo::Asset::File->new(path => '/etc/passwd')>.
 async sub handleDownload {
     my $self = shift;
 
-    if (not await $self->user->isUserAuthenticated){
+    if (not $self->user->isUserAuthenticated){
         return $self->render(json=>{exception=>{
             message=>trm('Access Denied'),code=>3928}});
     }
@@ -512,8 +513,8 @@ async sub handleDownload {
         return $self->render(json=>{exception=>{
             message=>trm('Plugin Name missing'),code=>3923}});
     }
-
-    my $obj = await $self->instantiatePlugin($name);
+    $self->render_later;
+    my $obj = await $self->instantiatePlugin_p($name);
 
     my $form;
     if (my $formData = $self->req->param('formData')){
@@ -525,10 +526,10 @@ async sub handleDownload {
     }
     my $map;
     try {
-        $map = await $obj->processData({
+        $map = await $self->config->promisify($obj->processData({
             key => $key,
             formData => $form,
-        });
+        }));
     } catch ($error) {
         if (blessed $error){
             if ($error->isa('CallBackery::Exception')){
@@ -542,7 +543,7 @@ async sub handleDownload {
         }
         return $self->render(json=>{exception=>{message=>$error,code=>9999}});
     }
-    $self->render_later;
+
     $self->res->headers->content_type($map->{type}.';name=' .$map->{filename});
     $self->res->headers->content_disposition('attachment;filename='.$map->{filename});
     $self->res->content->asset($map->{asset});
