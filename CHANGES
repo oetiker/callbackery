@@ -122,7 +122,7 @@
  - actually enable referential integrity
 
 0.35.9 2021-03-24 17:48:02 +0100 Tobias Oetiker <tobi@oetiker.ch>
-
+ - INTERNAL CHANGE! Instances of Popup Actions are now name Origin_ActionName and not just ActionName
  - release cardlist update
 
 0.35.8 2021-03-22 16:21:48 +0100 Tobias Oetiker <tobi@oetiker.ch>
