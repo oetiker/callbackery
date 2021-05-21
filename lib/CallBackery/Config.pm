@@ -352,8 +352,6 @@ sub getTranslations {
             $lx{$locale}{$id} = $str;
         }
     }
-#    use Data::Dumper;
-#    warn Dumper "lx=", \%lx;
     return \%lx;
 }
 
@@ -420,7 +418,6 @@ sub _getPluginObject {
 
     # clean the name
     $name =~ s/[^-_0-9a-z]/_/gi;
-
     die mkerror(39943,"No prototype for $name")
         if not defined $prototype;
 
