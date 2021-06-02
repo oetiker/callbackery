@@ -673,7 +673,7 @@ sub promiseDeath {
     if (eval { blessed $value && $value->isa('Mojo::Promise') }){
         Mojo::Exception->throw("unexpected promise respone!");
     }
-    return $value,@_;
+    return $value;
 }
 
 
