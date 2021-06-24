@@ -1,3 +1,7 @@
+0.38.8 2021-06-24 14:36:33 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - mode DESTROY handler to Qooxdoo plugin and update dependency
+
 0.38.7 2021-06-24 08:11:49 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - make sure to set the the foreign key pragma before internal migrations

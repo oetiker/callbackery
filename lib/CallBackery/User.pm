@@ -95,7 +95,7 @@ has db => sub {
 returns a pointer to one of the Database object of a Mojo::Pg instance.
 =cut
 
-has mojoSqlDb => sub {
+sub mojoSqlDb {
     shift->db->mojoSqlDb;
 };
 
