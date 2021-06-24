@@ -278,7 +278,12 @@ sub makeSessionCookie {
     return $conf.':'.$check;
 }
 
-
+sub DESTROY {
+    local($., $@, $!, $^E, $?);
+    return if ${^GLOBAL_PHASE} eq 'DESTRUCT';
+    my $self = shift;
+    $self->log->debug("Destroying ".__PACKAGE__);
+}
 
 1;
 __END__
