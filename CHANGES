@@ -1,3 +1,7 @@
+0.39.3 2021-10-12 08:36:17 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - shun XS-Parse-Keyword 0.20 (it won't compile)
+
 0.39.2 2021-10-12 07:57:12 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - allow localized string in MsgBox
