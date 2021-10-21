@@ -1,3 +1,7 @@
+0.39.5 2021-10-21 14:06:27 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - improve live updates for card form fields
+
 0.39.4 2021-10-12 13:13:42 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - fix XS-Parse-Keyword dependency to 0.21
