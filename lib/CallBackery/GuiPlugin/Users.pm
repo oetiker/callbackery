@@ -89,6 +89,7 @@ has actionCfg => sub {
     my $admin = ( not $self->user or $self->user->may('admin'));
     return [
         $admin ? ({
+            key => 'addUser',
             label => trm('Add User'),
             action => 'popup',
             addToContextMenu => true,
@@ -102,6 +103,7 @@ has actionCfg => sub {
             }
         }) : (),
         {
+            key => 'editUser',
             label => trm('Edit User'),
             action => 'popup',
             addToContextMenu => true,
@@ -127,6 +129,7 @@ has actionCfg => sub {
             }
         },
         $admin ? ({
+            key => 'deluser',
             label => trm('Delete User'),
             action => 'submitVerify',
             addToContextMenu => true,
