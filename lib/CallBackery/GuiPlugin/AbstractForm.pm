@@ -288,6 +288,7 @@ sub massageConfig {
     for my $button (@$actionCfg){
         if ($button->{action} =~ /popup|wizzard/) {
             # allow same plugin multiple times
+            my $name = $button->{name};
             if ($cfg->{PLUGIN}{prototype}{$name}) {
                 my $newCfg = encode_json($button->{backend});
                 my $oldCfg = encode_json($cfg->{PLUGIN}{prototype}{$name}{backend});
