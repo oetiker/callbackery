@@ -89,7 +89,7 @@ has actionCfg => sub {
     my $admin = ( not $self->user or $self->user->may('admin'));
     return [
         $admin ? ({
-            key => 'addUser',
+            key => 'add',
             label => trm('Add User'),
             action => 'popup',
             addToContextMenu => true,
@@ -103,7 +103,7 @@ has actionCfg => sub {
             }
         }) : (),
         {
-            key => 'editUser',
+            key => 'edit',
             label => trm('Edit User'),
             action => 'popup',
             addToContextMenu => true,
@@ -129,7 +129,6 @@ has actionCfg => sub {
             }
         },
         $admin ? ({
-            key => 'deluser',
             label => trm('Delete User'),
             action => 'submitVerify',
             addToContextMenu => true,
@@ -137,7 +136,7 @@ has actionCfg => sub {
             key => 'delete',
             actionHandler => sub {
                 my $self = shift;
-                my $args = shift;                
+                my $args = shift;
                 my $id = $args->{selection}{cbuser_id};
                 die mkerror(4992,trm("You have to select a user first"))
                     if not $id;
