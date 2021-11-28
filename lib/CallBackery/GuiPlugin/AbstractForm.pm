@@ -36,7 +36,7 @@ Qooxdoo form.
 
 has screenCfg => sub {
     my $self = shift;
-    $self->fixActionCfg;
+    $self->__fixActionCfg;
     return {
         type    => 'form',
         options => $self->screenOpts,
