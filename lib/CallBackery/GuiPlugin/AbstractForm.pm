@@ -36,13 +36,7 @@ Qooxdoo form.
 
 has screenCfg => sub {
     my $self = shift;
-    # prepend plugin name (see also messageConfig below)
-    my $name = $self->name;
-    for my $action (@{$self->actionCfg}) {
-        if ($action->{action} =~ /popup|wizzard/) {
-            $action->{name} = "${name}_$action->{name}";
-        }
-    }
+    $self->fixActionCfg;
     return {
         type    => 'form',
         options => $self->screenOpts,
@@ -82,6 +76,7 @@ TODOC
 has actionCfgMap => sub {
     my $self = shift;
     my %map;
+    $self->__fixActionCfg;
     for my $row (@{$self->actionCfg}){
         next unless $row->{action} =~ /^(submit|upload|download|autoSubmit|save)/;
         next unless $row->{key};
@@ -288,13 +283,12 @@ hash.
 sub massageConfig {
     my $self = shift;
     my $cfg = shift;
+    $self->__fixActionCfg;
     my $actionCfg = $self->actionCfg;
     for my $button (@$actionCfg){
         if ($button->{action} =~ /popup|wizzard/) {
-            # prepend plugin name (see also screenCfg above)
-            my $name = $self->name . '_' . $button->{name};
-            $button->{name} = $name;
             # allow same plugin multiple times
+            my $name = $button->{name};
             if ($cfg->{PLUGIN}{prototype}{$name}) {
                 my $newCfg = encode_json($button->{backend});
                 my $oldCfg = encode_json($cfg->{PLUGIN}{prototype}{$name}{backend});
@@ -312,6 +306,40 @@ sub massageConfig {
             $popup->massageConfig($cfg);
         }
     }
+}
+
+=head2 __fixActionCfg
+
+make sure actionCfg buttons only have keys and no names
+add properly constructed name properties
+
+=cut
+
+sub __fixActionCfg {
+    my $self = shift;
+    return $self if $self->{__action_cfg_fixed};
+    my $name = $self->name;
+    for my $action (@{$self->actionCfg}) {
+        if ($action->{name}) {
+            $self->log->debug(
+               "WARNING: actions should not have a name attribute:"
+             . " name=$action->{name}"
+           );
+        }
+        if (not $action->{key}) {
+            $self->log->debug(
+               "WARNING: actions should have a key attribute,"
+             . " using name=$action->{name} instead"
+            );
+            $action->{key} = $action->{name};
+        }
+        # popups and wizzards do need a name internally
+        if ($action->{action} =~ /popup|wizzard/) {
+            $action->{name} = "${name}_$action->{key}";
+        }
+    }
+    $self->{__action_cfg_fixed} = 1;
+    return $self;
 }
 
 1;
