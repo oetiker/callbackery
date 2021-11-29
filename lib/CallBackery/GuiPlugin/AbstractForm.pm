@@ -20,7 +20,7 @@ The base class for gui forms.
 
 =cut
 
-use Mojo::Base 'CallBackery::GuiPlugin::Abstract';
+use Mojo::Base 'CallBackery::GuiPlugin::AbstractAction';
 
 =head1 ATTRIBUTES
 
@@ -36,53 +36,10 @@ Qooxdoo form.
 
 has screenCfg => sub {
     my $self = shift;
-    $self->__fixActionCfg;
-    return {
-        type    => 'form',
-        options => $self->screenOpts,
-        form    => $self->formCfg,
-        action  => $self->actionCfg,
-    }
-};
-
-=head2 screenOpts
-
-Returns a hash of options for the screen Options
-
-=cut
-
-has screenOpts => sub {
-    {
-        warnAboutUnsavedData => 1
-    }
-};
-
-=head2 actionCfg
-
-Returns a list of action buttons to place at the top of the form.
-
-=cut
-
-has actionCfg => sub {
-   [];
-};
-
-=head2 actionCfgMap
-
-TODOC
-
-=cut
-
-has actionCfgMap => sub {
-    my $self = shift;
-    my %map;
-    $self->__fixActionCfg;
-    for my $row (@{$self->actionCfg}){
-        next unless $row->{action} =~ /^(submit|upload|download|autoSubmit|save)/;
-        next unless $row->{key};
-        $map{$row->{key}} = $row;
-    }
-    return \%map;
+    my $cfg = $self->SUPER::screenCfg;
+    $cfg->{type} = 'form';
+    $cfg->{form} = $self->formCfg;
+    return $cfg;
 };
 
 =head2 formCfg
@@ -271,75 +228,6 @@ sub getData {
     else {
         die mkerror(38334, 'Requested unknown data type ' . ($type // 'unknown'));
     }
-}
-
-=head2 massageConfig
-
-Function to integrate the plugin configuration recursively into the main config
-hash.
-
-=cut
-
-sub massageConfig {
-    my $self = shift;
-    my $cfg = shift;
-    $self->__fixActionCfg;
-    my $actionCfg = $self->actionCfg;
-    for my $button (@$actionCfg){
-        if ($button->{action} =~ /popup|wizzard/) {
-            # allow same plugin multiple times
-            my $name = $button->{name};
-            if ($cfg->{PLUGIN}{prototype}{$name}) {
-                my $newCfg = encode_json($button->{backend});
-                my $oldCfg = encode_json($cfg->{PLUGIN}{prototype}{$name}{backend});
-                if ($oldCfg ne 'null' and $newCfg ne $oldCfg) {
-                    $self->log->warn("oldCfg=" . dumper $oldCfg);
-                    $self->log->warn("newCfg=", dumper $newCfg);
-                    die "Not unique plugin instance name $name not allowed as backend config is different\n";
-                }
-            }
-            my $popup = $cfg->{PLUGIN}{prototype}{$name}
-                = $self->app->config->loadAndNewPlugin($button->{backend}{plugin});
-            $popup->config($button->{backend}{config});
-            $popup->name($name);
-            $popup->app($self->app);
-            $popup->massageConfig($cfg);
-        }
-    }
-}
-
-=head2 __fixActionCfg
-
-make sure actionCfg buttons only have keys and no names
-add properly constructed name properties
-
-=cut
-
-sub __fixActionCfg {
-    my $self = shift;
-    return $self if $self->{__action_cfg_fixed};
-    my $name = $self->name;
-    for my $action (@{$self->actionCfg}) {
-        if ($action->{name}) {
-            $self->log->debug(
-               "WARNING: actions should not have a name attribute:"
-             . " name=$action->{name}"
-           );
-        }
-        if (not $action->{key}) {
-            $self->log->debug(
-               "WARNING: actions should have a key attribute,"
-             . " using name=$action->{name} instead"
-            );
-            $action->{key} = $action->{name};
-        }
-        # popups and wizzards do need a name internally
-        if ($action->{action} =~ /popup|wizzard/) {
-            $action->{name} = "${name}_$action->{key}";
-        }
-    }
-    $self->{__action_cfg_fixed} = 1;
-    return $self;
 }
 
 1;
