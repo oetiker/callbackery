@@ -1,3 +1,8 @@
+0.40.0 2021-11-29 17:02:24 +0100 Tobias Oetiker <tobi@oetiker.ch>
+
+ - support for qx object ids to allow for playwrite testing
+ - new actionForm screens
+
 0.39.7 2021-11-18 18:01:38 +0100 Tobias Oetiker <tobi@oetiker.ch>
 
  - make header items with empty label and note work
