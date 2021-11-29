@@ -134,7 +134,7 @@ has actionCfg => sub {
             key => 'delete',
             actionHandler => sub {
                 my $self = shift;
-                my $args = shift;                
+                my $args = shift;
                 my $id = $args->{selection}{cbuser_id};
                 die mkerror(4992,trm("You have to select a user first"))
                     if not $id;
