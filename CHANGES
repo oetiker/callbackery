@@ -1,3 +1,7 @@
+0.40.1 2021-11-30 09:19:20 +0100 Tobias Oetiker <tobi@oetiker.ch>
+
+ - add missing files
+
 0.40.0 2021-11-29 17:02:24 +0100 Tobias Oetiker <tobi@oetiker.ch>
 
  - support for qx object ids to allow for playwrite testing (zaucker)
