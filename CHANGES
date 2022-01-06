@@ -1,3 +1,13 @@
+0.41.2 2022-01-06 15:06:24 +0100 Tobias Oetiker <tobi@oetiker.ch>
+
+ - refresh actions do not need a key
+
+0.41.1 2022-01-03 14:05:21 +0100 Tobias Oetiker <tobi@oetiker.ch>
+
+ - fix mising parenthesis (@zaucker)
+ - avoid json parse errors in downloads (@maettu)
+
+
 0.41.0 2022-01-02 17:18:45 +0100 Tobias Oetiker <tobi@oetiker.ch>
 
  - Allow form entries from URL with
