@@ -1,3 +1,6 @@
+  - add btCfg.menuKey for action menues with generic Popup
+    (e.g. CredMgr OAuth)
+
 0.41.6 2022-04-05 14:28:48 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - make sure LC_TIME and LC_NUMERIC are C and not set to some local
