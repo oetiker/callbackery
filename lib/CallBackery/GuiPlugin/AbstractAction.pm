@@ -67,7 +67,13 @@ has actionCfg => sub {
 
 =head2 actionCfgMap
 
-TODOC
+Lookup table for action plugins.
+
+NOTE: Unique keys are not checked for popup plugins as they don't have
+      action handlers.
+      This allows multiple popup actions using the same plugin instance.
+      In this case an additional cfg parameter C<testingIdPostfix> must be
+      used to make the QoxdooObjectIds unique used from frontend testing.
 
 =cut
 
