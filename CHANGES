@@ -1,4 +1,4 @@
-  - add btCfg.menuKey for action menues with generic Popup
+  - add btCfg.testingIdPostfix for action menues with generic Popup
     (e.g. CredMgr OAuth)
 
   - add check to enforce unique none-popup action keys
