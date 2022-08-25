@@ -253,8 +253,13 @@ async sub instantiatePlugin_p {
     my $name = shift;
     my $args = shift;
     my $user = $self->user;
-    my $plugin = await $self->config->instantiatePlugin_p($name,$user,$args);
-    $plugin->log($self->log);
+    my $plugin;
+    try {
+        $plugin = await $self->config->instantiatePlugin_p($name,$user,$args);
+    } catch($error) {
+        warn $error;
+    }
+    $plugin->log($self->log) if $plugin;
     return $plugin;
 }
 
