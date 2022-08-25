@@ -256,10 +256,10 @@ async sub instantiatePlugin_p {
     my $plugin;
     try {
         $plugin = await $self->config->instantiatePlugin_p($name,$user,$args);
+        $plugin->log($self->log);
     } catch($error) {
-        warn $error;
+        $self->log->warn($error);
     }
-    $plugin->log($self->log) if $plugin;
     return $plugin;
 }
 
