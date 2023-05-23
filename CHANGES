@@ -8,13 +8,7 @@
 
  - these changes are necessary to make callbackery work with qx8
 
-0.45.0 2023-05-23 12:05:16 +0200 Tobias Oetiker <tobi@oetiker.ch>
-
- -
-
-0.45.0 2023-05-23 12:05:01 +0200 Tobias Oetiker <tobi@oetiker.ch>
-
- -
+0.45.1 2023-05-08 10:52:48 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - Reload CardList on action response
 
