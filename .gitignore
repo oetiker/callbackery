@@ -21,6 +21,7 @@ thirdparty/
 frontend/compiled/
 t/callbackery.cfg.secret
 my-call-backery-app/
+CallBackery-*
 *.gz
 *.tar
 dist.sh
