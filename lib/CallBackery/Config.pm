@@ -554,12 +554,14 @@ sub restoreConfigBlob {
         for ($member->fileName){
             /^\{DATABASE\}$/ && do {
                 $self->log->warn("Restoring Database!");
+                $self->app->database->mojoSqlDb->disconnect;
                 unlink glob $cfg->{BACKEND}{cfg_db}.'*';
                 $member->extractToFileNamed($cfg->{BACKEND}{cfg_db});
                 last;
             };
             /^\{DATABASEDUMP\}$/ && do {
                 $self->log->warn("Restoring Database Dump!");
+                $self->app->database->mojoSqlDb->disconnect;
                 unlink glob $cfg->{BACKEND}{cfg_db}.'*';
                 open my $sqlite, '|-', '/usr/bin/sqlite3',$cfg->{BACKEND}{cfg_db};
                 my $sql = $member->contents();
