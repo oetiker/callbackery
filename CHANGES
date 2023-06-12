@@ -1,3 +1,7 @@
+0.46.1 2023-05-23 12:12:33 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - resync branches
+
 0.46.0 2023-05-23 12:05:29 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - the methodes 'show' and 'hide' clash with the attributes 
@@ -15,6 +19,9 @@
 0.45.0 2023-05-23 12:05:01 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  -
+=======
+0.45.1 2023-05-08 10:52:48 +0200 Tobias Oetiker <tobi@oetiker.ch>
+>>>>>>> 93b1caf4debb55a06a72ad1d38134bb1f4173bf4
 
  - Reload CardList on action response
 
