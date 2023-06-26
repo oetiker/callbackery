@@ -171,7 +171,15 @@ sub getFieldValue {
         if (ref $entry->{getter} eq 'CODE'){
             my $start = time;
             my $data = $entry->{getter}->($self);
-            $self->log->debug(sprintf("getter %s: %0.2fs",$field,time-$start));
+            if (eval { blessed $data && $data->isa('Mojo::Promise')}){
+                $data = $data->then(sub ($value) {
+                    $self->log->debug(sprintf("async getter %s: %0.2fs",$field,time-$start));
+                    return $value;
+                });
+            }
+            else {
+                $self->log->debug(sprintf("getter %s: %0.2fs",$field,time-$start));
+            }
             return $data;
         }
         else {
