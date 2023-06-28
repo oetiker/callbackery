@@ -1,3 +1,7 @@
+0.46.5 2023-06-28 08:29:18 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - fixed regression in abstractform (missing signature)
+
 0.46.4 2023-06-26 14:19:27 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - propper logging for async getters

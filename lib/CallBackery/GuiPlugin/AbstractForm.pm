@@ -21,7 +21,7 @@ The base class for gui forms.
 
 =cut
 
-use Mojo::Base 'CallBackery::GuiPlugin::AbstractAction';
+use Mojo::Base 'CallBackery::GuiPlugin::AbstractAction', -signatures;
 
 =head1 ATTRIBUTES
 
