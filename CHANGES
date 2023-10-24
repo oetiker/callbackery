@@ -1,3 +1,8 @@
+0.47.8 2023-10-24 11:23:11 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - force button to focus when it is touched ... this seems to
+   resolve the event order problem
+
 0.47.7 2023-10-24 11:08:14 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - force button to focus when it is clicked
