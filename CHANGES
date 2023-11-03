@@ -1,3 +1,5 @@
+  - Fix update comboBox data
+
 0.46.5 2023-06-28 08:29:18 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - fixed regression in abstractform (missing signature)
