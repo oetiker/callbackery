@@ -1,4 +1,56 @@
+
   - Fix update comboBox data
+
+0.47.9 2023-10-26 10:05:30 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - better fix, based on https://github.com/qooxdoo/qooxdoo/pull/10632
+
+0.47.8 2023-10-24 11:23:11 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - force button to focus when it is touched ... this seems to
+   resolve the event order problem
+
+0.47.7 2023-10-24 11:08:14 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - force button to focus when it is clicked
+
+0.47.6 2023-10-24 10:50:48 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - fix event ordering problem on ios and android
+ - add longer timeout for downloads and views
+
+0.47.5 2023-10-19 14:06:22 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - ios compatiblity issue can not easily be fixed outside qx
+   https://github.com/qooxdoo/qooxdoo/pull/10629 is the right way
+   to go about it ... 
+
+0.47.4 2023-10-18 22:53:53 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - it seems on ios there is no changeValue after blur, fix that by
+   resettting and setting the value explicitly after blur ... aargh 
+
+ - explicitly check for empty string in required field even when there
+   is no validator defined
+
+0.47.3 2023-08-29 16:20:30 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - make table columns with "flex" work on mobile devices
+
+0.47.2 2023-08-29 14:14:54 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - connect mmButton properties to button propperties
+
+0.47.1 2023-08-29 12:04:49 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - include callbackery.ui.form.FileSelectorMenuButton into distro
+
+0.47.0 2023-08-29 11:01:09 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+* make callbackery work better on mobile
+  - collapse navbar buttons into menu on mobile
+  - move labels over form fields on mobile
+* cleanup indentation
 
 0.46.5 2023-06-28 08:29:18 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
@@ -32,20 +84,11 @@
 
  - these changes are necessary to make callbackery work with qx8
 
-0.45.0 2023-05-23 12:05:16 +0200 Tobias Oetiker <tobi@oetiker.ch>
-
- -
-
-0.45.0 2023-05-23 12:05:01 +0200 Tobias Oetiker <tobi@oetiker.ch>
-
- -
-=======
 0.45.1 2023-05-08 10:52:48 +0200 Tobias Oetiker <tobi@oetiker.ch>
->>>>>>> 93b1caf4debb55a06a72ad1d38134bb1f4173bf4
 
  - Reload CardList on action response
-
-0.45.0 2023-03-30 09:13:03 +0200 Tobias Oetiker <tobi@oetiker.ch>
+ 
+0.45.0 2023-05-23 12:05:16 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - new widget attribute spellcheck which allows to enable
    spellcheckers like languagetool in textareas or normal text widets
