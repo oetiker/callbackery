@@ -1,5 +1,22 @@
+0.48.0 2023-11-29 11:21:50 +0100 Tobias Oetiker <tobi@oetiker.ch>
 
-  - Fix update comboBox data
+ * If the environmeny variable CM_CB_OVERRIDE_... is set, the value
+   from the config file is overridden with the value from the environment.
+
+   Example config file:
+
+   BACKEND:
+    cfg_db: 'dbi:SQLite:dbname=/opt/running/cb.db'
+   LIST:
+    - hello
+    - world
+    
+   Example environment override:
+    
+    export CM_CB_OVERRIDE_BACKEND_CFG_DB='dbi:SQLite:dbname=/tmp/cb.db'
+    export CM_CB_OVERRIDE_LIST_0='goodbye'
+
+ * Fix update comboBox data
 
 0.47.9 2023-10-26 10:05:30 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
