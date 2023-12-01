@@ -70,8 +70,8 @@ Example config file:
     
 Example environment override:
     
-    export CM_CB_OVERRIDE_BACKEND_CFG_DB='dbi:SQLite:dbname=/tmp/cb.db'
-    export CM_CB_OVERRIDE_LIST_0='goodbye'
+    export CB_CFG_OVERRIDE_BACKEND_CFG_DB='dbi:SQLite:dbname=/tmp/cb.db'
+    export CB_CFG_OVERRIDE_LIST_0='goodbye'
 
 =cut
 
@@ -81,7 +81,7 @@ has cfgHash => sub ($self) {
         Mojo::Exception->throw("Loading ".$self->file.": $@");
     }
     my $cfg = $walker->($cfgRaw, sub ($path,$data) {
-        my $env = 'CM_CB_OVERRIDE'.$path;
+        my $env = 'CB_CFG_OVERRIDE'.$path;
         $env =~ s/\//_/g;
         if (exists $ENV{$env} and my $override = $ENV{$env}) {
             $self->log->debug("overriding cfg $path ($data) with ENV \$$env ($override)");
