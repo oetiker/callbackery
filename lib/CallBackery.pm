@@ -39,7 +39,6 @@ use CallBackery::User;
 
 our $VERSION = '0.48.2';
 
-
 =head2 config
 
 A hash pointer to the configuration object. See L<CallBackery::Config> for details.
