@@ -1,3 +1,6 @@
+ - Add menuButtonSet and menuLabel to Actions.js to allow
+   separate config of mobile and regular menus
+ 
  - Translate tooltip and placeholder in Card.js
  - Make foreach function calls consistent in Card.js and Auto.js
 
