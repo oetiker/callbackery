@@ -1,6 +1,7 @@
+0.49.1 2024-02-19 14:50:15 +0100 Tobias Oetiker <tobi@oetiker.ch>
+
  - Add menuButtonSet and menuLabel to Actions.js to allow
-   separate config of mobile and regular menus
- 
+   separate config of mobile and regular menus 
  - Translate tooltip and placeholder in Card.js
  - Make foreach function calls consistent in Card.js and Auto.js
 
