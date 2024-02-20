@@ -1,5 +1,6 @@
+0.49.2 2024-02-20 09:57:55 +0100 Tobias Oetiker <tobi@oetiker.ch>
 
- - Add command showconfig to show print pod from Config.pm
+ - Add command `showconfig` to show config documentation form Config.pm
 
 0.49.1 2024-02-19 14:50:15 +0100 Tobias Oetiker <tobi@oetiker.ch>
 
