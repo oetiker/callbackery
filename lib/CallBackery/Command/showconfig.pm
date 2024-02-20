@@ -3,6 +3,8 @@ package CallBackery::Command::showconfig;
 use Mojo::Base 'Mojolicious::Command', -signatures;
 use Getopt::Long qw(GetOptionsFromArray :config no_auto_abbrev no_ignore_case);
 use Pod::Usage;
+use Pod::Simple::Text;
+use Pod::Simple::HTML;
 
 has description => "showconfig\n";
 has usage       => <<"EOF";
@@ -10,6 +12,7 @@ Usage: $0 showconfig [options]
 
   --verbose
   --help
+  --html     output as html
 
 EOF
 
@@ -18,13 +21,15 @@ my %opt;
 sub run ($self, @args) {
     my $app = $self->app;
 
-    GetOptionsFromArray \@args, \%opt,qw(help verbose) or exit 1;
+    GetOptionsFromArray \@args, \%opt,qw(help verbose html) or exit 1;
 
     $app->log->level($opt{verbose} ? 'debug' : 'info');
-    
-    say $app->config->pod;
-    
+
     if ($opt{help}) { die $self->usage }
+
+    $opt{html} ? Pod::Simple::HTML->filter(\$app->config->pod)
+               : Pod::Simple::Text->filter(\$app->config->pod);
+
 
     return;
 }
@@ -39,7 +44,7 @@ showconfig - show config documentation as pod
 
 =head1 SYNOPSIS
 
-APPLICATION B<showconfig> [--verbose] [--help]
+APPLICATION B<showconfig> [--verbose] [--help] [--html]
 
 =head1 DESCRIPTION
 
