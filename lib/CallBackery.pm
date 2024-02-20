@@ -143,6 +143,9 @@ sub startup {
         }
     }
 
+    ## commands
+    unshift @{$app->commands->namespaces},  __PACKAGE__.'::Command';
+
     unshift @{$app->static->paths}, 
         $app->home->rel_file('frontend').'/compiled/source/'
         if $app->mode eq 'development';    # Router

@@ -1,3 +1,5 @@
+ - Add command showconfig to show print pod from Config.pm
+
  - Add menuButtonSet and menuLabel to Actions.js to allow
    separate config of mobile and regular menus
  
