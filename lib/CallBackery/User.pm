@@ -3,9 +3,8 @@ package CallBackery::User;
 # $Id: User.pm 539 2013-12-09 22:28:11Z oetiker $
 
 # sorted hashes
-use Mojo::Base -base;
+use Mojo::Base -base, -signatures;
 use Carp qw(croak confess);
-use Scalar::Util qw(weaken);
 use Mojo::Util qw(b64_decode b64_encode secure_compare);
 use Mojo::JSON qw(encode_json decode_json);
 use CallBackery::Exception qw(mkerror);
@@ -35,7 +34,9 @@ the controller
 
 =cut
 
-has 'controller';
+has controller => undef, weak => 1;
+has app => undef, weak => 1;
+has log => undef, weak => 1;
 
 =head2 $self->userId
 
@@ -71,20 +72,6 @@ has userId => sub {
     return ($userCount == 0 ? '__ROOT' : undef );
 };
 
-=head2 $self->db
-
-a handle to a L<CallBackery::Database> object.
-
-=cut
-
-has app => sub {
-    my $app = shift->controller->app;
-    return $app;
-};
-
-has log => sub {
-    shift->app->log;
-};
 
 has db => sub {
     shift->app->database;
@@ -149,7 +136,7 @@ has paramSessionCookie => sub {
 };
 
 has firstSecret => sub {
-    shift->controller->app->secrets()->[0];
+    shift->app->secrets()->[0];
 };
 
 sub isUserAuthenticated {
@@ -222,7 +209,7 @@ sub login {
         return 1;
     }
 
-    my $db = $self->app->database;
+    my $db = $self->db;
     my $userData = $db->fetchRow('cbuser',{login=>$login});
     if (not $userData) {
         $self->log->info("Login attempt with unknown user $login from $remoteAddress failed");
@@ -278,12 +265,21 @@ sub makeSessionCookie {
     return $conf.':'.$check;
 }
 
-sub DESTROY {
-    local($., $@, $!, $^E, $?);
-    return if ${^GLOBAL_PHASE} eq 'DESTRUCT';
-    my $self = shift;
-    $self->log->debug("Destroying ".__PACKAGE__);
+sub DESTROY ($self) {
+    # we are only interested in objects that get destroyed during
+    # global destruction as this is a potential problem
+    my $class = ref($self) // "child of ". __PACKAGE__;
+    if (${^GLOBAL_PHASE} ne 'DESTRUCT') {
+        # $self->log->debug($class." DESTROYed");
+        return;
+    }
+    if ($self && ref $self->log){
+        $self->log->warn("late destruction of $class object during global destruction") unless $self->{prototype};
+        return;
+    }
+    warn "extra late destruction of $class object during global destruction\n" unless ref $self and $self->{prototype};
 }
+
 
 1;
 __END__

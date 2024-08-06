@@ -7,7 +7,6 @@ use Mojo::Base -base,-signatures;
 use Data::Dumper;
 use Carp qw(croak);
 use CallBackery::Exception qw(mkerror);
-use Scalar::Util qw(weaken);
 
 =head1 NAME
 
@@ -38,7 +37,7 @@ object needs access to the system config to get access to the database
 
 has app => sub {
     croak "app property is required";
-};
+}, weak => 1;
 
 has userName => sub {
     return "* no user *";
@@ -46,7 +45,7 @@ has userName => sub {
 
 has config => sub {
     shift->app->config;
-};
+}, weak => 1;
 
 
 =head2 dhb
