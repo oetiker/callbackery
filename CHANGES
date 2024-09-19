@@ -1,3 +1,5 @@
+  - filter menuButtonProperties
+
 0.50.1 2024-08-30 12:27:22 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - show a popup before reloading the page
