@@ -108,6 +108,7 @@ allCardData() can either return an array ref of card data or a hash ref
 }
 
 in which case a label is shown between the action toolbar and the card list.
+Sending an undefined info entry removes the label.
 
 =cut
 
