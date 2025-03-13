@@ -100,6 +100,15 @@ All the methods of L<CallBackery::GuiPlugin::AbstractTable> plus:
 
 Return the requested card data and pass other types of request on to the upper levels.
 
+allCardData() can either return an array ref of card data or a hash ref
+
+{
+  data => [], # card data
+  info => {}, # Qooxdoo qx.ui.basic.Label properties
+}
+
+in which case a label is shown between the action toolbar and the card list.
+
 =cut
 
 sub getData {
@@ -113,6 +122,7 @@ sub getData {
         return $self->SUPER::getData($call, @_);
     }
 }
+
 
 =head2 getTableRowCount({formData=>{}})
 
