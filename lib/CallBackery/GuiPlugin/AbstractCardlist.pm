@@ -115,9 +115,18 @@ Sending an undefined info entry removes the label.
 sub getData {
     my $self = shift;
     my $call = shift // '';
+    my $parentFormData = shift;
+    my $args = shift;
 
     if ($call eq 'allCardData') {
-        return $self->$call(@_);
+        if ( $self->can('getAllCardData') ) {
+            return $self->getAllCardData($parentFormData, $args);
+        }
+        else {
+            # backward compatibility with previously broken CardList.js implementation
+            warn "allCardData() is deprecated, use getAllCardData() instead";
+            return $self->allCardData($args->{currentFormData});
+        }
     }
     else {
         return $self->SUPER::getData($call, @_);
