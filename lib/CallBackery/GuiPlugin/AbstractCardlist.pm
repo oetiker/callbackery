@@ -115,18 +115,15 @@ Sending an undefined info entry removes the label.
 sub getData {
     my $self = shift;
     my $call = shift // '';
-    my $parentFormData = shift;
-    my $args = shift;
 
-    if ($call eq 'allCardData') {
-        if ( $self->can('getAllCardData') ) {
-            return $self->getAllCardData($parentFormData, $args);
-        }
-        else {
-            # backward compatibility with previously broken CardList.js implementation
-            warn "allCardData() is deprecated, use getAllCardData() instead";
-            return $self->allCardData($args->{currentFormData});
-        }
+    if ($call eq 'getAllCardData') {
+        my $parentFormData = shift;
+        return $self->getAllCardData($parentFormData, @_);
+    }
+    elsif ($call eq 'allCardData') {
+        # backward compatibility with previously broken CardList.js implementation
+        warn "allCardData is deprecated, use getAllCardData instead";
+        return $self->allCardData(@_);
     }
     else {
         return $self->SUPER::getData($call, @_);
@@ -134,15 +131,29 @@ sub getData {
 }
 
 
-=head2 getTableRowCount({formData=>{}})
+=head2 getAllCardData(parentFormData, { currentFormData => data }, @_)
 
-is not used for card plugins.
+return data appropriate for the card list widget
 
 =cut
 
-sub getTableRowCount {
-    return;
+sub getAllCardData {
+    warn "getAllCardData() must be overridden";
+    return [{}];
 }
+
+
+=head2 allCardData()
+
+deprecated, return data appropriate for the card list widget
+
+=cut
+
+sub allCardData {
+    warn "allCardData() must be overridden";
+    return [{}];
+}
+
 
 =head2 makeExportAction(type => 'XLSX', filename => 'export-"now"', label => 'Export')
 
