@@ -122,7 +122,7 @@ sub getData {
     }
     elsif ($call eq 'allCardData') {
         # backward compatibility with previously broken CardList.js implementation
-        warn "allCardData is deprecated, use getAllCardData instead";
+        $self->log->warn("allCardData() is deprecated, use getAllCardData() instead");
         return $self->allCardData(@_);
     }
     else {
@@ -138,8 +138,14 @@ return data appropriate for the card list widget
 =cut
 
 sub getAllCardData {
-    warn "getAllCardData() must be overridden";
-    return [{}];
+    my $self = shift;
+    state $warned = 0;
+    if (not $warned) {
+        $self->log->warn("getAllCardData() must be overridden");
+        $self->log->warn("Calling deprecated method allCardData(), you should use getAllCardData() instead.");
+        $warned = 1;
+    }
+    return $self->allCardData(@_);
 }
 
 
@@ -150,7 +156,8 @@ deprecated, return data appropriate for the card list widget
 =cut
 
 sub allCardData {
-    warn "allCardData() must be overridden";
+    my $self = shift;
+    $self->log->warn("allCardData() is deprecated, use getAllCardData() instead");
     return [{}];
 }
 
