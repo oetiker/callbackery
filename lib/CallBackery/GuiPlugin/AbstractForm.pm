@@ -151,7 +151,7 @@ and then store the data into the config database.
 
 =cut
 
-sub processData ($self, $args, $extraArgs) {
+sub processData ($self, $args, $extraArgs=undef) {
    $self->args($args) if $args;
     my $form = $self->formCfgMap;
     my $formData = $args->{formData};
