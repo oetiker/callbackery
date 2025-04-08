@@ -75,7 +75,6 @@ Return the form data independently from the form phase.
 
 sub formData ($self) {
     my $args = $self->args || {};
-    warn 'AbstractFrom::formData(): $args=', dumper $args;
     return $args->{currentFormData} || $args->{formData} || {};
 };
 
