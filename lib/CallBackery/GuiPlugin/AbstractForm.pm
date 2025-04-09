@@ -96,9 +96,15 @@ sub formPhase ($self) {
         return 'reconfigure' if $args->{triggerField};
         return 'initialize';
     }
+
     # actions
     if ($args->{formData}) {
         return "action:$args->{key}" if $args->{key};
+    }
+
+    # config
+    if ( $args and not keys $args->%*) {
+        return 'pluginConfig';
     }
 
     # catch all, if ever reached
