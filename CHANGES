@@ -1,3 +1,7 @@
+0.55.1 2025-06-12 17:28:21 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - properly close the popup after download if so configured
+
 0.55.0 2025-06-12 15:24:25 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - download displays a busy message which can be configured using
