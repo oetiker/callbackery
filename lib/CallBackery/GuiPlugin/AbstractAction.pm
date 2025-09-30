@@ -54,6 +54,22 @@ has 'user'=> sub ($self) {
             return 1;
         };
     }
+    unless (defined &MockUser::mayAny) {
+        *MockUser::mayAny = sub ($mockSelf, $right) {
+            # $self->log->debug("MockUser::may($right) -> true");
+            return 1;
+        };
+    }
+    unless (defined &MockUser::userId) {
+        *MockUser::userId = sub ($mockSelf) {
+            return '__MockUser__';
+        };
+    }
+    unless (defined &MockUser::userInfo) {
+        *MockUser::userInfo = sub ($mockSelf) {
+            return {};
+        };
+    }
     return $mockUser;
 };
 
