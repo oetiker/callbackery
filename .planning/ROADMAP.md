@@ -31,10 +31,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Conceptual documentation explains the backend-drives-frontend mental model
   4. WebSocket specification defines notification message format and semantics
   5. Error code enumeration is formally defined with semantic meaning for each code
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] TBD
+- [ ] 01-01-PLAN.md - OpenAPI foundation and core schemas
+- [ ] 01-02-PLAN.md - REST endpoint definitions
+- [ ] 01-03-PLAN.md - WebSocket spec and conceptual docs
+- [ ] 01-04-PLAN.md - Error catalog and CI validation
 
 ### Phase 2: Backend Core
 **Goal**: Rust/Axum backend implements the protocol with authentication and database integration
@@ -110,8 +113,8 @@ Plans:
   1. Parent table row selection triggers child plugin data loading
   2. Child plugin displays data filtered by parent selection context
   3. Parent selection ID propagates to child plugin configuration requests
-  4. Multiple levels of hierarchy work (grandparent → parent → child)
-  5. Working prototype demonstrates all components together (nav → table → form → hierarchy)
+  4. Multiple levels of hierarchy work (grandparent -> parent -> child)
+  5. Working prototype demonstrates all components together (nav -> table -> form -> hierarchy)
 **Plans**: TBD
 
 Plans:
@@ -120,11 +123,11 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Protocol Foundation | 0/TBD | Not started | - |
+| 1. Protocol Foundation | 0/4 | Planned | - |
 | 2. Backend Core | 0/TBD | Not started | - |
 | 3. Frontend Foundation | 0/TBD | Not started | - |
 | 4. Table Plugin | 0/TBD | Not started | - |
