@@ -12,7 +12,7 @@ A backend-agnostic framework where the backend configures the frontend through a
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Protocol Foundation** - OpenAPI spec, versioning, conceptual docs, WebSocket spec
+- [ ] **Phase 1: Protocol Foundation** - Capability-based OpenAPI spec, versioning, conceptual docs, WebSocket spec
 - [ ] **Phase 2: Backend Core** - Rust/Axum backend with auth, database, WebSocket implementation
 - [ ] **Phase 3: Frontend Foundation** - Svelte 5 app with navigation, REST/WebSocket clients
 - [ ] **Phase 4: Table Plugin** - Backend-defined columns, continuous scrolling, sort/filter, export
@@ -22,22 +22,26 @@ Decimal phases appear between their surrounding integers in numeric order.
 ## Phase Details
 
 ### Phase 1: Protocol Foundation
-**Goal**: Protocol contract is formally defined and documented before any implementation
+**Goal**: Protocol contract is formally defined using capability-based architecture before any implementation
 **Depends on**: Nothing (first phase)
 **Requirements**: PROTO-01, PROTO-02, PROTO-03, PROTO-04
 **Success Criteria** (what must be TRUE):
-  1. OpenAPI 3.1 specification exists defining all REST endpoints with request/response schemas
-  2. Protocol versioning scheme is documented (URL path versioning, N-1 compatibility policy)
-  3. Conceptual documentation explains the backend-drives-frontend mental model
-  4. WebSocket specification defines notification message format and semantics
-  5. Error code enumeration is formally defined with semantic meaning for each code
-**Plans**: 4 plans
+  1. OpenAPI 3.1 specification defines capability-based endpoints (surfaces, components, data, actions)
+  2. Message envelope schemas defined (not plugin-specific schemas)
+  3. Component model uses ID-based adjacency list (flat, not nested)
+  4. Data binding uses JSON Pointer paths (RFC 6901)
+  5. Schema discovery/exchange mechanism documented
+  6. WebSocket specification defines event message format
+  7. Generic validation error format (path-based, not field-code-specific)
+  8. Conceptual documentation explains the puppet-master mental model
+  9. Protocol versioning scheme documented
+**Plans**: 4 plans in 3 waves
 
 Plans:
-- [ ] 01-01-PLAN.md - OpenAPI foundation and core schemas
-- [ ] 01-02-PLAN.md - REST endpoint definitions
-- [ ] 01-03-PLAN.md - WebSocket spec and conceptual docs
-- [ ] 01-04-PLAN.md - Error catalog and CI validation
+- [ ] 01-01-PLAN.md - Core protocol schemas (component model, data binding, error format)
+- [ ] 01-02-PLAN.md - Protocol operations and REST endpoints (surfaces, actions, schema discovery)
+- [ ] 01-03-PLAN.md - WebSocket specification (events, subscription, lifecycle)
+- [ ] 01-04-PLAN.md - Conceptual documentation (mental model, quick-start, versioning)
 
 ### Phase 2: Backend Core
 **Goal**: Rust/Axum backend implements the protocol with authentication and database integration
@@ -127,7 +131,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Protocol Foundation | 0/4 | Planned | - |
+| 1. Protocol Foundation | 0/4 | Planned (capability-based) | - |
 | 2. Backend Core | 0/TBD | Not started | - |
 | 3. Frontend Foundation | 0/TBD | Not started | - |
 | 4. Table Plugin | 0/TBD | Not started | - |
@@ -136,4 +140,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 ---
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-22*
+*Last updated: 2026-01-23 (capability-based re-planning)*
