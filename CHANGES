@@ -1,3 +1,18 @@
+UNRELEASED - BREAKING CHANGE (warrants a major version bump)
+
+ - JSON-RPC 2.0 migration. callbackery.data.Server now uses
+   qx.io.jsonrpc.Client (qooxdoo 7.x) instead of the deprecated
+   qx.io.remote.Rpc. The JSON-RPC 2.0 dispatch now lives in
+   Mojolicious::Plugin::Qooxdoo >= 1.1.0, which auto-detects qx1 vs 2.0
+   requests, so the CallBackery backend can serve both old qx1 and new 2.0
+   frontends. The breaking part is the bundled 2.0-only
+   callbackery.data.Server frontend: applications must build against
+   qooxdoo 7.x, and must upgrade frontend and backend together.
+   The "qooxdoo/deprecated.qx.io.remote" requirement in the frontend
+   Manifest.json is no longer needed and may be dropped (CallBackery no
+   longer references qx.io.remote); leaving it in place is harmless, as
+   unreferenced library classes are not bundled.
+
 0.56.8 2026-03-27 16:21:24 +0100 Tobias Oetiker <tobi@oetiker.ch>
 
  - MockUser now has a controller method returning undef, so Abstract::log will fall through to $self->app->log instead of crashing.
