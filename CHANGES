@@ -1,4 +1,4 @@
-UNRELEASED - BREAKING CHANGE (warrants a major version bump)
+BREAKING CHANGE (warrants a major version bump)
 
  - JSON-RPC 2.0 migration. callbackery.data.Server now uses
    qx.io.jsonrpc.Client (qooxdoo 7.x) instead of the deprecated
