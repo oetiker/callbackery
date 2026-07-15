@@ -8,6 +8,10 @@ use Mojo::JSON qw(encode_json decode_json from_json);
 use Syntax::Keyword::Try;
 use Scalar::Util qw(blessed weaken);
 
+# RPC error code the qooxdoo frontend maps to "session expired -> reload".
+# Distinct from code 6 ("login required -> show login dialog").
+use constant RPC_SESSION_EXPIRED => 7;
+
 =head1 NAME
 
 CallBackery::RpcService - RPC services for CallBackery
@@ -70,14 +74,26 @@ sub allow_rpc_access ($self,$method) {
         return 0;
     }
     for ($allow{$method}){
-        /1/ && return 1;
-        return 1 if ($self->user->isUserAuthenticated);
+        /1/ && return 1;                                 # public method
+        return 1 if ($self->user->isUserAuthenticated); # forces cookieConf (sets sessionExpired)
         /3/ && do {
+            # Level-3: allowed only for plugins that opt into anonymous access.
+            # Guard the instantiation: for an unauthenticated user it commonly
+            # dies (plugins read user rights/config); that death must resolve to
+            # "not anonymous" here, never escape as a generic code-9999 popup.
             my $plugin = $self->rpcParams->[0];
-            if ($self->config->instantiatePlugin($plugin,$self->user)->mayAnonymous){
-                return 1;
-            }
+            my $anon = eval {
+                $self->config->instantiatePlugin($plugin,$self->user)->mayAnonymous
+            };
+            return 1 if $anon;
         };
+        # Method needs auth and the user is not authenticated. If a session was
+        # present and merely expired, signal that distinctly (code 7 -> reload);
+        # otherwise fall through to code 6 (login dialog).
+        die mkerror(RPC_SESSION_EXPIRED,
+            trm('Your session has expired. Please reload to log in.'))
+            if $self->user->sessionExpired;
+        last;
     }
     return 0;
 };
