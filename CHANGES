@@ -1,3 +1,15 @@
+ - Session expiry now surfaces as a dedicated RPC code 7 ("session
+   expired"), distinct from code 6 ("login required"). allow_rpc_access
+   guards plugin instantiation so an expired session no longer escapes as
+   a generic error. CallBackery::User gains a per-request `sessionExpired`
+   flag for subclasses that enforce a cookie max-age.
+
+ - Frontend data.Server: session expiry shows a single deduplicated
+   "Session Expired -> Reload" prompt instead of a storm of error popups.
+   Communication failures (server unreachable / proxy returning garbage)
+   now retry silently for idempotent reads, then show one "Connection
+   problem" dialog with Retry / Reload. MsgBox gains reload/retry buttons.
+
 0.57.0 2026-06-16 08:58:42 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - We are on JSON-RPC 2.0 now. callbackery.data.Server now uses
