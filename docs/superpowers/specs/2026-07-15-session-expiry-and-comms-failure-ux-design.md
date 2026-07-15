@@ -265,8 +265,10 @@ A response is accepted as a result **only** if it is a valid JSON-RPC 2.0 reply 
 *this* request: `jsonrpc === "2.0"`, `id` matches the outgoing request, and exactly
 one of `result` / `error` is present. Anything else (proxy HTML, captive-portal
 page, arbitrary JSON, wrong/missing `id`) becomes a class-C exception — never a
-silent bogus `result`. `qx.io.jsonrpc.Client` enforces this; the requirement is
-made explicit and covered by a test so it cannot silently regress.
+silent bogus `result`. `qx.io.jsonrpc.Client` enforces this. callbackery has no
+JS unit harness, so this guarantee is verified by manual smoke (§8, the
+proxy-garbage case) rather than an automated test; a qooxdoo upgrade that changed
+how the client rejects malformed responses must be re-smoked here.
 
 ### 6.5 `callbackery.ui.MsgBox` additions
 
