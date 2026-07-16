@@ -1,3 +1,12 @@
+ - Frontend ui.plugin.Form: a trigger-field change made while form data
+   was still loading parked its form reconfiguration in _reconfPending
+   and never sent it — the affected form stayed in its stale layout
+   (e.g. fields that the reset should reveal never appeared) until the
+   user toggled the trigger field again. The pending queue is now
+   drained when loading completes.
+
+0.58.0 2026-07-15 17:23:33 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
  - Session expiry now surfaces as a dedicated RPC code 7 ("session
    expired"), distinct from code 6 ("login required"). allow_rpc_access
    guards plugin instantiation so an expired session no longer escapes as
