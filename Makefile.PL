@@ -31,6 +31,11 @@ WriteMakefile(
   BUILD_REQUIRES => {
     'CPAN::Uploader' => 0
   },
+  TEST_REQUIRES => {
+    # CallBackery::Database requires it lazily, so it is not a runtime
+    # dependency, but t/config-restore.t opens the config database
+    'Mojo::SQLite' => 0
+  },
   META_MERGE   => {
     requires  => {perl => '5.022000'},
     resources => {
