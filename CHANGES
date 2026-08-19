@@ -1,3 +1,61 @@
+0.58.4 2026-07-31 16:15:51 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - Frontend ui.Login: a login could be lost outright. The credentials
+   were copied into the hidden iframe form that exists only to make the
+   browser offer to save the password, and that copy ran before the
+   login call, unguarded. The iframe reloads /login every time the login
+   window appears, so whenever that fetch had not completed yet -- a
+   busy server is enough -- getElementById returned null, the handler
+   threw on it, and the login request was never sent. The form had
+   already disabled itself, so it just sat there greyed out with nothing
+   on screen to explain it, and only a reload got the user out of it.
+   The password manager hand-off now happens after a successful login
+   and is fully guarded, so it can miss the save prompt but can no
+   longer come between the user and their session.
+
+0.58.3 2026-07-30 16:11:29 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - Config: restoring a configuration blob replaced the configuration
+   database file, giving it a new inode. Every connection open at the
+   time stayed attached to the old, now unlinked file: it went on
+   reading the pre-restore configuration and failed on its first write
+   with SQLITE_READONLY_DBMOVED, which SQLite reports as "attempt to
+   write a readonly database". With a prefork server and background
+   helpers that is most of the processes on the machine. The
+   replacement database is now built beside the live one and copied in
+   with SQLite's online backup API, so the inode is preserved and open
+   connections simply see the restored data. If the write lock cannot
+   be had within 30 seconds the restore now gives up with an error and
+   leaves the database untouched, rather than restoring it half way.
+
+0.58.2 2026-07-20 12:54:27 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - Frontend ui.plugin.Form: make sure trigger load does not overwrite
+   fix for automated testing which fills forms very quickly
+
+0.58.1 2026-07-16 08:39:18 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - Frontend ui.plugin.Form: a trigger-field change made while form data
+   was still loading parked its form reconfiguration in _reconfPending
+   and never sent it — the affected form stayed in its stale layout
+   (e.g. fields that the reset should reveal never appeared) until the
+   user toggled the trigger field again. The pending queue is now
+   drained when loading completes.
+
+0.58.0 2026-07-15 17:23:33 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - Session expiry now surfaces as a dedicated RPC code 7 ("session
+   expired"), distinct from code 6 ("login required"). allow_rpc_access
+   guards plugin instantiation so an expired session no longer escapes as
+   a generic error. CallBackery::User gains a per-request `sessionExpired`
+   flag for subclasses that enforce a cookie max-age.
+
+ - Frontend data.Server: session expiry shows a single deduplicated
+   "Session Expired -> Reload" prompt instead of a storm of error popups.
+   Communication failures (server unreachable / proxy returning garbage)
+   now retry silently for idempotent reads, then show one "Connection
+   problem" dialog with Retry / Reload. MsgBox gains reload/retry buttons.
+
 0.57.0 2026-06-16 08:58:42 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - We are on JSON-RPC 2.0 now. callbackery.data.Server now uses
