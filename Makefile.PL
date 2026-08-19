@@ -32,9 +32,11 @@ WriteMakefile(
     'CPAN::Uploader' => 0
   },
   TEST_REQUIRES => {
-    # CallBackery::Database requires it lazily, so it is not a runtime
-    # dependency, but t/config-restore.t opens the config database
-    'Mojo::SQLite' => 0
+    # Both are required lazily, so neither is a runtime dependency, but
+    # t/config-restore.t needs them: Mojo::SQLite to open the config
+    # database and Crypt::Rijndael to encrypt the config blob
+    'Mojo::SQLite' => 0,
+    'Crypt::Rijndael' => 0
   },
   META_MERGE   => {
     requires  => {perl => '5.022000'},
