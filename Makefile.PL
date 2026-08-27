@@ -32,11 +32,15 @@ WriteMakefile(
     'CPAN::Uploader' => 0
   },
   TEST_REQUIRES => {
-    # Both are required lazily, so neither is a runtime dependency, but
-    # t/config-restore.t needs them: Mojo::SQLite to open the config
-    # database and Crypt::Rijndael to encrypt the config blob
+    # All of these are required lazily, so none is a runtime dependency.
+    # t/config-restore.t needs Mojo::SQLite to open the config database and
+    # Crypt::Rijndael to encrypt the config blob. Text::QRCode is only used
+    # by an XLSX export with a qrCode extra column -- it is XS over
+    # libqrencode, so making it a hard prerequisite would burden every
+    # installation, including the ones which never export a QR code
     'Mojo::SQLite' => 0,
-    'Crypt::Rijndael' => 0
+    'Crypt::Rijndael' => 0,
+    'Text::QRCode' => 0
   },
   META_MERGE   => {
     requires  => {perl => '5.022000'},

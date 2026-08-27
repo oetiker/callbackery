@@ -1,3 +1,17 @@
+0.60.0 2026-08-27 08:42:19 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
+ - Excel export: new makeExportAction option "extraCols" adds generated
+   columns to an XLSX export. The only type so far is "qrCode", which
+   embeds the content of a selectable field as a QR code image. The
+   content comes from a table key or a code reference, the column is
+   placed after its source column or at an explicit insertAfter index,
+   and label and size are configurable. Needs Text::QRCode, which is
+   loaded only when such a column is exported. CSV exports ignore the
+   option.
+
+ - CallBackery::GuiPlugin::AbstractTable used Mojo::Asset::Memory
+   without loading it, and only worked because Mojolicious happened to
+   have loaded it already.
 0.59.0 2026-08-20 08:58:50 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - New optional actionCfg property "noBusyIndicator" for download and

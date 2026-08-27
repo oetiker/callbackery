@@ -4,8 +4,21 @@ use CallBackery::Translate qw(trm);
 use CallBackery::Exception qw(mkerror);
 use Text::CSV;
 use Excel::Writer::XLSX;
+use Compress::Zlib ();
+use File::Temp ();
+use Mojo::Asset::Memory;
 use Mojo::JSON qw(true false);
 use Time::Piece;
+
+# Text::QRCode is only pulled in when an export actually asks for a qrCode
+# column, so that installations which never export QR codes do not have to
+# carry libqrencode. See _qrEncoder below.
+my $QR_ENCODER;
+
+# how _qrPng renders a matrix, and how large the result appears in the sheet
+my $QR_MODULE_SIZE = 4;      # pixels per qr module
+my $QR_QUIET_ZONE  = 4;      # modules of mandatory light border
+my $QR_DEFAULT_SIZE = 100;   # pixels the image is scaled to in the cell
 
 =head1 NAME
 
@@ -116,10 +129,199 @@ sub getTableRowCount {
     return 0;
 }
 
+=head2 _exportColumnPlan($tableCfg,$extraCols)
+
+Merge the extra export columns into the table configuration and return the
+resulting list of output columns. Each element is either
+
+ { col => $tableCfgEntry }
+
+for a normal data column, or
+
+ { extra => $extraColSpec }
+
+for a generated one. The C<insertAfter> indices of all extra columns refer to
+the original C<$tableCfg>, so several extra columns cannot shift each other
+around.
+
+=cut
+
+my %EXTRA_COL_TYPE = (qrCode => 1);
+
+sub _exportColumnPlan {
+    my $self = shift;
+    my $tCfg = shift;
+    my $extraCols = shift // [];
+
+    my %insertAfter;
+    for my $extra (@$extraCols) {
+        my $type = $extra->{type} // '';
+        die mkerror(9930, "unknown extra export column type '$type'")
+            unless $EXTRA_COL_TYPE{$type};
+
+        my $content = $extra->{content};
+        die mkerror(9931, "extra export column of type '$type' has no content")
+            unless defined $content;
+
+        my $idx = $extra->{insertAfter};
+        if (defined $idx) {
+            die mkerror(9932,
+                "insertAfter $idx of extra export column is out of range")
+                if $idx !~ /^\d+$/ or $idx > $#$tCfg;
+        }
+        elsif (ref $content eq 'CODE') {
+            die mkerror(9933,
+                "an extra export column with a code reference content "
+                ."requires an explicit insertAfter");
+        }
+
+        # the column the content is taken from, if there is one. It supplies
+        # the default label, and with no insertAfter also the position.
+        my ($srcIdx);
+        if (ref $content ne 'CODE') {
+            ($srcIdx) = grep { ($tCfg->[$_]{key} // '') eq $content } 0..$#$tCfg;
+        }
+        if (not defined $idx) {
+            die mkerror(9934,
+                "no table column with key '$content' to attach an extra "
+                ."export column to")
+                unless defined $srcIdx;
+            $idx = $srcIdx;
+        }
+        push @{$insertAfter{$idx}}, { extra => $extra, srcIdx => $srcIdx };
+    }
+
+    my @plan;
+    for my $i (0..$#$tCfg) {
+        push @plan, { col => $tCfg->[$i] };
+        push @plan, @{$insertAfter{$i} // []};
+    }
+    return \@plan;
+}
+
+=head2 _qrEncoder()
+
+Return a shared L<Text::QRCode> instance, loading the module on first use.
+
+=cut
+
+sub _qrEncoder {
+    $QR_ENCODER //= do {
+        eval { require Text::QRCode; 1 }
+            or die mkerror(9935,
+                "exporting QR codes requires the Text::QRCode module: $@");
+        Text::QRCode->new;
+    };
+    return $QR_ENCODER;
+}
+
+=head2 _qrPng($matrix,$moduleSize,$quietZone)
+
+Render a L<Text::QRCode> matrix (rows of C<*> and C<space>) into a 1 bit
+greyscale PNG and return it as a byte string. C<$moduleSize> is the edge
+length of one QR module in pixels (default 4) and C<$quietZone> the width of
+the mandatory light border in modules (default 4).
+
+Writing the PNG by hand keeps this free of any image library.
+
+=cut
+
+sub _qrPng {
+    my $self = shift;
+    my $matrix = shift;
+    my $moduleSize = shift // $QR_MODULE_SIZE;
+    my $quietZone = shift // $QR_QUIET_ZONE;
+
+    my $modules = scalar @$matrix;
+    my $side = ($modules + 2 * $quietZone) * $moduleSize;
+    my $padding = (8 - $side % 8) % 8;
+
+    # 0 is dark and 1 is light in a 1 bit greyscale image. The padding bits at
+    # the end of a scanline are ignored by the decoder, light keeps them tidy.
+    my $blank = pack 'B*', '1' x ($side + $padding);
+    my $quiet = '1' x ($quietZone * $moduleSize);
+
+    my $raw = "\0$blank" x ($quietZone * $moduleSize);
+    for my $row (@$matrix) {
+        my $bits = $quiet
+            . join('', map { ($_ eq '*' ? '0' : '1') x $moduleSize } @$row)
+            . $quiet . '1' x $padding;
+        my $line = "\0" . pack('B*', $bits);
+        $raw .= $line x $moduleSize;
+    }
+    $raw .= "\0$blank" x ($quietZone * $moduleSize);
+
+    my $chunk = sub {
+        my ($type, $data) = @_;
+        return pack('N', length $data) . $type . $data
+            . pack('N', Compress::Zlib::crc32($type . $data));
+    };
+
+    return "\x89PNG\r\n\x1a\n"
+        . $chunk->('IHDR', pack('N N C C C C C', $side, $side, 1, 0, 0, 0, 0))
+        . $chunk->('IDAT', Compress::Zlib::compress($raw))
+        . $chunk->('IEND', '');
+}
+
 =head2 makeExportAction(type => 'XLSX', filename => 'export-"now"', label => 'Export')
 
 Create export button.
 The default type is XLSX, also available is CSV.
+
+An XLSX export can carry extra generated columns next to the table data:
+
+ $self->makeExportAction(
+     type      => 'XLSX',
+     extraCols => [
+         {   type        => 'qrCode',
+             content     => 'serial',
+             insertAfter => 1,
+             label       => trm('QR'),
+             size        => 100,
+         },
+     ],
+ );
+
+Every entry adds one column and takes these keys:
+
+=over
+
+=item type
+
+The kind of column to generate. Only C<qrCode> exists so far. It embeds the
+content as a QR code image.
+
+=item content
+
+Where the content comes from: either the key of a field in the table data, or
+a code reference which is called with the record hash reference and returns
+the string to encode. A record whose content is undefined or empty gets no
+image.
+
+=item insertAfter
+
+Optional. The zero based index in L</tableCfg> the new column is placed after.
+The indices of all extra columns refer to the original L</tableCfg>, so
+several extra columns cannot shift each other around. Without it the column
+follows the column named by C<content>, which is therefore mandatory for a
+code reference content.
+
+=item label
+
+Optional column heading, translated like any other label. It defaults to the
+heading of the column named by C<content>.
+
+=item size
+
+Optional edge length of the image in pixels, 100 by default. The row height
+and the column width are adjusted to fit.
+
+=back
+
+C<extraCols> is ignored for a CSV export, which has nowhere to put an image.
+
+A C<qrCode> column needs L<Text::QRCode>, which is loaded on first use so that
+installations without QR code exports do not have to carry it.
 
 =cut
 
@@ -127,6 +329,7 @@ sub makeExportAction {
     my $self = shift;
     my %args = @_;
     my $type = $args{type} // 'XLSX';
+    my $extraCols = $args{extraCols};
     my $label = $args{label} // trm("Export %1", $type);
     my $filename = $args{filename}
         // localtime->strftime('export-%Y-%m-%d-%H-%M-%S.').lc($type);
@@ -151,13 +354,15 @@ sub makeExportAction {
             $loc->setLocale($self->user->userInfo->{lang} // 'en');
             my $tCfg = $self->tableCfg;
 
-            my @titles = map {
-                $_->{label}
-                    ? ((ref $_->{label} eq 'CallBackery::Translate')
-                        ? $loc->tra($_->{label}[0])
-                        : $_->{label})
-                    : $_->{key};
-            } @$tCfg;
+            my $tra = sub {
+                my $label = shift;
+                return undef unless defined $label;
+                return ref $label eq 'CallBackery::Translate'
+                    ? $loc->tra($label->[0])
+                    : $label;
+            };
+
+            my @titles = map { $tra->($_->{label}) // $_->{key} } @$tCfg;
 
             if ($type eq 'CSV') {
                 my $csv = Text::CSV->new;
@@ -181,29 +386,107 @@ sub makeExportAction {
                 }
             }
             elsif ($type eq 'XLSX') {
+                # a spreadsheet is the only export that can hold images, so
+                # the extra columns exist here and are ignored for CSV
+                my $plan = $self->_exportColumnPlan($tCfg, $extraCols);
+
                 open my $xh, '>', \my $xlsx or die "failed to open xlsx fh: $!";
                 my $workbook  = Excel::Writer::XLSX->new($xh);
                 my $worksheet = $workbook->add_worksheet();
 
                 my $col = 0;
-                map {$worksheet->write(0, $col, $_); $col++} @titles;
+                for my $p (@$plan) {
+                    if (my $tc = $p->{col}) {
+                        $worksheet->write(0, $col, $tra->($tc->{label}) // $tc->{key});
+                    }
+                    else {
+                        my $size = $p->{extra}{size} // $QR_DEFAULT_SIZE;
+                        my $src = defined $p->{srcIdx} ? $tCfg->[$p->{srcIdx}] : undef;
+                        $worksheet->write(0, $col,
+                            $tra->($p->{extra}{label})
+                                // ($src ? $tra->($src->{label}) // $src->{key} : ''));
+                        # excel measures column width in characters of the
+                        # default font, which is 7 pixels wide
+                        $worksheet->set_column($col, $col, ($size + 5) / 7);
+                    }
+                    $col++;
+                }
+
+                # Excel::Writer::XLSX only reads images from disk, and only
+                # when the workbook is closed, so the directory has to outlive
+                # the loop below
+                my $tmpDir;
+                my $qrCount = 0;
+                my %qrCache;
 
                 my $row = 2;
                 my %date_format;
                 for my $record (@$data) {
                     $col = 0;
-                    for my $tc (@$tCfg) {
-                        my $v = $record->{$tc->{key}};
-                        if ($tc->{type} eq 'date') {
-                            my $fmt = $tc->{format} //'yyyy-mm-dd hh:mm:ss';
-                            $date_format{$fmt} //=
-                                $workbook->add_format(num_format => $fmt);
-                            $worksheet->write_date_time($row,$col,localtime($v/1000)->strftime("%Y-%m-%dT%H:%M:%S"),$date_format{$fmt}) if $v;
+                    my $rowSize = 0;
+                    for my $p (@$plan) {
+                        if (my $tc = $p->{col}) {
+                            my $v = $record->{$tc->{key}};
+                            if ($tc->{type} eq 'date') {
+                                my $fmt = $tc->{format} //'yyyy-mm-dd hh:mm:ss';
+                                $date_format{$fmt} //=
+                                    $workbook->add_format(num_format => $fmt);
+                                $worksheet->write_date_time($row,$col,localtime($v/1000)->strftime("%Y-%m-%dT%H:%M:%S"),$date_format{$fmt}) if $v;
+                            }
+                            else {
+                                $worksheet->write($row, $col, $v) if defined $v;
+                            }
                         }
                         else {
-                            $worksheet->write($row, $col, $v) if defined $v;
+                            my $extra = $p->{extra};
+                            my $content = $extra->{content};
+                            my $text = ref $content eq 'CODE'
+                                ? $content->($record)
+                                : $record->{$content};
+                            if (defined $text and $text ne '') {
+                                my $size = $extra->{size} // $QR_DEFAULT_SIZE;
+                                $tmpDir //= File::Temp->newdir;
+                                my $qr = $qrCache{$text} //= do {
+                                    # a qr code has a capacity limit, and
+                                    # Text::QRCode reports going over it with
+                                    # a bare XS error
+                                    my $matrix = eval {
+                                        $self->_qrEncoder->plot($text) }
+                                        or die mkerror(9937,
+                                            "cannot encode '"
+                                            .(length($text) > 40
+                                                ? substr($text,0,40).'...'
+                                                : $text)
+                                            ."' as a QR code: $@");
+                                    my $path = $tmpDir->dirname
+                                        . '/qr-' . $qrCount++ . '.png';
+                                    open my $fh, '>:raw', $path
+                                        or die mkerror(9936,
+                                            "failed to open $path: $!");
+                                    print $fh $self->_qrPng($matrix);
+                                    close $fh;
+                                    {   path => $path,
+                                        # what _qrPng made of it
+                                        px => (scalar(@$matrix) + 2 * $QR_QUIET_ZONE)
+                                            * $QR_MODULE_SIZE,
+                                    };
+                                };
+                                # excel scales an image against its natural
+                                # size at 96 dpi
+                                my $scale = $size / $qr->{px};
+                                $worksheet->insert_image($row, $col, $qr->{path}, {
+                                    x_scale  => $scale,
+                                    y_scale  => $scale,
+                                    x_offset => 2,
+                                    y_offset => 2,
+                                });
+                                $rowSize = $size if $size > $rowSize;
+                            }
                         }
-                        $col++}
+                        $col++;
+                    }
+                    # a point is 3/4 of a pixel
+                    $worksheet->set_row($row, ($rowSize + 6) * 0.75) if $rowSize;
                     $row++;
                 }
 

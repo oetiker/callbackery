@@ -7,6 +7,7 @@ MANIFEST
 README.md
 bin/callbackery-pobuilder
 t/basic.t
+t/export-qrcode.t
 t/callbackery.cfg
 lib/CallBackery/Config.pm
 lib/CallBackery/Controller/RpcService.pm
