@@ -2,30 +2,22 @@ use FindBin;
 
 use lib $FindBin::Bin.'/../thirdparty/lib/perl5';
 use lib $FindBin::Bin.'/../lib';
+use lib $FindBin::Bin.'/lib';
 
 use Mojo::Base -strict;
 
 use Test::More;
 use Test::Mojo;
 use CallBackery::Config;
+use CallBackeryTest qw(setupTestConfig);
 use DBI;
-use File::Temp qw(tempdir);
-use Mojo::File qw(path);
 
 # getConfigBlob shells out to sqlite3 to dump the database
 plan skip_all => 'no /usr/bin/sqlite3' unless -x '/usr/bin/sqlite3';
 
 # a config of our own so we do not share the config database with the other
 # tests -- this one gets overwritten half way through
-my $dir = tempdir(CLEANUP => 1);
-my $cfgDb = "$dir/config.db";
-my $cfgFile = "$dir/callbackery.cfg";
-path($cfgFile)->spew(
-    path($FindBin::Bin.'/callbackery.cfg')->slurp
-    =~ s{^cfg_db\s*=.*$}{cfg_db = $cfgDb}mr
-);
-
-$ENV{CALLBACKERY_CONF} = $cfgFile;
+my $cfgDb = setupTestConfig()->{cfgDb};
 
 my $t = Test::Mojo->new('CallBackery');
 my $cfg = $t->app->config;
