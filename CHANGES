@@ -1,4 +1,4 @@
-0.61.0 2026-09-17 16:59:20 +0200 Tobias Oetiker <tobi@oetiker.ch>
+0.61.0 2026-09-18 09:45:59 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - trm() now always crosses the wire as an ARRAY, even with no arguments
    to substitute. The array is the marker that tells the frontend a string
