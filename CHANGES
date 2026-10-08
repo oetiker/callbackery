@@ -1,3 +1,9 @@
+ - Excel and CSV export: a table cell holding a translatable message now
+   shows the same text as the table on screen. An XLSX cell showed the
+   bare placeholder "%1" and spilled the rest of the message into the
+   next column; a CSV cell showed "ARRAY(0x...)", and cells and column
+   headings with arguments stayed in English or kept their "%1".
+
 0.61.0 2026-09-18 09:45:59 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - trm() now always crosses the wire as an ARRAY, even with no arguments
