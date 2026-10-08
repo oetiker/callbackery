@@ -1,3 +1,5 @@
+0.61.1 2026-10-08 17:33:54 +0200 Tobias Oetiker <tobi@oetiker.ch>
+
  - Excel and CSV export: a table cell holding a translatable message now
    shows the same text as the table on screen. An XLSX cell showed the
    bare placeholder "%1" and spilled the rest of the message into the
