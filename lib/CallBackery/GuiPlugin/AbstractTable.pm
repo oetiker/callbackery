@@ -393,7 +393,9 @@ sub makeExportAction {
                 for my $record (@$data) {
                     $csv_str .= $line->(map {
                         my $v = $record->{$_->{key}};
-                        if ($_->{type} eq 'date') {
+                        # an empty date is an empty cell, as in the xlsx
+                        # export, not the start of 1970
+                        if ($_->{type} eq 'date' and $v) {
                             $v= localtime($v/1000)->strftime("%Y-%m-%d %H:%M:%S %z");
                         }
                         $tra->($v)} @$tCfg);

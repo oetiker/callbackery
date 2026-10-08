@@ -23,6 +23,7 @@ sub tableCfg ($self) {
     return [
         { key => 'host',   label => trm('Host'),         type => 'str' },
         { key => 'state',  label => trm('State of %1', 'AGW'), type => 'str' },
+        { key => 'seen',   label => trm('Seen'),         type => 'date' },
     ];
 }
 
@@ -31,7 +32,8 @@ sub getTableRowCount ($self, $args) { return 3 }
 sub getTableData ($self, $args) {
     return [
         # a trm() built in this process
-        { host => 'a', state => trm("\x{26a0} %1", trm('pending')) },
+        { host => 'a', state => trm("\x{26a0} %1", trm('pending')),
+          seen => 1_700_000_000_000 },
         # the same message after it went through JSON, which is how a
         # status reported by some other system arrives in a table
         { host => 'b', state => ["\x{26a0} %1", ['pending']] },
@@ -64,14 +66,15 @@ my $csv = decode('UTF-8', $csvOut->{asset}->slurp);
 ok(defined $csv, 'csv is valid UTF-8');
 $csv //= '';
 
-like($csv, qr{^"?Host"?,"?State of AGW"?\r?$}m,
+like($csv, qr{^"?Host"?,"?State of AGW"?,"?Seen"?\r?$}m,
     'csv header substitutes label arguments');
 # a cell Text::CSV refused used to come out as an empty line
-like($csv, qr{^a,"?\x{26a0} pending"?\r?$}m,
+like($csv, qr{^a,"?\x{26a0} pending"?,"?\d{4}-\d\d-\d\d \d\d:\d\d:\d\d [-+]\d{4}"?\r?$}m,
     'csv renders a nested trm() outside ASCII');
-like($csv, qr{^b,"?\x{26a0} pending"?\r?$}m,
+# an empty date used to come out as the start of 1970
+like($csv, qr{^b,"?\x{26a0} pending"?,\r?$}m,
     'csv renders a message that arrived as JSON');
-like($csv, qr{^c,"one\ntwo x"\r?$}m,
+like($csv, qr{^c,"one\ntwo x",\r?$}m,
     'csv keeps a line break inside a quoted cell');
 unlike($csv, qr{^\r?$}m, 'csv has no empty lines');
 unlike($csv, qr{%\d|ARRAY\(}, 'csv has no raw placeholders or refs');

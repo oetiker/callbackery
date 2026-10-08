@@ -1,3 +1,7 @@
+ - CSV export: an empty date cell showed "1970-01-01 01:00:00 +0100" (the
+   start of 1970 in the server's time zone). It is now empty, as in the
+   Excel export.
+
  - CSV export: a row with a line break or any character outside ASCII in
    one of its cells -- an umlaut, an accent, a warning sign -- came out as
    an empty line, and the file was not valid UTF-8. Such rows are now
