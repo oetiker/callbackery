@@ -8,6 +8,7 @@ use Compress::Zlib ();
 use File::Temp ();
 use Mojo::Asset::Memory;
 use Mojo::JSON qw(true false);
+use Mojo::Util qw(encode);
 use Time::Piece;
 
 # Text::QRCode is only pulled in when an export actually asks for a qrCode
@@ -378,23 +379,31 @@ sub makeExportAction {
             my @titles = map { $tra->($_->{label}) // $_->{key} } @$tCfg;
 
             if ($type eq 'CSV') {
-                my $csv = Text::CSV->new;
-                $csv->combine(@titles);
-                my $csv_str = $csv->string . "\n";
+                # Without binary mode Text::CSV refuses a line break or any
+                # character outside ASCII, and combine() then leaves an
+                # empty string behind: the row went missing without a word.
+                my $csv = Text::CSV->new({ binary => 1 });
+                my $line = sub {
+                    $csv->combine(@_)
+                        or die mkerror(9938, "failed to write csv line: "
+                            . $csv->error_diag);
+                    return $csv->string . "\n";
+                };
+                my $csv_str = $line->(@titles);
                 for my $record (@$data) {
-                    $csv->combine(map {
+                    $csv_str .= $line->(map {
                         my $v = $record->{$_->{key}};
                         if ($_->{type} eq 'date') {
                             $v= localtime($v/1000)->strftime("%Y-%m-%d %H:%M:%S %z");
                         }
                         $tra->($v)} @$tCfg);
-                    $csv_str .= $csv->string . "\n";
                 }
                 my $asset = Mojo::Asset::Memory->new;
-                $asset->add_chunk($csv_str);
+                # an asset holds bytes; the text has to be encoded first
+                $asset->add_chunk(encode('UTF-8', $csv_str));
                 return {
                     asset    => $asset,
-                    type     => 'text/csv',
+                    type     => 'text/csv; charset=UTF-8',
                     filename => $filename,
                 }
             }

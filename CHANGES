@@ -1,3 +1,14 @@
+ - CSV export: a row with a line break or any character outside ASCII in
+   one of its cells -- an umlaut, an accent, a warning sign -- came out as
+   an empty line, and the file was not valid UTF-8. Such rows are now
+   written in full, the file is UTF-8 and says so in its content type, and
+   a row that still cannot be written stops the export with an error.
+
+ - A translated text with several placeholders could show the wrong
+   value: when the text for "%1" itself contained "%2", that was replaced
+   too, and "%10" showed the first value followed by a "0". Every
+   placeholder is now filled in once, with its own value.
+
 0.61.1 2026-10-08 17:33:54 +0200 Tobias Oetiker <tobi@oetiker.ch>
 
  - Excel and CSV export: a table cell holding a translatable message now

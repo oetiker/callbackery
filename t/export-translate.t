@@ -28,19 +28,14 @@ sub tableCfg ($self) {
 
 sub getTableRowCount ($self, $args) { return 3 }
 
-# Text::CSV runs without binary mode here, and then refuses a newline or
-# anything outside ASCII, so the csv test uses a plain separator and text
-our $MARK = "\x{26a0}";
-our $SEP = "\n";
-
 sub getTableData ($self, $args) {
     return [
         # a trm() built in this process
-        { host => 'a', state => trm("$MARK %1", trm('pending')) },
+        { host => 'a', state => trm("\x{26a0} %1", trm('pending')) },
         # the same message after it went through JSON, which is how a
         # status reported by some other system arrives in a table
-        { host => 'b', state => ["$MARK %1", ['pending']] },
-        { host => 'c', state => trmJoin($SEP,
+        { host => 'b', state => ["\x{26a0} %1", ['pending']] },
+        { host => 'c', state => trmJoin("\n",
             trm('one'), trm('two %1', 'x')) },
     ];
 }
@@ -61,21 +56,24 @@ my $plugin = TestTable->new;
 
 # --- csv ---------------------------------------------------------------
 
-my $csv = do {
-    local $TestTable::MARK = '!';
-    local $TestTable::SEP = '; ';
-    $plugin->makeExportAction(type => 'CSV')
-        ->{actionHandler}->($plugin, {})->{asset}->slurp;
-};
+my $csvOut = $plugin->makeExportAction(type => 'CSV')
+    ->{actionHandler}->($plugin, {});
+like($csvOut->{type}, qr{^text/csv;\s*charset=UTF-8$}i,
+    'csv says which encoding it is in');
+my $csv = decode('UTF-8', $csvOut->{asset}->slurp);
+ok(defined $csv, 'csv is valid UTF-8');
+$csv //= '';
 
 like($csv, qr{^"?Host"?,"?State of AGW"?\r?$}m,
     'csv header substitutes label arguments');
-like($csv, qr{^a,"?! pending"?\r?$}m,
-    'csv renders a nested trm()');
-like($csv, qr{^b,"?! pending"?\r?$}m,
+# a cell Text::CSV refused used to come out as an empty line
+like($csv, qr{^a,"?\x{26a0} pending"?\r?$}m,
+    'csv renders a nested trm() outside ASCII');
+like($csv, qr{^b,"?\x{26a0} pending"?\r?$}m,
     'csv renders a message that arrived as JSON');
-like($csv, qr{^c,"?one; two x"?\r?$}m,
-    'csv renders a trmJoin()');
+like($csv, qr{^c,"one\ntwo x"\r?$}m,
+    'csv keeps a line break inside a quoted cell');
+unlike($csv, qr{^\r?$}m, 'csv has no empty lines');
 unlike($csv, qr{%\d|ARRAY\(}, 'csv has no raw placeholders or refs');
 
 # --- xlsx ----------------------------------------------------------------
