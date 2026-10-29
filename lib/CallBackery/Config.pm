@@ -234,7 +234,7 @@ has grammar => sub {
         _mandatory => [qw(BACKEND FRONTEND)],
         BACKEND => {
             _doc => 'BACKEND Settings',
-            _vars => [ qw(log_file cfg_db sesame_user sesame_pass) ],
+            _vars => [ qw(log_file cfg_db sesame_user sesame_pass max_session_age) ],
             _mandatory => [ qw(cfg_db sesame_user sesame_user) ],
             log_file => { _doc => 'write a log file to this location (unless in development mode)'},
             cfg_db => { _doc => 'file to store the config database'},
@@ -246,6 +246,15 @@ DOC
 Using sesame_user and sesame_pass, the system can always be accessed.
 In default configuration sesame_pass is NOT set.
 DOC
+            max_session_age => {
+                _doc => <<'DOC',
+End a session this many seconds after the login that started it; the user
+has to log in again. Logging out does not invalidate a session cookie that
+was already issued, so this limit is what ends it. Default: no limit.
+DOC
+                _re => '\d+',
+                _re_error => 'expected a number of seconds',
+            },
         },
         FRONTEND => {
             _doc => 'Settings for the Web FRONTEND',

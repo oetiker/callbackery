@@ -140,13 +140,16 @@ has sessionExpired => 0;
 =head2 maxSessionAge
 
 How long a session is accepted after the login that started it, in seconds;
-12 hours by default, C<0> for no limit. Cookies renewed with
-C<makeSessionCookie> keep the start of their session. Logging out does not
-invalidate a cookie that was already issued; this limit is what ends it.
+C<0> for no limit. Taken from C<max_session_age> in the BACKEND section,
+no limit by default. Cookies renewed with C<makeSessionCookie> keep the
+start of their session. Logging out does not invalidate a cookie that was
+already issued; this limit is what ends it.
 
 =cut
 
-has maxSessionAge => 12 * 60 * 60;
+has maxSessionAge => sub ($self) {
+    $self->app->config->cfgHash->{BACKEND}{max_session_age} // 0;
+};
 
 =head2 $self->sessionConf
 

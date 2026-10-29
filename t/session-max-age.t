@@ -31,6 +31,11 @@ my $mint = sub {
     return CallBackery::User->new(app => $t->app, userId => 1)->makeSessionCookie;
 };
 
+my $backend = $t->app->config->cfgHash->{BACKEND};
+is $user->($mint->(30 * 24 * 60 * 60))->cookieConf->{u}, 1,
+    'without max_session_age a month old session cookie is accepted';
+
+$backend->{max_session_age} = 12 * 60 * 60;
 my $fresh = $user->($mint->(0));
 is $fresh->cookieConf->{u}, 1, 'a fresh session cookie is accepted';
 
