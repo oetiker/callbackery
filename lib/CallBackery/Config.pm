@@ -55,12 +55,13 @@ has secretFile => sub ($self) {
 
 sub _writeSecretFile ($self,$secretFile) {
     if (-f $secretFile) {
-        # replace an empty secret or one made by the old rand() generator
+        # replace an empty secret or one made by the old rand() generator;
+        # a secret written by hand is kept
         return if not -r _ or -s _ > 24;
         open my $old, '<', $secretFile;
         my $line = <$old> // '';
-        return if $line !~ /\A[0-9a-f]{0,24}\z/;
         close $old;
+        return if $line ne '' and not $self->_isRandSecret($line);
         no autodie;
         if (not unlink $secretFile) {
             croak "cannot replace the empty secret file $secretFile: $!" if $line eq '';
@@ -73,6 +74,34 @@ sub _writeSecretFile ($self,$secretFile) {
     print $fh $secret;
     close $fh;
     chmod 0400,$secretFile;
+}
+
+# The old generator wrote sprintf('%x%x',int(rand()*1e14),int(rand()*1e14)).
+# Perl's rand() is drand48: the state x is 48 bits, rand() returns x/2**48
+# and the next state is (0x5DEECE66D*x + 0xB) mod 2**48. The first number
+# leaves about three possible states; a secret is from the old generator
+# when one of them gives the second number. A hand written secret matches
+# by chance about once in 10**13.
+sub _isRandSecret ($self,$secret) {
+    return 0 if $secret !~ /\A[0-9a-f]{2,24}\z/;
+    no warnings 'portable'; # hex() above 32 bits
+    for my $cut (1 .. length($secret) - 1) {
+        my ($first,$second) = (substr($secret,0,$cut),substr($secret,$cut));
+        next if grep { /\A0./ or length > 12 } $first, $second;
+        ($first,$second) = (hex $first,hex $second);
+        next if $first >= 1e14 or $second >= 1e14;
+        my $guess = int($first * 2**48 / 1e14);
+        for my $x ($guess - 2 .. $guess + 3) {
+            next if $x < 0 or $x >= 2**48 or int($x / 2**48 * 1e14) != $first;
+            # (0x5DEECE66D*x + 0xB) mod 2**48 in 24 bit halves, so it fits in 64 bits
+            my ($xh,$xl) = (int($x / 2**24),$x % 2**24);
+            my $lo = 0xECE66D * $xl + 0xB;
+            my $hi = (0x5DE * $xl + 0xECE66D * $xh + int($lo / 2**24)) % 2**24;
+            my $next = $hi * 2**24 + $lo % 2**24;
+            return 1 if int($next / 2**48 * 1e14) == $second;
+        }
+    }
+    return 0;
 }
 
 has app => sub { croak "the app parameter is mandatory" }, weak => 1;
