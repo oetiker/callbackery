@@ -10,6 +10,10 @@ use Mojo::JSON qw(encode_json decode_json);
 use CallBackery::Exception qw(mkerror);
 use Time::HiRes qw(gettimeofday);
 use Mojo::Util qw(hmac_sha1_sum);
+use Crypt::Passphrase;
+
+my $passphrase = Crypt::Passphrase->new(encoder => {module => 'Bcrypt', cost => 12, hash => 'sha256'});
+my $dummyHash;
 
 =head1 NAME
 
@@ -249,13 +253,20 @@ sub login {
 
     my $db = $self->db;
     my $userData = $db->fetchRow('cbuser',{login=>$login});
+    my $hash = $userData ? $userData->{cbuser_password} // '' : '';
+    my $legacy = $hash =~ /^[0-9a-f]{40}\z/;
+    # one bcrypt check on every path, so the time taken does not tell whether the login exists
+    my $ok = $passphrase->verify_password($password // '',
+        ($hash and not $legacy) ? $hash : ($dummyHash //= $passphrase->hash_password('x')));
+    $ok = secure_compare(eval { hmac_sha1_sum($password // '') } // '',$hash) if $legacy;
     if (not $userData) {
         $self->log->info("Login attempt with unknown user $logLogin from $remoteAddress failed");
         return undef;
     }
 
-    if ($userData->{cbuser_password} and $password
-        and hmac_sha1_sum($password) eq $userData->{cbuser_password} ){
+    if ($ok and $hash and $password){
+        $db->updateOrInsertData('cbuser',{password => $self->hashPassword($password)},
+            {id => $userData->{cbuser_id}}) if $passphrase->needs_rehash($hash);
         $self->userId($userData->{cbuser_id});
         delete $self->{sessionStart};
         $self->log->info("Login for $logLogin from $remoteAddress successful");
@@ -263,6 +274,18 @@ sub login {
     }
     $self->log->info("Login attempt with wrong password for $logLogin from $remoteAddress failed");
     return undef;
+}
+
+=head2 $hash = $self->hashPassword($password)
+
+Hash a password for the C<cbuser_password> column (bcrypt over SHA-256).
+Hashes in the old unsalted HMAC-SHA1 format are still accepted by C<login>,
+which replaces them on the next successful login.
+
+=cut
+
+sub hashPassword ($self,$password) {
+    return $passphrase->hash_password($password);
 }
 
 =head2 $bool = $self->C<may>(right);
