@@ -526,17 +526,12 @@ sub getConfigBlob {
 
     my $zip = Archive::Zip->new();
     my $cfg = $self->cfgHash;
-    # flush all the changes in the database to the db file
-    my $dumpfile = '/tmp/cbdump'.$$;
-    unlink $dumpfile if -f $dumpfile;
-    open my $dump, '|-','/usr/bin/sqlite3',$cfg->{BACKEND}{cfg_db};
-    print $dump ".output $dumpfile\n";
-    print $dump ".dump\n";
+    # read the dump from a pipe; a file in /tmp would leave the secrets behind
+    open my $dump, '-|','/usr/bin/sqlite3',$cfg->{BACKEND}{cfg_db},'.dump';
+    my $sql = do { local $/; <$dump> };
     close $dump;
-    $zip->addFile({
-        filename => $dumpfile,
-        zipName => '{DATABASEDUMP}',
-    });
+    $zip->addString($sql,'{DATABASEDUMP}')
+        ->desiredCompressionMethod(Archive::Zip::COMPRESSION_DEFLATED());
     for my $obj (@{$self->configPlugins}){
         my $name = $obj->name;
         for my $file (@{$obj->stateFiles}) {
