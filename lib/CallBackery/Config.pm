@@ -26,7 +26,7 @@ use Carp;
 use Fcntl qw(O_WRONLY O_CREAT O_EXCL);
 use autodie;
 use DBI;
-use DBD::SQLite::Constants qw(SQLITE_ATTACH SQLITE_CREATE_VTABLE SQLITE_FUNCTION SQLITE_PRAGMA SQLITE_DENY SQLITE_OK);
+use DBD::SQLite::Constants qw(SQLITE_ATTACH SQLITE_FUNCTION SQLITE_PRAGMA SQLITE_DENY SQLITE_OK);
 use File::Spec;
 use Locale::PO;
 use Mojo::Promise;
@@ -666,6 +666,16 @@ sub _stageAndRestoreDb ($self,$builder) {
     return;
 }
 
+# DBD::SQLite registers an FTS3/FTS4 tokenizer called "perl" on every
+# connection; a table using it calls the Perl sub named in its definition
+# whenever the table is used. A restored schema must not name it.
+sub _refusePerlTokenizer ($self,$dbh) {
+    my $schema = $dbh->selectcol_arrayref(q{SELECT sql FROM sqlite_master WHERE sql IS NOT NULL});
+    die mkerror(3846,trm("The backup contains a table with a Perl tokenizer"))
+        if grep { /tokeni[sz]e\W*perl/i } @$schema;
+    return;
+}
+
 =head2 $cfg->restoreConfigBlob(configBlob)
 
 retore the confguration state
@@ -708,11 +718,9 @@ sub restoreConfigBlob {
                 $self->log->warn("Restoring Database!");
                 $self->_stageAndRestoreDb(sub ($staging) {
                     $member->extractToFileNamed($staging);
-                    # a virtual table's tokenizer would run code once the app uses the table
                     my $dbh = DBI->connect("dbi:SQLite:dbname=$staging",'','',{RaiseError => 1, PrintError => 0});
-                    my ($vtables) = $dbh->selectrow_array(q{SELECT count(*) FROM sqlite_master WHERE sql LIKE '%virtual%'});
+                    $self->_refusePerlTokenizer($dbh);
                     $dbh->disconnect;
-                    die mkerror(3846,trm("The backup contains a virtual table")) if $vtables;
                 });
                 last;
             };
@@ -728,15 +736,21 @@ sub restoreConfigBlob {
                         AutoCommit => 1,
                         sqlite_allow_multiple_statements => 1,
                     });
-                    # no ATTACH, virtual tables (FTS tokenizers run code), fts3_tokenizer() or writable_schema
+                    # while the dump replays, "perl" is the plain tokenizer, so
+                    # no Perl sub named by a table in the dump can run
+                    $dbh->do(q{SELECT fts3_tokenizer('perl',fts3_tokenizer('simple'))});
+                    # no ATTACH or fts3_tokenizer(); the only pragmas are the
+                    # ones sqlite3 .dump writes (writable_schema adds FTS tables)
                     $dbh->sqlite_set_authorizer(sub {
                         my ($action,$arg1,$arg2) = @_;
-                        return SQLITE_DENY if $action == SQLITE_ATTACH or $action == SQLITE_CREATE_VTABLE
+                        return SQLITE_DENY if $action == SQLITE_ATTACH
                             or ($action == SQLITE_FUNCTION and lc($arg2 // '') eq 'fts3_tokenizer')
-                            or ($action == SQLITE_PRAGMA and lc($arg1 // '') eq 'writable_schema');
+                            or ($action == SQLITE_PRAGMA and lc($arg1 // '') !~ /^(?:foreign_keys|writable_schema)$/);
                         return SQLITE_OK;
                     });
                     $dbh->do($sql);
+                    $dbh->sqlite_set_authorizer(undef);
+                    $self->_refusePerlTokenizer($dbh);
                     $dbh->disconnect;
                 });
                 last;
