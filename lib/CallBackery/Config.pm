@@ -25,6 +25,7 @@ use Config::Grammar::Dynamic;
 use Carp;
 use autodie;
 use DBI;
+use DBD::SQLite::Constants qw(SQLITE_ATTACH SQLITE_CREATE_VTABLE SQLITE_FUNCTION SQLITE_PRAGMA SQLITE_DENY SQLITE_OK);
 use File::Spec;
 use Locale::PO;
 use Mojo::Promise;
@@ -642,19 +643,36 @@ sub restoreConfigBlob {
                 $self->log->warn("Restoring Database!");
                 $self->_stageAndRestoreDb(sub ($staging) {
                     $member->extractToFileNamed($staging);
+                    # a virtual table's tokenizer would run code once the app uses the table
+                    my $dbh = DBI->connect("dbi:SQLite:dbname=$staging",'','',{RaiseError => 1, PrintError => 0});
+                    my ($vtables) = $dbh->selectrow_array(q{SELECT count(*) FROM sqlite_master WHERE sql LIKE '%virtual%'});
+                    $dbh->disconnect;
+                    die mkerror(3846,trm("The backup contains a virtual table")) if $vtables;
                 });
                 last;
             };
             /^\{DATABASEDUMP\}$/ && do {
                 $self->log->warn("Restoring Database Dump!");
                 $self->_stageAndRestoreDb(sub ($staging) {
-                    open my $sqlite, '|-', '/usr/bin/sqlite3',$staging;
                     my $sql = $member->contents();
                     $sql =~ s/0$//; # for some reason the dump ends in 0
-                    print $sqlite $sql;
-                    # autodie turns a non zero exit of sqlite3 into a die, so a
-                    # dump that does not replay never reaches the live database
-                    close $sqlite;
+                    # SQL only: the sqlite3 shell would also run .shell, fsdir() etc.
+                    my $dbh = DBI->connect("dbi:SQLite:dbname=$staging",'','',{
+                        RaiseError => 1,
+                        PrintError => 0,
+                        AutoCommit => 1,
+                        sqlite_allow_multiple_statements => 1,
+                    });
+                    # no ATTACH, virtual tables (FTS tokenizers run code), fts3_tokenizer() or writable_schema
+                    $dbh->sqlite_set_authorizer(sub {
+                        my ($action,$arg1,$arg2) = @_;
+                        return SQLITE_DENY if $action == SQLITE_ATTACH or $action == SQLITE_CREATE_VTABLE
+                            or ($action == SQLITE_FUNCTION and lc($arg2 // '') eq 'fts3_tokenizer')
+                            or ($action == SQLITE_PRAGMA and lc($arg1 // '') eq 'writable_schema');
+                        return SQLITE_OK;
+                    });
+                    $dbh->do($sql);
+                    $dbh->disconnect;
                 });
                 last;
             };
