@@ -125,13 +125,24 @@ has loginName => sub {
 
 True when a validly-signed session cookie was presented but is too old. Distinct
 from "not authenticated at all" (no/invalid cookie), which leaves this false. Set
-by whichever layer detects expiry (e.g. a subclass' C<cookieConf> that enforces a
-max cookie age); read by the RPC dispatcher to choose the session-expired signal
+by C<cookieConf> when a cookie is older than C<maxSessionAge>, or by a subclass
+that enforces its own limit; read by the RPC dispatcher to choose the session-expired signal
 (code 7) over the login-required signal (code 6). Per-request.
 
 =cut
 
 has sessionExpired => 0;
+
+=head2 maxSessionAge
+
+How long a session is accepted after the login that started it, in seconds;
+12 hours by default, C<0> for no limit. Cookies renewed with
+C<makeSessionCookie> keep the start of their session. Logging out does not
+invalidate a cookie that was already issued; this limit is what ends it.
+
+=cut
+
+has maxSessionAge => 12 * 60 * 60;
 
 =head2 $self->sessionConf
 
@@ -202,6 +213,15 @@ has cookieConf => sub {
         die mkerror(38445,"cookie has expired");
     }
 
+    # s is when the session started; cookies renewed by makeSessionCookie keep it
+    my $start = $conf->{s} // $conf->{t};
+    if ($self->maxSessionAge and gettimeofday() - $start > $self->maxSessionAge){
+        $self->log->debug(qq{Session cookie is older than maxSessionAge});
+        $self->sessionExpired(1);
+        return {};
+    }
+    $self->{sessionStart} = $start;
+
     return $conf;
 };
 
@@ -237,6 +257,7 @@ sub login {
     if ($userData->{cbuser_password} and $password
         and hmac_sha1_sum($password) eq $userData->{cbuser_password} ){
         $self->userId($userData->{cbuser_id});
+        delete $self->{sessionStart};
         $self->log->info("Login for $logLogin from $remoteAddress successful");
         return 1;
     }
@@ -276,6 +297,7 @@ sub makeSessionCookie {
     my $conf = b64_encode(encode_json({
         u => $self->userId,
         t => $now,
+        s => $self->{sessionStart} // $now,
     }));
     $conf =~ s/\s+//g;
     my $secret = $self->firstSecret;
