@@ -32,6 +32,8 @@ use Mojo::Promise;
 use Mojo::Loader qw(load_class);
 use Mojo::JSON qw(true false);
 use Mojo::Exception;
+use Mojo::Util qw(encode secure_compare);
+use Digest::SHA qw(hmac_sha256);
 use Scalar::Util qw(blessed);
 use Time::HiRes;
 # use Devel::Cycle;
@@ -479,6 +481,10 @@ sub instantiatePlugin {
 
 return the configuration state of the system as a blob
 
+The blob is encrypted with AES-256 and authenticated with HMAC-SHA256,
+both keyed from the password with PBKDF2 and a random salt. Releases
+before this format cannot restore it.
+
 =cut
 
 has configPlugins => sub {
@@ -520,6 +526,25 @@ sub unpack16 {
     return substr($string,16,hex($len));
 }
 
+# PBKDF2-HMAC-SHA256 rounds for the backup key; part of the CBK2 format
+my $BLOB_KDF_ROUNDS = 100_000;
+
+sub _randomBytes ($self,$n) {
+    open my $fh, '<:raw', '/dev/urandom';
+    read($fh, my $bytes, $n) == $n or croak "short read from /dev/urandom";
+    return $bytes;
+}
+
+sub _blobKeys ($self,$password,$salt) {
+    $password = encode('UTF-8',$password // '');
+    my $u = my $key = hmac_sha256($salt.pack('N',1),$password);
+    for (2..$BLOB_KDF_ROUNDS) {
+        $u = hmac_sha256($u,$password);
+        $key ^= $u;
+    }
+    return (hmac_sha256('encrypt',$key), hmac_sha256('authenticate',$key));
+}
+
 sub getConfigBlob {
     my $self = shift;
     my $password = shift;
@@ -548,8 +573,14 @@ sub getConfigBlob {
     open(my $fh, ">", \$zipData);
     $zip->writeToFileHandle($fh,0);
 
-    my $crypt = $self->getCrypt($password);
-    return $crypt->encrypt($self->pack16($zipData));
+    require Crypt::Rijndael;
+    my $salt = $self->_randomBytes(16);
+    my $iv = $self->_randomBytes(16);
+    my ($encKey,$macKey) = $self->_blobKeys($password,$salt);
+    my $crypt = Crypt::Rijndael->new($encKey,Crypt::Rijndael::MODE_CBC());
+    $crypt->set_iv($iv);
+    my $blob = 'CBK2'.$salt.$iv.$crypt->encrypt($self->pack16($zipData));
+    return $blob.hmac_sha256($blob,$macKey);
 }
 
 # how long to keep trying when someone else holds a lock on the config
@@ -622,6 +653,9 @@ sub _stageAndRestoreDb ($self,$builder) {
 
 retore the confguration state
 
+A blob in the format used before CBK2 has no authentication; it is still
+restored, with a warning, and should be replaced by a new backup.
+
 =cut
 
 sub restoreConfigBlob {
@@ -629,8 +663,22 @@ sub restoreConfigBlob {
     my $config = shift;
     my $password = shift;
     require Archive::Zip;
-    my $crypt = $self->getCrypt($password);
-    $config = $self->unpack16($crypt->decrypt($config));
+    if ($config =~ /^CBK2/ and length($config) % 16 == 4) {
+        require Crypt::Rijndael;
+        my ($salt,$iv) = (substr($config,4,16),substr($config,20,16));
+        my ($encKey,$macKey) = $self->_blobKeys($password,$salt);
+        my $mac = substr($config,-32,32,'');
+        die mkerror(3844,trm("Wrong password!"))
+            unless secure_compare($mac,hmac_sha256($config,$macKey));
+        my $crypt = Crypt::Rijndael->new($encKey,Crypt::Rijndael::MODE_CBC());
+        $crypt->set_iv($iv);
+        $config = $self->unpack16($crypt->decrypt(substr($config,36)));
+    }
+    else {
+        $self->log->warn("Restoring a backup in the old, unauthenticated format; take a new backup to replace it");
+        my $crypt = $self->getCrypt($password);
+        $config = $self->unpack16($crypt->decrypt($config));
+    }
 
     my $user = $self->app->userObject->new(app=>$self->app,userId=>'__CONFIG', log=>$self->log);
     open my $fh ,'<', \$config;
