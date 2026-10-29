@@ -23,6 +23,7 @@ use CallBackery::Exception qw(mkerror);
 use CallBackery::Translate qw(trm);
 use Config::Grammar::Dynamic;
 use Carp;
+use Fcntl qw(O_WRONLY O_CREAT O_EXCL);
 use autodie;
 use DBI;
 use DBD::SQLite::Constants qw(SQLITE_ATTACH SQLITE_CREATE_VTABLE SQLITE_FUNCTION SQLITE_PRAGMA SQLITE_DENY SQLITE_OK);
@@ -48,15 +49,31 @@ has file => sub { croak "the file parameter is mandatory" };
 
 has secretFile => sub ($self) {
     my $secretFile = $self->file.'.secret';
-    if (not -f $secretFile){
-        open my $rand, '>', $secretFile;
-        chmod 0600,$secretFile;
-        print $rand sprintf('%x%x',int(rand()*1e14),int(rand()*1e14));
-        close $rand;
-        chmod 0400,$secretFile;
-    }
+    $self->_writeSecretFile($secretFile);
     return $secretFile;
 };
+
+sub _writeSecretFile ($self,$secretFile) {
+    if (-f $secretFile) {
+        # replace an empty secret or one made by the old rand() generator
+        return if not -r _ or -s _ > 24;
+        open my $old, '<', $secretFile;
+        my $line = <$old> // '';
+        return if $line !~ /\A[0-9a-f]{0,24}\z/;
+        close $old;
+        no autodie;
+        if (not unlink $secretFile) {
+            croak "cannot replace the empty secret file $secretFile: $!" if $line eq '';
+            carp "cannot replace the weak secret in $secretFile: $!";
+            return;
+        }
+    }
+    my $secret = unpack('H*',$self->_randomBytes(32));
+    sysopen my $fh, $secretFile, O_WRONLY|O_CREAT|O_EXCL, 0600;
+    print $fh $secret;
+    close $fh;
+    chmod 0400,$secretFile;
+}
 
 has app => sub { croak "the app parameter is mandatory" }, weak => 1;
 
@@ -758,13 +775,7 @@ Regenerate all the template based configuration files using input from the datab
 sub reConfigure {
     my $self = shift;
     my $secretFile = $self->secretFile;
-    if (not -f $secretFile){
-        open my $rand, '>', $secretFile;
-        chmod 0600,$secretFile;
-        print $rand sprintf('%x%x',int(rand()*1e14),int(rand()*1e14));
-        close $rand;
-        chmod 0400,$secretFile;
-    }
+    $self->_writeSecretFile($secretFile);
     for my $obj (@{$self->configPlugins}){
         $obj->reConfigure;
     }
