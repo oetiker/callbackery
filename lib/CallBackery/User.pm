@@ -10,9 +10,10 @@ use Mojo::JSON qw(encode_json decode_json);
 use CallBackery::Exception qw(mkerror);
 use Time::HiRes qw(gettimeofday);
 use Mojo::Util qw(hmac_sha1_sum);
-use Crypt::Passphrase;
+use Crypt::ScryptKDF qw(scrypt_hash scrypt_hash_verify);
+use Unicode::Normalize qw(NFC);
+use Encode qw(encode_utf8);
 
-my $passphrase = Crypt::Passphrase->new(encoder => {module => 'Bcrypt', cost => 12, hash => 'sha256'});
 my $dummyHash;
 
 =head1 NAME
@@ -258,9 +259,10 @@ sub login {
     my $userData = $db->fetchRow('cbuser',{login=>$login});
     my $hash = $userData ? $userData->{cbuser_password} // '' : '';
     my $legacy = $hash =~ /^[0-9a-f]{40}\z/;
-    # one bcrypt check on every path, so the time taken does not tell whether the login exists
-    my $ok = $passphrase->verify_password($password // '',
-        ($hash and not $legacy) ? $hash : ($dummyHash //= $passphrase->hash_password('x')));
+    my $scrypt = $hash =~ /^SCRYPT:/;
+    # one scrypt check on every path, so the time taken does not tell whether the login exists
+    my $ok = $self->verifyPassword($scrypt ? $hash : ($dummyHash //= $self->hashPassword(rand)),$password);
+    $ok = 0 if not $scrypt;
     $ok = secure_compare(eval { hmac_sha1_sum($password // '') } // '',$hash) if $legacy;
     if (not $userData) {
         $self->log->info("Login attempt with unknown user $logLogin from $remoteAddress failed");
@@ -269,7 +271,7 @@ sub login {
 
     if ($ok and $hash and $password){
         $db->updateOrInsertData('cbuser',{password => $self->hashPassword($password)},
-            {id => $userData->{cbuser_id}}) if $passphrase->needs_rehash($hash);
+            {id => $userData->{cbuser_id}}) if $legacy;
         $self->userId($userData->{cbuser_id});
         delete $self->{sessionStart};
         $self->log->info("Login for $logLogin from $remoteAddress successful");
@@ -281,14 +283,25 @@ sub login {
 
 =head2 $hash = $self->hashPassword($password)
 
-Hash a password for the C<cbuser_password> column (bcrypt over SHA-256).
-Hashes in the old unsalted HMAC-SHA1 format are still accepted by C<login>,
-which replaces them on the next successful login.
+Hash a password for the C<cbuser_password> column: scrypt with a random salt
+over the NFC normalized, UTF-8 encoded password, stored as
+C<SCRYPT:N:r:p:salt:key>. Hashes in the old unsalted HMAC-SHA1 format are
+still accepted by C<login>, which replaces them on the next successful login.
 
 =cut
 
 sub hashPassword ($self,$password) {
-    return $passphrase->hash_password($password);
+    return scrypt_hash(encode_utf8(NFC($password // '')));
+}
+
+=head2 $bool = $self->verifyPassword($hash,$password)
+
+Check a password against a hash made by C<hashPassword>.
+
+=cut
+
+sub verifyPassword ($self,$hash,$password) {
+    return eval { scrypt_hash_verify(encode_utf8(NFC($password // '')),$hash) } ? 1 : 0;
 }
 
 =head2 $bool = $self->C<may>(right);
