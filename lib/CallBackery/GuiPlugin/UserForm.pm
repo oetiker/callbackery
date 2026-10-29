@@ -261,6 +261,7 @@ sub getAllFieldValues {
 
     my $data = $self->user->db->fetchRow('cbuser',{id => $id});
     $data->{cbuser_password} = $DUMMY_PASSWORD;
+    delete $data->{cbuser_note} unless $self->user->may('admin');
     $data->{cbuser_password_check} = $DUMMY_PASSWORD;
     my $db = $self->user->mojoSqlDb;
     my $rightTbl= $db->dbh->quote_identifier('cbright');
