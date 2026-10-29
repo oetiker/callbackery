@@ -1,3 +1,5 @@
+0.62.0 2026-10-29 17:40:14 +0100 Tobias Oetiker <tobi@oetiker.ch>
+
  - Restoring a configuration backup ran its database part through the
    sqlite3 command line tool, so a crafted backup could run commands and
    read or write files on the server. The database part is now replayed
