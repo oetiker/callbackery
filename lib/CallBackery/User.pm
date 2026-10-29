@@ -217,11 +217,12 @@ sub login {
     my $password = shift;
     my $cfg = $self->app->config->cfgHash;
     my $remoteAddress = eval { $self->controller->tx->remote_address } // 'UNKNOWN_IP';
+    my $logLogin = ($login // '') =~ s/([\p{Cc}\x{2028}\x{2029}])/sprintf('\\x{%x}',ord $1)/ger;
     if ($cfg->{sesame_pass} and $cfg->{sesame_user}
         and $login and $password
         and $login eq $cfg->{sesame_user}
         and hmac_sha1_sum($password) eq $cfg->{sesame_pass}){
-        $self->log->info("SESAME Login for $login from $remoteAddress successful");
+        $self->log->info("SESAME Login for $logLogin from $remoteAddress successful");
         $self->session(userId=>'__ROOT');
         return 1;
     }
@@ -229,17 +230,17 @@ sub login {
     my $db = $self->db;
     my $userData = $db->fetchRow('cbuser',{login=>$login});
     if (not $userData) {
-        $self->log->info("Login attempt with unknown user $login from $remoteAddress failed");
+        $self->log->info("Login attempt with unknown user $logLogin from $remoteAddress failed");
         return undef;
     }
 
     if ($userData->{cbuser_password} and $password
         and hmac_sha1_sum($password) eq $userData->{cbuser_password} ){
         $self->userId($userData->{cbuser_id});
-        $self->log->info("Login for $login from $remoteAddress successful");
+        $self->log->info("Login for $logLogin from $remoteAddress successful");
         return 1;
     }
-    $self->log->info("Login attempt with wrong password for $login from $remoteAddress failed");
+    $self->log->info("Login attempt with wrong password for $logLogin from $remoteAddress failed");
     return undef;
 }
 
