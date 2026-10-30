@@ -51,6 +51,11 @@ jobs:
         path: thirdparty
         key: ${{ matrix.os }}-cpan-${{ matrix.perl }}-${{ hashFiles('Makefile.PL') }}
 
+    - name: Install system libraries
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libqrencode-dev
+
     - name: Install Coveralls
       run: |
         cpanm --notest Devel::Cover::Report::Coveralls
