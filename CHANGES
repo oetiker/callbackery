@@ -1,8 +1,8 @@
- - Every worker that exited printed lines such as "Use of uninitialized value
-   in hash element ... during global destruction" and "(in cleanup) Can't
-   locate object method "log"". Objects still alive at exit now give one
-   plain "late destruction of ... object during global destruction" line
-   each, and the "extra late destruction" variant is gone.
+ - Every worker that exited printed lines such as "Use of uninitialized
+   value in hash element ... during global destruction" and "(in cleanup)
+   Can't locate object method 'log'". Objects still alive at exit now
+   give one plain "late destruction of ... object during global
+   destruction" line each; the "extra late destruction" variant is gone.
 
 0.62.0 2026-10-29 17:40:14 +0100 Tobias Oetiker <tobi@oetiker.ch>
 

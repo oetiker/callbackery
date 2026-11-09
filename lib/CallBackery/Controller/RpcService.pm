@@ -623,7 +623,7 @@ async sub handleDownload {
 sub DESTROY ($self) {
     # we are only interested in objects that get destroyed during
     # global destruction as this is a potential problem
-    my $class = ref($self) // "child of ". __PACKAGE__;
+    my $class = ref $self;
     return if ${^GLOBAL_PHASE} ne 'DESTRUCT';
     # app, log and helpers may be destroyed already, so never call
     # $self->log here: it warns "Use of uninitialized value in hash
